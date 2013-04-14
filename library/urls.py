@@ -3,4 +3,5 @@ from library import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
+    (r'^getbooks', views.getbooks),
 )

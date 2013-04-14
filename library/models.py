@@ -1,9 +1,11 @@
 from django.db import models
+from django.db.models import Avg
 
 # People
 class Domain(models.Model):
     domain = models.CharField(max_length=255, primary_key=True)
-
+    def __str__(self):
+        return self.domain
 
 class Person(models.Model):
     domain = models.ForeignKey(Domain)
@@ -14,8 +16,12 @@ class Person(models.Model):
     pwd = models.CharField(max_length=255)
     salt = models.CharField(max_length=255)
     adm = models.IntegerField(default=0)
-    status = models.IntegerField(default=0)
+    status = models.IntegerField(default=1)
     session = models.CharField(max_length=255, null=True)
+    class Meta:
+        unique_together = ("domain", "login")
+    def __str__(self):
+        return self.login
 
 # no!
 # class Email(models.Model):
@@ -28,6 +34,9 @@ class Author(models.Model):
     fname = models.CharField(max_length=255)
     lname = models.CharField(max_length=255)
     info = models.TextField(null=True)
+
+    def getPrintName(self):
+        return self.fname + " " + self.lname
 
     class Meta:
         unique_together = ("fname", "lname")
@@ -50,7 +59,19 @@ class Book(models.Model):
     description = models.TextField()
     authors = models.ManyToManyField(Author)
     keywords = models.ManyToManyField(Keyword)
-    # image = models.ImageField
+    def getPrintAuthors(self):
+        d=", "
+        authors=[a.getPrintName() for a in self.authors.all()]
+        return d.join(authors)
+    def getPrintKeywords(self):
+        d=", "
+        keywords=[k.word for k in self.keywords.all()]
+        return d.join(keywords)
+        # image = models.ImageField
+    def getAvgRating(self):
+        return self.opinion_set.aggregate(Avg('rating'))['rating__avg']
+    def getValues(self):
+        return (self.isbn,self.ozon,self.title,self.language.language,self.getPrintAuthors(),self.getPrintKeywords(), self.getAvgRating())
 
 class BookItem(models.Model):
     isbn=models.ForeignKey(Book)

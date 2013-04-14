@@ -1,0 +1,48 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <script type="text/javascript" charset="utf-8" src="{% static "js/jquery-1.8.3.js" %}"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static "js/jquery-ui-1.9.2.custom.js" %}"></script>
+
+    <link rel="stylesheet" href="{% static "css/smoothness/jquery-ui-1.9.2.custom.css" %}">
+
+    <link rel="stylesheet" href="{% static "css/base.css" %}">
+    <script type="text/javascript" charset="utf-8" src="{% static "js/base.js" %}"></script>
+    {% block include %}{% endblock %}
+    <title>{% block title %}Распределенная библиотека{% endblock %}</title>
+</head>
+<body>
+<div id="header">
+    <div id="container-header">
+        <div id="logo">
+            <a href="/">DL</a>
+        </div>
+        <div id="search">
+            <input id="searchInput" class="" name="search"/>
+            <button id="searchButton" class="isButton" onclick="">Поиск</button>
+        </div>
+
+        <div id="messageBox">
+        </div>
+    </div>
+</div>
+
+<div id="content">
+    {% block content %}{% endblock %}
+</div>
+
+<br>
+
+<div id="footer">
+    <div class="copyright">
+        <span>Copyright © 2013, DL.</span>
+        <span><a href="/help">HELP</a></span>
+        <span><a href="/Doc">Документация</a></span>
+    </div>
+</div>
+</body>
+</html>

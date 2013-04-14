@@ -1,0 +1,146 @@
+/*table*/
+/*=========================*/
+#mtable {
+    /*height: 400px;*/
+    width: 1000px;
+    margin: 0 auto;
+    font-size: 13px;
+    font-family: sans-serif;
+}
+
+#tabs {
+    line-height: 20px;
+    height: 20px;
+    font-family: sans-serif;
+    font-weight: bold;
+    color: #4a57c2;
+}
+
+.tab {
+    cursor: pointer;
+    float: left;
+    border-top: 2px solid #0d3349;
+    border-left: 2px solid #0d3349;
+    border-right: 2px solid #0d3349;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;;
+    padding: 0px 3px 0px 3px;
+}
+
+.tab:hover {
+}
+
+.tab:active {
+    position: relative;
+    top: 1px;
+}
+
+.tabActive {
+    background-color: #ececec;
+}
+
+#rows {
+    border-top: 2px solid #0d3349;
+}
+
+.oneRow {
+    line-height: 25px;
+    height: 25px;
+}
+
+.headRow {
+    line-height: 25px;
+    height: 25px;
+}
+
+.blockOzon {
+    margin-left: 5px;
+    width: 195px;
+    float: left;
+}
+
+.blockTitle {
+    width: 200px;
+    float: left;
+}
+
+.blockAuthor {
+    width: 200px;
+    float: left;
+
+}
+.blockLanguge {
+    width: 100px;
+    float: left;
+}
+
+.blockKeyW {
+    width: 200px;
+    float: left;
+}
+
+.blockRating {
+    width: 100px;
+    float: left;
+}
+
+.blocks {
+    display: block;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-wrap: normal;
+}
+
+.blocks:hover {
+
+}
+
+.blockHeads {
+    border-radius: 3px;
+    cursor: pointer;
+    display: block;
+    text-align: left;
+    font-weight: bold;
+}
+
+.blockHeads:hover {
+    background-color: #e8e8e8;
+}
+
+#fmtable {
+    height: 30px;
+    border-top: 2px solid #0d3349;
+    color: #4a57c2;
+}
+
+.navBut {
+    margin-left: 5px;
+    float: left;
+    width: 70px;
+}
+
+
+
+#page {
+    border-radius: 3px;
+    border: 1px solid #888888;
+    padding: 2px;
+    margin-left: 5px;
+    float: left;
+    width: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#navig {
+    padding-top: 3px;
+    height: 20px;
+    width: 250px;
+    margin: 0 auto;
+}
+
+.uBook {
+    background: rgba(0, 252, 8, 0.37);
+}

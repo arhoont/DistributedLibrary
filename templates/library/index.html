@@ -1,15 +1,36 @@
+{% extends "library/base.html" %}
 {% load static %}
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title></title>
-    <script type="text/javascript" charset="utf-8" src="{% static "js/jquery-1.8.3.js" %}"></script>
+{% csrf_token %}
+{% block title %}Распределенная библиотека{% endblock %}
+{% block include %}
+    <link rel="stylesheet" href="{% static "css/index.css" %}">
     <script type="text/javascript" charset="utf-8" src="{% static "js/index.js" %}"></script>
-</head>
-<body>
-<img src="{% static "gearicons.jpg" %}" alt="My image"/>
-<button id="b1">123</button>
-</body>
-</html>
+{% endblock %}
+{% block content %}
+    <div id="mtable">
+        <div id="tabs">
+            <div class="tab tabActive">Все</div>
+            <div class="tab">Читаемые</div>
+            <div class="tab">Мои</div>
+        </div>
+
+        <div class="separator"></div>
+        <div class="headRow">
+            <div class="blockOzon blockHeads" onclick="">OZON <span>&#x25BC;</span></div>
+            <div class="blockTitle blockHeads" onclick="">Название <span>&#x25BC;</span></div>
+            <div class="blockAuthor blockHeads" onclick="">Авторы <span>&#x25BC;</span></div>
+            <div class="blockLanguge blockHeads" onclick="">Язык <span>&#x25BC;</span></div>
+            <div class="blockKeyW blockHeads" onclick="">Ключевые слова <span>&#x25BC;</span></div>
+            <div class="blockRating blockHeads" onclick="">Рейтинг <span>&#x25BC;</span></div>
+        </div>
+        <div id="rows"></div>
+
+        <div id="fmtable">
+            <div id="navig">
+                <button id="prevBut" class="navBut isButton">Назад</button>
+                <div id="page" class="">1</div>
+                <button id="nextBut" class="navBut isButton">Вперед</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
