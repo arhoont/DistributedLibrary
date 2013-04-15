@@ -53,9 +53,14 @@
     height: 25px;
 }
 
-.blockOzon {
+.blockIsbn {
     margin-left: 5px;
-    width: 195px;
+    width: 100px;
+    float: left;
+}
+
+.blockOzon {
+    width: 145px;
     float: left;
 }
 
@@ -69,13 +74,13 @@
     float: left;
 
 }
-.blockLanguge {
+.blockLanguage {
     width: 100px;
     float: left;
 }
 
-.blockKeyW {
-    width: 200px;
+.blockKeyWords {
+    width: 150px;
     float: left;
 }
 

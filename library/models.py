@@ -70,6 +70,7 @@ class Book(models.Model):
         # image = models.ImageField
     def getAvgRating(self):
         return self.opinion_set.aggregate(Avg('rating'))['rating__avg']
+
     def getValues(self):
         return (self.isbn,self.ozon,self.title,self.language.language,self.getPrintAuthors(),self.getPrintKeywords(), self.getAvgRating())
 
