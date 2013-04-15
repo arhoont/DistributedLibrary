@@ -1,53 +1,107 @@
-from django.http import HttpResponse
+import hashlib
+import random
+import string
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.template import Context
 from library.models import *
 from django.db import connection
-from django.utils import timezone
+from datetime import timedelta
+
 import json
+import pytz
 # Create your views here.
 from library.models import Book
 from django.db.models import Q
 
 
 def index(request):
-    return render(request, 'library/index.html')
+    if request.session.get('person_id', False):
+        context = Context({
+            'person_id': request.session["person_id"],
+            'person_login': request.session["person_login"],
+        })
+    else:
+        context = Context({
+            'person_id': -1,
+        })
+    return render(request, 'library/index.html', context)
 
+def badreg(request):
+    context = Context({
+        'person_id': -1,
+        'badreg': 0
+    })
+    return render(request, 'library/index.html', context)
+
+def randstring(n):
+    a = string.ascii_letters + string.digits
+    return ''.join([random.choice(a) for i in range(n)])
+
+
+def strHash(string):
+    hash = hashlib.md5()
+    hash.update(string.encode())
+    return hash.hexdigest()
+
+def signin(request):
+    username=request.POST.get("username")
+    password=request.POST.get("password")
+    domain=request.POST.get("domain")
+    remember=request.POST.get("remember")
+    django_timezone=request.POST.get("django_timezone")
+    p=Person.objects.filter(login=username, domain=domain)
+    if p:
+        salt=p[0].salt
+        passHash = strHash(strHash(password)+salt)
+        if passHash==p[0].pwd:
+            request.session["person_id"]=p[0].id
+            request.session["person_login"]=p[0].login
+            request.session["django_timezone"]=django_timezone
+            if remember=="on":
+                request.session.set_expiry(timedelta(days=30))
+            else:
+                request.session.set_expiry(0)
+            return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('badreg'))
+
+def logout(request):
+    request.session.flush()
+    return HttpResponseRedirect(reverse('index'))
 
 def getbooks(request):
     query=json.loads(str(request.body.decode()))
     pageS=int(query["page"]["size"])
     pageN=int(query["page"]["num"])
     start=(pageN-1)*pageS
-    # if query["search"]["type"]==1:
-    #     searchW=query["search"]["word"]
-    #     queryStrC= "select count(*) from library_book "
-    #     queryStrB= "select * from library_book "
-    #     queryStr = "where isbn in " \
-    #                "(select book_id from library_book_authors where author_id in " \
-    #                "(select id from library_author where upper(fname ||' '|| lname) like upper('%%"+searchW+"%%')) " \
-    #                "or isbn in " \
-    #                "(select book_id from library_book_keywords where keyword_id like '%%"+searchW+"%%'))"
-    #     queryStr += " or isbn like upper('%%" + searchW + \
-    #                 "%%') or upper(ozon) like upper('%%" + searchW + \
-    #                 "%%') or upper(title) like upper('%%" + searchW + \
-    #                 "%%') or upper(language_id) like upper('%%" + searchW+"%%');"
-    #     cursor = connection.cursor()
-    #     cursor.execute(queryStrC+queryStr)
-    #     count=cursor.fetchone()[0]
-    #     bookslist=[b.getValues() for b in Book.objects.raw(queryStrB+queryStr)[start:start+pageS]]
-    #
-    # else:
-    #     count=Book.objects.count()
-    #     if query["sort"]["type"]==0:
-    #         bookslist=[b.getValues() for b in Book.objects.all().order_by(query["sort"]["field"])[start:start+pageS]]
-    #     else:
-    #         bookslist=[b.getValues() for b in Book.objects.all().order_by("-"+query["sort"]["field"])[start:start+pageS]]
-    cursor = connection.cursor()
-    queryStr="select * from allbooks;"
-    cursor.execute(queryStr)
-    count=cursor.rowcount
-    cursor.scroll(start)
-    bookslist = cursor.fetchmany(pageS)
+
+    if query["search"]["type"]==0 and \
+            (query["sort"]["field"]=="isbn" or query["sort"]["field"]=="title" or query["sort"]["field"]=="ozon"):
+        if query["sort"]["type"]==0:
+            bookslist=[b.getValues() for b in Book.objects.all().order_by(query["sort"]["field"])[start:start+pageS]]
+        else:
+            bookslist=[b.getValues() for b in Book.objects.all().order_by("-"+query["sort"]["field"])[start:start+pageS]]
+        count=Book.objects.count()
+    else:
+        queryStr="select * from allbooks"
+
+        if query["search"]["type"]==1:
+            searchW=query["search"]["word"]
+            queryStr += " where isbn like upper('%%" + searchW + \
+                        "%%') or upper(ozon) like upper('%%" + searchW + \
+                        "%%') or upper(title) like upper('%%" + searchW + \
+                        "%%') or upper(language) like upper('%%" + searchW+\
+                        "%%') or upper(authors) like upper('%%" + searchW+ \
+                        "%%') or upper(keywords) like upper('%%" + searchW+"%%')"
+        queryStr += " order by "+query["sort"]["field"]
+        if query["sort"]["type"]==1:
+            queryStr +=" desc"
+        cursor = connection.cursor()
+        cursor.execute(queryStr)
+        count=cursor.rowcount
+        cursor.scroll(start)
+        bookslist = cursor.fetchmany(pageS)
 
     return HttpResponse(json.dumps({"info": "yes","count":count, "books":bookslist}))
 
@@ -93,3 +147,4 @@ def castbooks(request):
 
     books = Book.objects.all()
     return HttpResponse(json.dumps({"info": 5}))
+

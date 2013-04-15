@@ -78,7 +78,7 @@
 #searchButton{
     margin-left: 7px;
 }
-#messageBox {
+#sideBar {
     font-family: sans-serif;
     float: right;
     font-size: 13px;
@@ -148,7 +148,6 @@ nav li:hover li {
     width: 16px;
     height: 16px;
     cursor: pointer;
-    background-image: url("/img/logout.png");
 }
 
 #logoutBut:hover {
@@ -182,7 +181,9 @@ nav li:hover li {
     box-shadow: 0 1px 1px #ccc inset;
 }
 
-
+#inputs #domain{
+    width: 100px;
+}
 #errorOFlogin, #regError, #errBook {
     color: #cb1500;
     font-weight: bold;

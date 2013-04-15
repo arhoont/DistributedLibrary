@@ -1,5 +1,5 @@
 {% load static %}
-
+{% csrf_token %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +26,8 @@
             <button id="searchButton" class="isButton" onclick="">Поиск</button>
         </div>
 
-        <div id="messageBox">
+        <div id="sideBar">
+            {% block sideBar %}{% endblock %}
         </div>
     </div>
 </div>

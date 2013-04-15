@@ -6,6 +6,11 @@ var search = {
     type: 0,
     word: ""
 };
+
+var sort ={
+    type: 0,
+    field: "isbn"
+};
 function castPage(){
     tableReq();
     $("#prevBut").click(function () {
@@ -38,6 +43,23 @@ function castPage(){
             $('#searchButton').click();
         }
     });
+    var d = new Date()
+    var n = d.getTimezoneOffset();
+    console.log(n);
+}
+
+function changeSort(field){
+    if (field==sort.field){
+        if (sort.type==0){
+            sort.type=1;
+        } else {
+            sort.type=0;
+        }
+    } else {
+        sort.field=field;
+        sort.type=0;
+    }
+    tableReq();
 }
 function tableReq(){
     $.ajax({
@@ -45,7 +67,7 @@ function tableReq(){
         type: "post",
         dataType: "json",
         data: JSON.stringify({"search":{"type":search.type,"word":search.word},
-            "sort":{"type":0,"field":"isbn"},
+            "sort":{"type":sort.type,"field":sort.field},
             "page":{"size":page.size,"num":page.num}}),
         success: function (data) {
             castMainTable(data);
