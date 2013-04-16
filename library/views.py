@@ -17,23 +17,22 @@ from django.db.models import Q
 
 
 def index(request):
+    context=Context()
     if request.session.get('person_id', False):
-        context = Context({
-            'person_id': request.session["person_id"],
-            'person_login': request.session["person_login"],
-        })
-    else:
-        context = Context({
-            'person_id': -1,
-        })
+            context['person_id']= request.session["person_id"]
+            context['person_login']= request.session["person_login"]
+    print(context)
     return render(request, 'library/index.html', context)
 
-def badreg(request):
+def badlogin(request):
     context = Context({
-        'person_id': -1,
-        'badreg': 0
+        'badlogin': 0
     })
     return render(request, 'library/index.html', context)
+
+def registr(request):
+    context = Context()
+    return render(request, 'library/registr.html', context)
 
 def randstring(n):
     a = string.ascii_letters + string.digits
@@ -64,7 +63,7 @@ def signin(request):
             else:
                 request.session.set_expiry(0)
             return HttpResponseRedirect(reverse('index'))
-    return HttpResponseRedirect(reverse('badreg'))
+    return HttpResponseRedirect(reverse('badlogin'))
 
 def logout(request):
     request.session.flush()

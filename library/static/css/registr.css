@@ -1,0 +1,55 @@
+/* Form styles */
+#div-regForm {
+    border: 3px solid #eeeeee;
+    padding: 15px;
+    color: #3b62b2;
+    margin: 5px auto 5px auto;
+    width: 450px;
+}
+#div-regForm input, select {
+    padding: 3px;
+    color: #333333;
+    border: 1px solid #96A6C5;
+    margin-top: 2px;
+    width: 200px;
+    font-size: 11px;
+}
+
+#div-regForm select {
+    width: auto;
+    padding: 2px;
+}
+
+#div-regForm .formline {
+    padding: 3px;
+}
+
+#div-regForm label {
+    font-size: 14px;
+    text-align: right;
+    color: #3b62b2;
+}
+
+#div-regForm table {
+    width: 300px;
+}
+
+#div-regForm td {
+    font-size: 17px;
+}
+
+#div-regForm .input-container {
+    padding: 1px;
+}
+
+#div-regForm .form-sub-title {
+    font-size: 10px;
+}
+#div-regForm .greenButton {
+    color: #4a57c2;
+    font-size: 11px;
+    margin: 3px;
+    width: 200px;
+
+}
+/* END Form styles */

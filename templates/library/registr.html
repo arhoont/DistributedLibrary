@@ -1,0 +1,85 @@
+{% extends "library/base.html" %}
+{% csrf_token %}
+{% load static %}
+
+{% block title %}Распределенная библиотека{% endblock %}
+{% block include %}
+    <link rel="stylesheet" href="{% static "css/registr.css" %}">
+    <script type="text/javascript" charset="utf-8" src="{% static "js/registr.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="div-regForm" title="Регистрация" class="dialogForm form-title">
+        <div class="form-sub-title">Все поля являеются обязательными</div>
+        <form id="regForm" action="" method="post">
+            <table>
+                <tbody>
+                <tr>
+                    <td><label for="reg-fname">Логин:</label></td>
+                    <td>
+                        <div class="input-container">
+                            <input name="reg-logF" id="reg-logF" type="text" required>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="reg-email">Email:</label></td>
+                    <td>
+                        <div class="input-container">
+                            <input name="reg-email" id="reg-email" type="text" required>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="reg-fname">Имя:</label></td>
+                    <td>
+                        <div class="input-container">
+                            <input name="reg-fname" id="reg-fname" type="text" required>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="reg-lname">Фамилия:</label></td>
+
+                    <td>
+                        <div class="input-container">
+                            <input name="reg-lname" id="reg-lname" type="text" required>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label for="reg-pass">Пароль:</label></td>
+                    <td>
+                        <div class="input-container">
+                            <input name="reg-pass" id="reg-pass" type="password" required>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="reg-passRe">Еще раз:</label></td>
+                    <td>
+                        <div class="input-container">
+                            <input name="reg-passRe" id="reg-passRe" type="password" required>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input type="submit" class="isButton greenButton" value="Зарегистрироваться"/></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <div id='regError'></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+        <div id="error">
+            &nbsp;
+        </div>
+    </div>
+{% endblock %}

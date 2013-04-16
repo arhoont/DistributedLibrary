@@ -8,78 +8,7 @@
     <script type="text/javascript" charset="utf-8" src="{% static "js/index.js" %}"></script>
 {% endblock %}
 
-{% block sideBar %}
-    {% if person_id == -1 %}
-        <nav>
-            <ul>
-                <li class="first" id="login"><a id="login-trigger">
-                    Войти <span>&#x25BC;</span></a>
-                    <div id="login-content">
-                        <form action="{% url 'signin' %}" method="post">{% csrf_token %}
-                            <fieldset id="inputs">
-                                <p><input id="username" type="login" name="username" placeholder="Ваш логин" required></p>
-                                <p><input id="password" type="password" name="password" placeholder="Пароль" required>
-                                </p>
-
-                                <p>
-                                    <span id="errorOFlogin"></span>
-                                    <select type="text" name="domain" id="domain" class="flR">
-                                    <option value=" " selected>standart</option>
-                                    <option value="domain1">domain1</option>
-                                    <option value="domain2">domain2</option>
-                                    </select>
-                                </p>
-                            </fieldset>
-                            <fieldset id="actions"><input type="submit" id="submit" value="Войти">
-                                <label><input type="checkbox" checked="checked" name="remember" id="checRem"> Запомнить меня</label>
-                            </fieldset>
-                            {# need to be installed#}
-                            <input type="hidden" name="django_timezone" value="Europe/Moscow">
-
-                        </form>
-                    </div>
-                    <script>
-                        $('#login-trigger').click(function () {
-                            $('#errorOFlogin').html('');
-                            $(this).next('#login-content').slideToggle('fast');
-                            $(this).toggleClass('active');
-
-                            if ($(this).hasClass('active')) $(this).find('span').html('&#x25B2;')
-                            else $(this).find('span').html('&#x25BC;')
-                        });
-                        {% if badreg == 0 %}
-                            $('#login-trigger').click();
-                            $('#errorOFlogin').html("проверьте данные");
-                        {% endif %}
-                    </script>
-                </li>
-                <li class="last" id="registr">Регистрация</li>
-            </ul>
-        </nav>
-    {% else %}
-        <nav>
-            <ul>
-                <li class="first"><a href="/">На главную</a></li>
-                <li><a href="/book">Добавить книгу</a></li>
-                <li>Запросы <span class="numMes">+2</span></li>
-                <li>Ответы <span class="numMes">+1</span></li>
-                <li class="last" id="adminLi"></span>Дополнительное &#x25BC;<span>
-                    <ul>
-                        <li id="takeAll">Забрать все</li>
-                        <li>Настройки</li>
-                        <li><a href="/admin">Администрирование</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-        <span id="nameSpan">person_login</span>
-        <a href="{% url 'logout' %}"><img id="logoutBut" src="{% static "img/logout.png" %}" /></a>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
-
-
     <div id="mtable">
         <div id="tabs">
             <div class="tab tabActive">Все</div>
