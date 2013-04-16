@@ -1,8 +1,8 @@
-function castPage(){
+function castPage() {
 
     $('#regForm').submit(function (e) {
         e.preventDefault();
-//        register();
+        register();
     });
 }
 
@@ -11,7 +11,7 @@ function register() {
         $('#regError').html('');
         $.ajax({
             type: "POST",
-            url: "/registrajax",
+            url: "/regajax",
             data: JSON.stringify({'log': $('#reg-logF').val(), 'email': $('#reg-email').val(),
                 'fname': $('#reg-fname').val(), 'lname': $('#reg-lname').val(),
                 'pwd': $('#reg-pass').val()}),
@@ -19,11 +19,9 @@ function register() {
             success: function (data) {
                 console.log(data);
                 if (parseInt(data.info) == 1) {
-                    userInfo.id = data.userID;
-                    userInfo.login = data.login;
-                    $('#div-regForm').dialog("close");
-                    accLogin();
+                    window.location = "/login";
                 }
+
                 else if (parseInt(data.info) == 2) {
                     $('#regError').html('такой логин уже есть');
                 }

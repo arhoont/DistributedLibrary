@@ -8,12 +8,8 @@ from django.template import Context
 from library.models import *
 from django.db import connection
 from datetime import timedelta
-
 import json
-import pytz
-# Create your views here.
 from library.models import Book
-from django.db.models import Q
 
 
 def index(request):
@@ -21,13 +17,27 @@ def index(request):
     if request.session.get('person_id', False):
             context['person_id']= request.session["person_id"]
             context['person_login']= request.session["person_login"]
-    print(context)
     return render(request, 'library/index.html', context)
 
-def badlogin(request):
+def error(request):
     context = Context({
-        'badlogin': 0
+        'type': 0
     })
+    return render(request, 'library/index.html', context)
+
+def bookadd(request):
+    context = Context({
+        'type': 0
+    })
+    return render(request, 'library/index.html', context)
+
+def login(request):
+    context=Context()
+    if request.session.get('person_id', False):
+        context['person_id']= request.session["person_id"]
+        context['person_login']= request.session["person_login"]
+    else:
+        context['type']= 1
     return render(request, 'library/index.html', context)
 
 def registr(request):
@@ -43,6 +53,27 @@ def strHash(string):
     hash = hashlib.md5()
     hash.update(string.encode())
     return hash.hexdigest()
+
+def regajax(request):
+    query=json.loads(str(request.body.decode()))
+    log=query["log"]
+    email=query["email"]
+    fname=query["fname"]
+    lname=query["lname"]
+    pwd=query["pwd"]
+
+    p=Person.objects.filter(login=log, domain=" ")
+    if p:
+        return HttpResponse(json.dumps({"info": 2}))
+
+    salt=randstring(10)
+    pwd_hash=strHash(strHash(pwd)+salt)
+    d=Domain.objects.get(pk=" ")
+    p=Person(domain=d, login=log, email=email,fname=fname,lname=lname,pwd=pwd_hash, salt=salt, adm=0, status=1)
+    p.save()
+    # print(p.login)
+    return HttpResponse(json.dumps({"info": 1, "domain":" "}))
+
 
 def signin(request):
     username=request.POST.get("username")
@@ -63,7 +94,7 @@ def signin(request):
             else:
                 request.session.set_expiry(0)
             return HttpResponseRedirect(reverse('index'))
-    return HttpResponseRedirect(reverse('badlogin'))
+    return HttpResponseRedirect(reverse('error'))
 
 def logout(request):
     request.session.flush()

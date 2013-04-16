@@ -70,10 +70,16 @@
                                     if ($(this).hasClass('active')) $(this).find('span').html('&#x25B2;')
                                     else $(this).find('span').html('&#x25BC;')
                                 });
-                                {% if badlogin == 0 %}
+                                {% if type == 0 %}
                                     $('#login-trigger').click();
-                                    $('#errorOFlogin').html("проверьте данные");
+                                    $('#errorOFlogin').html("Проверьте данные");
                                 {% endif %}
+                                {% if type == 1 %}
+                                    $('#login-trigger').click();
+                                    $('#errorOFlogin').html("Введите данные");
+                                {% endif %}
+
+
                             </script>
                         </li>
                         <li class="last" id="registr"><a href="/registr">Регистрация</a></li>
@@ -84,7 +90,7 @@
                 <nav>
                     <ul>
                         <li class="first"><a href="/">На главную</a></li>
-                        <li><a href="/book">Добавить книгу</a></li>
+                        <li><a href="/bookadd">Добавить книгу</a></li>
                         <li>Запросы <span class="numMes">+2</span></li>
                         <li>Ответы <span class="numMes">+1</span></li>
                         <li class="last" id="adminLi"></span>Дополнительное &#x25BC;<span>
