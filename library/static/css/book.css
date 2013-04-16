@@ -44,6 +44,7 @@
     margin-top:2px;
     width:200px;
     font-size:11px;
+    float: left;
 }
 #bakeyw{
     float: left;
@@ -178,4 +179,16 @@
 .subtitle{
     font-size: 10px;
     color: #9b9b9b;
+}
+
+.goodField{
+    border: 1px solid #42c500 !important;
+}
+
+.tick{
+    text-align:center;
+    width: 16px;
+    height: 16px;
+    margin: 5px;
+    float: left;
 }

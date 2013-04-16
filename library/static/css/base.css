@@ -281,7 +281,7 @@ fieldset{
 /* END LOGIN FORM */
 #content {
     background: #FFF;
-    min-width: 1000px;
+    min-width: 1100px;
     width: 100%;
     margin-top: 20px;
 }
@@ -320,4 +320,11 @@ fieldset{
     width:100%;
     color: #646464;
     background-color: #f4f4f4;
+}
+
+.goodField{
+    border: 1px solid #42c500 !important;
+}
+.badField{
+    border: 1px solid #c54600 !important;
 }

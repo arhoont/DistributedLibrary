@@ -85,15 +85,15 @@ function castMainTable(objForm) {
         listed += '<div class="blockOzon blocks"><a href="'+objForm.books[i][1]+'">' + objForm.books[i][1] + '</a></div>';
         listed += '<div class="blockTitle blocks"><a href="/book?isbn='+isbn+'">' + objForm.books[i][2] + '</a></div>';
         listed += '<div class="blockLanguage blocks">' + objForm.books[i][3] + '</div>';
-        listed += '<div class="blockAuthor blocks">' + objForm.books[i][4] + '</div>';
+        listed += '<div class="blockAuthor blocks">' + objForm.books[i][4] + '&nbsp</div>';
         listed += '<div class="blockKeyWords blocks">' + objForm.books[i][5] + '</div>';
-
-        listed += '<div class="rating blockRating blocks">';
+        listed += '<div class="blockRating blocks">';
         var rating = objForm.books[i][6];
         for (var j = 0; j < objForm.books[i][6]; j++) {
             listed += '<span>&#9734;</span>';
         }
-        listed += '</div>'
+        listed += '&nbsp</div>'
+        listed += '<div class="blockCount blocks">' + objForm.books[i][7] + '&nbsp</div>';
         listed += '</div>';
         listed += '<div class="separator"></div>';
         $("#rows").append(listed);

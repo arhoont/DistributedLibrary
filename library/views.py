@@ -8,15 +8,20 @@ from django.template import Context
 from library.models import *
 from django.db import connection
 from datetime import timedelta
+from django.utils import timezone
 import json
 from library.models import Book
+from django.db import transaction
 
-
-def index(request):
+def isauth(request):
     context=Context()
     if request.session.get('person_id', False):
-            context['person_id']= request.session["person_id"]
-            context['person_login']= request.session["person_login"]
+        context['person_id']= request.session["person_id"]
+        context['person_login']= request.session["person_login"]
+    return context
+
+def index(request):
+    context = isauth(request)
     return render(request, 'library/index.html', context)
 
 def error(request):
@@ -25,11 +30,18 @@ def error(request):
     })
     return render(request, 'library/index.html', context)
 
+
 def bookadd(request):
-    context = Context({
-        'type': 0
-    })
-    return render(request, 'library/index.html', context)
+    context = isauth(request)
+    authors=Author.objects.all()
+    keywords=Keyword.objects.all()
+    languages=Language.objects.all()
+
+    context["authors"]=authors
+    context["keywords"]=keywords
+    context["languages"]=languages
+    print(context)
+    return render(request, 'library/bookadd.html', context)
 
 def login(request):
     context=Context()
@@ -73,6 +85,73 @@ def regajax(request):
     p.save()
     # print(p.login)
     return HttpResponse(json.dumps({"info": 1, "domain":" "}))
+
+def checkBook(request):
+    query=json.loads(str(request.body.decode()))
+    typeQ=query["type"]
+    isbn=query["isbn"]
+    title=query["title"]
+
+    if typeQ==1:
+        booklist=Book.objects.filter(isbn=isbn)
+    if typeQ==2:
+        booklist=Book.objects.filter(title__icontains=title)
+    if booklist:
+        return HttpResponse(json.dumps({"info": 1, "books":[b.getValues() for b in booklist]}))
+
+    return HttpResponse(json.dumps({"info": 2, "books":""}))
+
+def checkUser(request):
+    query=json.loads(str(request.body.decode()))
+    login=query["login"]
+    p=Person.objects.filter(domain=" ", login=login)
+
+    if p:
+        return HttpResponse(json.dumps({"info": 1}))
+    return HttpResponse(json.dumps({"info": 2}))
+
+@transaction.commit_on_success
+def addbajax(request):
+    query=json.loads(str(request.body.decode()))
+    isbn=query["isbn"]
+
+    book=Book.objects.filter(isbn=isbn)
+    if book: # book exists
+        return HttpResponse(json.dumps({"info": 2}))
+
+    link=query["link"]
+    title=query["title"]
+    lang=query["lang"]
+    desc=query["desc"]
+    val=query["val"]
+    authors=set(query["authors"])
+    keywords=set(query["keywords"])
+
+    l=Language(language="asda")
+    l.save()
+    person=Person.objects.get(pk=request.session["person_id"])
+    if not person: # not registr
+        return HttpResponse(json.dumps({"info": 4}))
+
+    language, created = Language.objects.get_or_create(language=lang)
+
+    book=Book(isbn=isbn,ozon=link,title=title,language=language,description=desc)
+    book.save()
+
+    for auth in authors:
+        author=auth.split(" ",1)
+        author, created = Author.objects.get_or_create(fname=author[0],lname=author[1])
+        book.authors.add(author)
+
+    for key in keywords:
+        keyw, created = Keyword.objects.get_or_create(word=key)
+        book.keywords.add(keyw)
+
+    bi=BookItem(isbn=book,owner=person,reader=person,value=val)
+    bi.save()
+    bi.itemstatus_set.create(status=1, date=timezone.now())
+
+    return HttpResponse(json.dumps({"info": 1, "isbn" : book.isbn}))
 
 
 def signin(request):

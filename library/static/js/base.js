@@ -1,7 +1,10 @@
-
-$(document).ready(function(){
+path = '/static/'
+function debug(smt){
+    console.log(smt);
+}
+$(document).ready(function () {
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
@@ -43,4 +46,16 @@ function sameOrigin(url) {
         (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
         // or any other URL that isn't scheme relative or absolute i.e relative.
         !(/^(\/\/|http:|https:).*/.test(url));
+}
+
+
+function markGood(span,field) {
+    $(span).html('<img src="' + path + 'img/tick.png"/>');
+    $(field).removeClass("badField");
+    $(field).addClass("goodField");
+}
+function markBad(span, field) {
+    $(span).html('<img src="' + path + 'img/close.png"/>');
+    $(field).removeClass("goodField");
+    $(field).addClass("badField");
 }

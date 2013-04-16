@@ -11,4 +11,7 @@ urlpatterns = patterns('',
     url(r'^bookadd/$', views.bookadd, name='bookadd'),
     (r'^getbooks', views.getbooks),
     (r'^regajax', views.regajax),
+    (r'^checkBook', views.checkBook),
+    (r'^checkUser', views.checkUser),
+    (r'^addbajax', views.addbajax),
 )

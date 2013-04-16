@@ -13,6 +13,7 @@
     margin-top: 2px;
     width: 200px;
     font-size: 11px;
+    float: left;
 }
 
 #div-regForm select {
@@ -25,9 +26,8 @@
 }
 
 #div-regForm label {
-    font-size: 14px;
+    font-size:15px;
     text-align: right;
-    color: #3b62b2;
 }
 
 #div-regForm table {
@@ -52,4 +52,12 @@
     width: 200px;
 
 }
+.tick{
+    text-align:center;
+    width: 16px;
+    height: 16px;
+    margin: 5px;
+    float: left;
+}
+
 /* END Form styles */

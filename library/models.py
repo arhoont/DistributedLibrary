@@ -72,7 +72,7 @@ class Book(models.Model):
         return self.opinion_set.aggregate(Avg('rating'))['rating__avg']
 
     def getValues(self):
-        return (self.isbn,self.ozon,self.title,self.language.language,self.getPrintAuthors(),self.getPrintKeywords(), self.getAvgRating())
+        return (self.isbn,self.ozon,self.title,self.language.language,self.getPrintAuthors(),self.getPrintKeywords(), self.getAvgRating(),self.bookitem_set.count())
 
 class BookItem(models.Model):
     isbn=models.ForeignKey(Book)

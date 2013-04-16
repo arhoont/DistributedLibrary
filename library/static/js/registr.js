@@ -4,10 +4,53 @@ function castPage() {
         e.preventDefault();
         register();
     });
+    $("#reg-logF").focusout(function () {
+        if ($("#reg-logF").val().length > 0) {
+            $.ajax({
+                type: "POST",
+                url: "/checkUser",
+                data: JSON.stringify({'type': 1, 'login': $("#reg-logF").val()}),
+                dataType: "json",
+                success: function (data) {
+                    if (parseInt(data.info) == 1) {
+                        markBad("#logspan","#reg-logF");
+                    }
+                    else {
+                        markGood("#logspan","#reg-logF");
+                    }
+                },
+                error: function () {
+                    $('#regError').html('проблемы соединения с сервером');
+                }
+            });
+        }
+    });
+    $("#reg-passRe").focusout(function () {
+        pwdTest();
+    });
+    $("#reg-pass").focusout(function () {
+        pwdTest();
+    });
 }
-
+function pwdTest() {
+    isconc = $('#reg-pass').val() == $('#reg-passRe').val();
+    if (!isconc) {
+        $("#passspn").html('<img src="' + path + 'img/close.png"/>');
+        $("reg-passRe").removeClass("goodField");
+    }
+    else {
+        $("#passspn").html('<img src="' + path + 'img/tick.png"/>');
+        $("#reg-passRe").addClass("goodField");
+    }
+    return isconc;
+}
 function register() {
-    if ($('#reg-pass').val() == $('#reg-passRe').val()) {
+
+    if (!pwdTest()) {
+        $('#regError').html('пароли не совпадают');
+    } else if ($("#reg-logF").hasClass("badField")) {
+        $('#regError').html('такой логин уже есть');
+    } else {
         $('#regError').html('');
         $.ajax({
             type: "POST",
@@ -28,12 +71,13 @@ function register() {
                 else if (parseInt(data.info) == 3) {
                     $('#regError').html('что-то не работает');
                 }
+                else if (parseInt(data.info) == 4) {
+                    $('#regError').html('войдите или зарегистрируетесь');
+                }
             },
             error: function () {
                 $('#regError').html('проблемы соединения с сервером');
             }
         });
-    } else {
-        $('#regError').html('пароли не совпадают');
     }
 }
