@@ -80,22 +80,22 @@ function castMainTable(objForm) {
     var k = objForm.books.length;
     for (i = 0; i < k; i++) {
         var isbn = objForm.books[i][0];
-        listed = '<div class="oneRow" id=' + isbn + '>';
-        listed += '<div class="blockIsbn blocks"><a href="/book?isbn='+isbn+'">' + objForm.books[i][0] + '</a></div>';
-        listed += '<div class="blockOzon blocks"><a href="'+objForm.books[i][1]+'">' + objForm.books[i][1] + '</a></div>';
-        listed += '<div class="blockTitle blocks"><a href="/book?isbn='+isbn+'">' + objForm.books[i][2] + '</a></div>';
-        listed += '<div class="blockLanguage blocks">' + objForm.books[i][3] + '</div>';
-        listed += '<div class="blockAuthor blocks">' + objForm.books[i][4] + '&nbsp</div>';
-        listed += '<div class="blockKeyWords blocks">' + objForm.books[i][5] + '</div>';
-        listed += '<div class="blockRating blocks">';
+        listed = '<tr class="oneRow" id=' + isbn + '>';
+        listed += '<td class="isbnColum"><a href="/book?isbn='+isbn+'">' + objForm.books[i][0] + '</a></td>';
+        listed += '<td class="ozonColum"><a href="'+objForm.books[i][1]+'">' + objForm.books[i][1] + '</a></td>';
+        listed += '<td class="titleColum"><a href="/book?isbn='+isbn+'">' + objForm.books[i][2] + '</a></td>';
+        listed += '<td class="langColum">' + objForm.books[i][3] + '</td>';
+        listed += '<td class="authColum">' + objForm.books[i][4] + '&nbsp</td>';
+        listed += '<td class="keyColum">' + objForm.books[i][5] + '</td>';
+        listed += '<td class="ratingColum">';
         var rating = objForm.books[i][6];
         for (var j = 0; j < objForm.books[i][6]; j++) {
             listed += '<span>&#9734;</span>';
         }
-        listed += '&nbsp</div>'
-        listed += '<div class="blockCount blocks">' + objForm.books[i][7] + '&nbsp</div>';
-        listed += '</div>';
-        listed += '<div class="separator"></div>';
+        listed += '&nbsp</td>'
+        listed += '<td class="countColum">' + objForm.books[i][7] + '&nbsp</td>';
+        listed += '</tr>';
+//        listed += '<div class="separator"></div>';
         $("#rows").append(listed);
     }
     $("#page").html(page.num.toString());

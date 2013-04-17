@@ -1,330 +1,44 @@
-* {
-    padding: 0;
-    margin: 0;
-}
-.flL {
-    float: left;
-}
-
-.flR {
-    float: right;
-}
-.isButton {
-    border: 1px solid #888888;
-    border-radius: 3px;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#fafafa), to(#d1d1d1));
-    background-image: -webkit-linear-gradient(top, #fafafa, #d1d1d1);
-    background-image: -moz-linear-gradient(top, #fafafa, #d1d1d1);
-    background-image: -ms-linear-gradient(top, #fafafa, #d1d1d1);
-    background-image: -o-linear-gradient(top, #fafafa, #d1d1d1);
-    background-image: linear-gradient(top, #fafafa, #d1d1d1);
-    /*color: #ffffff;*/
-    /*background: #9b9b9b;*/
-    color: #4a57c2;
-    /*background: #e7e7e7;*/
-    padding: 2px 6px;
-    font-weight: bold;
-    font-size: 12px;
-    font-family: sans-serif;
-    cursor: pointer;
-    text-align: center;
-
-}
-
-.isButton:hover {
-    background: #dfdfdf;
-}
-
-.isButton:active {
-    background: #f4f4f4;
-}
-
-#header{
-    height: 40px;
-    min-width: 1200px;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#fafafa), to(#ebebeb));
-    background-image: -webkit-linear-gradient(top, #fafafa, #ebebeb);
-    background-image: -moz-linear-gradient(top, #fafafa, #ebebeb);
-    background-image: -ms-linear-gradient(top, #fafafa, #ebebeb);
-    background-image: -o-linear-gradient(top, #fafafa, #ebebeb);
-    background-image: linear-gradient(top, #fafafa, #ebebeb);
-    line-height: 40px;
-}
-
-#logo {
-    font-family: sans-serif;
-    margin-left:  20px;
-
-    float: left;
-    font-size: 20px;
-}
-
-#logo a {
-    text-decoration: none;
-    color: #4a57c2;
-}
-
-#search {
-    float: left;
-    margin-left: 20px;
-    white-space: nowrap;
-}
-
-#searchInput{
-    border-radius: 5px;
-    height: 20px;
-    width: 250px;
-}
-#searchButton{
-    margin-left: 7px;
-}
-#sideBar {
-    font-family: sans-serif;
-    float: right;
-    font-size: 13px;
-}
-/* START NAV MENU */
-nav {
-    margin: 8px 8px 0 0;
-    float: left;
-}
-nav a{
-    text-decoration: none;
-    color: #4a57c2;
-}
-nav ul {
-    line-height: 24px;
-    color: #4a57c2;
-    list-style: none;
-
-}
-nav ul li{
-    font-weight: bold;
-    text-shadow: 0 1px 0 #fff;
-    border-left: 1px solid #fff;
-    border-right: 1px solid #ddd;
-    background: #eee;
-    float: left;
-    cursor: pointer;
-    white-space: nowrap;
-    padding-right: 8px;
-    padding-left: 8px;
-    width: 110px;
-    text-align: center;
+body{
     font-size: 12px;
 }
-nav ul .last{
-    border-right: 1px solid #fff;
-    border-radius: 0px 5px 5px 0;
-}
-nav ul .first{
-    border-radius: 5px 0 0 5px;
-}
-nav ul li ul {
-    margin-left: -9px;
-    display: none;
-}
-nav ul li ul li{
-    width: auto;
-    text-align: left;
-}
-
-nav li:hover {
-    background: #fff;
-}
-nav li:hover ul {
-    display: block;
-    position: absolute;
-}
-nav li:hover li {
-    border-top: 1px solid #fff;
-    float: none;
-}
-/* END NAV MENU */
-/* USE INFO */
-#logoutBut {
-    margin: 12px 10px 0 10px;
-    float: left;
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-#logoutBut:hover {
-
-}
-
-#nameSpan {
-    float: left;
-    font-weight: bold;
-}
-.numMes {
-    padding: 2px;
-    border-radius: 2px;
-    color: #000000;
-    background-color: #ffec00;
-}
-/* END USE INFO */
-/* LOGIN FORM */
-
-#inputs input {
-    background: #f1f1f1;
-    padding: 6px 5px;
-    margin: 0 0 5px 0;
-    width: 238px;
-    border: 1px solid #898989;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    -moz-box-shadow: 0 1px 1px #ccc inset;
-    -webkit-box-shadow: 0 1px 1px #ccc inset;
-    box-shadow: 0 1px 1px #ccc inset;
-}
-
-#inputs #domain{
-    width: 100px;
-}
-#errorOFlogin, #regError, #errBook {
-    color: #cb1500;
-    font-weight: bold;
-    font-size: 11px;
-}
-
-nav #login-trigger{
-    font-weight: bold;
-}
-
-nav #login-content {
-    display: none;
-    position: absolute;
-    top: 24px;
-    right: 0;
-    z-index: 999;
-    background: #fff;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
-    background-image: -webkit-linear-gradient(top, #fff, #eee);
-    background-image: -moz-linear-gradient(top, #fff, #eee);
-    background-image: -ms-linear-gradient(top, #fff, #eee);
-    background-image: -o-linear-gradient(top, #fff, #eee);
-    background-image: linear-gradient(top, #fff, #eee);
-    padding: 15px;
-    -moz-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, .9);
-    -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, .9);
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, .9);
-    -moz-border-radius: 3px 0 3px 3px;
-    -webkit-border-radius: 3px 0 3px 3px;
-    border-radius: 3px 0 3px 3px;
-    margin-top: 8px;
-}
-
-#login #actions {
-    margin: 10px 0 0 0;
-}
-
-#login #submit {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#d5d5d5), to(#bababa));
-    background-image: -webkit-linear-gradient(top, #d5d5d5, #bababa);
-    background-image: -moz-linear-gradient(top, #d5d5d5, #bababa);
-    background-image: -ms-linear-gradient(top, #d5d5d5, #bababa);
-    background-image: -o-linear-gradient(top, #d5d5d5, #bababa);
-    background-image: linear-gradient(top, #d5d5d5, #bababa);
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, .5);
-    -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-    -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-    border: 1px solid #898989;
-    float: left;
-    height: 30px;
-    padding: 0;
-    width: 100px;
-    cursor: pointer;
-    font: bold 14px Arial, Helvetica;
-    color: #fff;
-}
-
-#login #submit:hover,
-#login #submit:focus {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#bababa), to(#d5d5d5));
-    background-image: -webkit-linear-gradient(top, #bababa, #d5d5d5);
-    background-image: -moz-linear-gradient(top, #bababa, #d5d5d5);
-    background-image: -ms-linear-gradient(top, #bababa, #d5d5d5);
-    background-image: -o-linear-gradient(top, #bababa, #d5d5d5);
-    background-image: linear-gradient(top, #bababa, #d5d5d5);
-}
-
-#login #submit:active {
-    outline: none;
-    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
-    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
-}
-#login label {
-    float: right;
-    line-height: 30px;
-    color: #000000;
-}
-
-#login label input {
-    position: relative;
-    top: 2px;
-    right: 2px;
-}
-#login #submit::-moz-focus-inner {
-    border: none;
-}
-fieldset{
-    border: none;
-}
-/* END LOGIN FORM */
-#content {
-    background: #FFF;
-    min-width: 1100px;
-    width: 100%;
-    margin-top: 20px;
-}
-
-.separator {
-    background-color: #f4f4f4;
-    height: 2px;
-    margin: 0px 10px 0px 10px;
-
-}
-/* ==========*/
-
-#confirmDialogTake {
-    font-size: 13px;
-}
-
-
-.actNB {
-    background-color: #cdcdcd;
-    color: #4a57c2;
-}
-
-.nactNB {
-    color: #bababa;
-}
-/*=========================*/
-/*end of table*/
-.copyright{
+table{
     font-size: 12px;
-    width: 300px;
+}
+
+#content{
+    width: 1000px;
     margin: 0 auto;
 }
-#footer{
-    margin: 3px;
-    vertical-align: bottom;
-    width:100%;
-    color: #646464;
-    background-color: #f4f4f4;
+.isbnColum{
+    width: 100px;
 }
-
-.goodField{
-    border: 1px solid #42c500 !important;
+.ozonColum{
+    width: 100px;
 }
-.badField{
-    border: 1px solid #c54600 !important;
+.titleColum{
+    width: 100px;
+}
+.langColum{
+    width: 100px;
+}
+.authColum{
+    width: 100px;
+    max-width: 100px;
+}
+.keyColum{
+    width: 200px;
+}
+.ratingColum{
+    width: 100px;
+}
+.countColum{
+    width: 100px;
+}
+td {
+    display: block;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-wrap: normal;
 }
