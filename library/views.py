@@ -155,25 +155,27 @@ def addbajax(request):
 
 
 def signin(request):
-    username=request.POST.get("username")
-    password=request.POST.get("password")
-    domain=request.POST.get("domain")
-    remember=request.POST.get("remember")
-    django_timezone=request.POST.get("django_timezone")
-    p=Person.objects.filter(login=username, domain=domain)
+    query=json.loads(str(request.body.decode()))
+    login=query["login"]
+    pwd=query["pwd"]
+    domain=query["domain"]
+    remember=query["remember"]
+    django_timezone=query["django_timezone"]
+
+    p=Person.objects.filter(login=login, domain=domain)
     if p:
         salt=p[0].salt
-        passHash = strHash(strHash(password)+salt)
+        passHash = strHash(strHash(pwd)+salt)
         if passHash==p[0].pwd:
             request.session["person_id"]=p[0].id
             request.session["person_login"]=p[0].login
             request.session["django_timezone"]=django_timezone
-            if remember=="on":
+            if remember=="yes":
                 request.session.set_expiry(timedelta(days=30))
             else:
                 request.session.set_expiry(0)
-            return HttpResponseRedirect(reverse('index'))
-    return HttpResponseRedirect(reverse('error'))
+            return HttpResponse(json.dumps({"info": 1}))
+    return HttpResponse(json.dumps({"info": 2}))
 
 def logout(request):
     request.session.flush()

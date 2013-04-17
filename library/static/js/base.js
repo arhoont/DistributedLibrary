@@ -11,9 +11,8 @@ $(document).ready(function () {
         }
     });
     castPage();
-    $('.login-div').click(function(e) {
-        e.stopPropagation();
-    });
+    $('body').off('.data-api');
+
 });
 
 function getCookie(name) {
