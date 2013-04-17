@@ -1,12 +1,12 @@
+<!DOCTYPE HTML>
 {% load static %}
 {% csrf_token %}
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
 
     <script type="text/javascript" charset="utf-8" src="{% static "js/jquery-1.8.3.js" %}"></script>
-    <script type="text/javascript" charset="utf-8" src="{% static "js/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static "js/bootstrap.js" %}"></script>
 
     <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">
     <link rel="stylesheet" href="{% static "css/bootstrap-responsive.css" %}">
@@ -17,103 +17,157 @@
     <title>{% block title %}Распределенная библиотека{% endblock %}</title>
 </head>
 <body>
-<div id="header">
-    <div id="container-header">
-        <div id="logo">
-            <a href="/">DL</a>
-        </div>
-        <div id="search">
-            <input id="searchInput" class="" name="search"/>
-            <button id="searchButton" class="isButton" onclick="">Поиск</button>
-        </div>
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="/">Dl</a>
 
-        <div id="sideBar">
-            {% if person_id  == null %}
-                <nav>
-                    <ul>
-                        <li class="first" id="login"><a id="login-trigger">
-                            Войти <span>&#x25BC;</span></a>
+            <div class="nav-collapse collapse">
 
-                            <div id="login-content">
-                                <form action="{% url 'signin' %}" method="post">{% csrf_token %}
-                                    <fieldset id="inputs">
-                                        <p><input id="username" type="login" name="username" placeholder="Ваш логин"
-                                                  required></p>
-
-                                        <p><input id="password" type="password" name="password" placeholder="Пароль"
-                                                  required>
-                                        </p>
-
-                                        <p>
-                                            <span id="errorOFlogin"></span>
-                                            <select type="text" name="domain" id="domain" class="flR">
-                                                <option value=" " selected>standart</option>
-                                                <option value="domain1">domain1</option>
-                                                <option value="domain2">domain2</option>
-                                            </select>
-                                        </p>
-                                    </fieldset>
-                                    <fieldset id="actions"><input type="submit" id="submit" value="Войти">
-                                        <label><input type="checkbox" checked="checked" name="remember" id="checRem">
-                                            Запомнить меня</label>
-                                    </fieldset>
-                                    {# need to be installed#}
-                                    <input type="hidden" name="django_timezone" value="Europe/Moscow">
-
-                                </form>
-                            </div>
-                            <script>
-                                $('#login-trigger').click(function () {
-                                    $('#errorOFlogin').html('');
-                                    $(this).next('#login-content').slideToggle('fast');
-                                    $(this).toggleClass('active');
-
-                                    if ($(this).hasClass('active')) $(this).find('span').html('&#x25B2;')
-                                    else $(this).find('span').html('&#x25BC;')
-                                });
-                                {% if type == 0 %}
-                                    $('#login-trigger').click();
-                                    $('#errorOFlogin').html("Проверьте данные");
-                                {% endif %}
-                                {% if type == 1 %}
-                                    $('#login-trigger').click();
-                                    $('#errorOFlogin').html("Введите данные");
-                                {% endif %}
-
-
-                            </script>
-                        </li>
-                        <li class="last" id="registr"><a href="/registr">Регистрация</a></li>
-                    </ul>
-                </nav>
-
-            {% else %}
-                <nav>
-                    <ul>
-                        <li class="first"><a href="/">На главную</a></li>
-                        <li><a href="/bookadd">Добавить книгу</a></li>
-                        <li>Запросы <span class="numMes">+2</span></li>
-                        <li>Ответы <span class="numMes">+1</span></li>
-                        <li class="last" id="adminLi"></span>Дополнительное &#x25BC;<span>
-                    <ul>
-                        <li id="takeAll">Забрать все</li>
-                        <li>Настройки</li>
-                        <li><a href="/admin">Администрирование</a></li>
-                    </ul>
-                        </li>
-                    </ul>
-                </nav>
-                <span id="nameSpan">{{ person_login }}</span>
-                <a href="{% url 'logout' %}"><img id="logoutBut" src="{% static "img/logout.png" %}"/></a>
-            {% endif %}
+                <div class="form-search  navbar-search input-append input-prepend" id="search">
+                    <button class="btn disabled" type="button"><i class="icon-cog icon-white"></i></button>
+                    <input class="span3" id="searchInput" type="text" placeholder="Поиск"/>
+                    <button class="btn" type="button" id="searchButton"><i class="icon-search icon-white"></i></button>
+                </div>
+                <ul class="nav">
+                    <li>
+                    </li>
+                </ul>
+                <div class="navbar-search pull-right input-append ">
+                    <div class="btn-group">
+                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                            Войти
+                            <span class="caret"></span>
+                        </button>
+                        <div class="dropdown-menu login-div">
+                            <form class="form-horizontal">
+                                <div class="control-group">
+                                    <label class="control-label" for="inputEmail">Email</label>
+                                    <div class="controls">
+                                        <input type="text" id="inputEmail" placeholder="Email">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="inputPassword">Password</label>
+                                    <div class="controls">
+                                        <input type="password" id="inputPassword" placeholder="Password">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <label class="checkbox">
+                                            <input type="checkbox"> Remember me
+                                        </label>
+                                        <button type="submit" class="btn">Sign in</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <a href="/registr">
+                        <button class="btn">Регистрация</button>
+                    </a>
+                </div>
+            </div>
+            <!--/.nav-collapse -->
         </div>
     </div>
 </div>
+{#        <div id="search">#}
+{#            <input id="searchInput" class="" name="search"/>#}
+{#            <button id="searchButton" class="isButton" onclick="">Поиск</button>#}
+{#        </div>#}
 
-<div id="content">
+{#        <div id="sideBar">#}
+{#            {% if person_id  == null %}#}
+{#                <nav>#}
+{#                    <ul>#}
+{#                        <li class="first" id="login"><a id="login-trigger">#}
+{#                            Войти <span>&#x25BC;</span></a>#}
+{##}
+{#                            <div id="login-content">#}
+{#                                <form action="{% url 'signin' %}" method="post">{% csrf_token %}#}
+{#                                    <fieldset id="inputs">#}
+{#                                        <p><input id="username" type="login" name="username" placeholder="Ваш логин"#}
+{#                                                  required></p>#}
+{##}
+{#                                        <p><input id="password" type="password" name="password" placeholder="Пароль"#}
+{#                                                  required>#}
+{#                                        </p>#}
+{##}
+{#                                        <p>#}
+{#                                            <span id="errorOFlogin"></span>#}
+{#                                            <select type="text" name="domain" id="domain" class="flR">#}
+{#                                                <option value=" " selected>standart</option>#}
+{#                                                <option value="domain1">domain1</option>#}
+{#                                                <option value="domain2">domain2</option>#}
+{#                                            </select>#}
+{#                                        </p>#}
+{#                                    </fieldset>#}
+{#                                    <fieldset id="actions"><input type="submit" id="submit" value="Войти">#}
+{#                                        <label><input type="checkbox" checked="checked" name="remember" id="checRem">#}
+{#                                            Запомнить меня</label>#}
+{#                                    </fieldset>#}
+{# need to be installed#}
+{#                                    <input type="hidden" name="django_timezone" value="Europe/Moscow">#}
+{##}
+{#                                </form>#}
+{#                            </div>#}
+{#                            <script>#}
+{#                                $('#login-trigger').click(function () {#}
+{#                                    $('#errorOFlogin').html('');#}
+{#                                    $(this).next('#login-content').slideToggle('fast');#}
+{#                                    $(this).toggleClass('active');#}
+{##}
+{#                                    if ($(this).hasClass('active')) $(this).find('span').html('&#x25B2;')#}
+{#                                    else $(this).find('span').html('&#x25BC;')#}
+{#                                });#}
+{#                                {% if type == 0 %}#}
+{#                                    $('#login-trigger').click();#}
+{#                                    $('#errorOFlogin').html("Проверьте данные");#}
+{#                                {% endif %}#}
+{#                                {% if type == 1 %}#}
+{#                                    $('#login-trigger').click();#}
+{#                                    $('#errorOFlogin').html("Введите данные");#}
+{#                                {% endif %}#}
+{##}
+{##}
+{#                            </script>#}
+{#                        </li>#}
+{#                        <li class="last" id="registr"><a href="/registr">Регистрация</a></li>#}
+{#                    </ul>#}
+{#                </nav>#}
+{##}
+{#            {% else %}#}
+{#                <nav>#}
+{#                    <ul>#}
+{#                        <li class="first"><a href="/">На главную</a></li>#}
+{#                        <li><a href="/bookadd">Добавить книгу</a></li>#}
+{#                        <li>Запросы <span class="numMes">+2</span></li>#}
+{#                        <li>Ответы <span class="numMes">+1</span></li>#}
+{#                        <li class="last" id="adminLi"></span>Дополнительное &#x25BC;<span>#}
+{#                    <ul>#}
+{#                        <li id="takeAll">Забрать все</li>#}
+{#                        <li>Настройки</li>#}
+{#                        <li><a href="/admin">Администрирование</a></li>#}
+{#                    </ul>#}
+{#                        </li>#}
+{#                    </ul>#}
+{#                </nav>#}
+{#                <span id="nameSpan">{{ person_login }}</span>#}
+{#                <a href="{% url 'logout' %}"><img id="logoutBut" src="{% static "img/logout.png" %}"/></a>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </div>#}
+
+<div class="container" id="content">
     {% block content %}{% endblock %}
 </div>
-
 <br>
 
 <div id="footer">

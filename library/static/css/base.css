@@ -1,13 +1,24 @@
 body{
-    font-size: 12px;
+    padding-top: 60px;
+    padding-bottom: 40px;
+    /*font-size: 12px;*/
 }
 table{
-    font-size: 12px;
+    /*font-size: 12px;*/
+}
+#content{
+    width: 1170px;
+    margin: 0 auto;
 }
 .separator {
     background-color: #e5e5e5;
     border-bottom: 1px solid #ffffff;
     height: 1px;
     margin: 0 10px 0 10px;
-
 }
+#login-container{
+    margin: 10px;
+}
+/*.login-div{*/
+    /*width: 400px;*/
+/*}*/

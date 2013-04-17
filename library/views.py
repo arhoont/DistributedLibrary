@@ -209,8 +209,11 @@ def getbooks(request):
         cursor = connection.cursor()
         cursor.execute(queryStr)
         count=cursor.rowcount
-        cursor.scroll(start)
-        bookslist = cursor.fetchmany(pageS)
+        if count>0:
+            cursor.scroll(start)
+            bookslist = cursor.fetchmany(pageS)
+        else:
+            bookslist=[]
 
     return HttpResponse(json.dumps({"info": "yes","count":count, "books":bookslist}))
 
