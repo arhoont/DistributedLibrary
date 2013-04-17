@@ -4,41 +4,10 @@ body{
 table{
     font-size: 12px;
 }
+.separator {
+    background-color: #e5e5e5;
+    border-bottom: 1px solid #ffffff;
+    height: 1px;
+    margin: 0 10px 0 10px;
 
-#content{
-    width: 1000px;
-    margin: 0 auto;
-}
-.isbnColum{
-    width: 100px;
-}
-.ozonColum{
-    width: 100px;
-}
-.titleColum{
-    width: 100px;
-}
-.langColum{
-    width: 100px;
-}
-.authColum{
-    width: 100px;
-    max-width: 100px;
-}
-.keyColum{
-    width: 200px;
-}
-.ratingColum{
-    width: 100px;
-}
-.countColum{
-    width: 100px;
-}
-td {
-    display: block;
-    text-align: left;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    word-wrap: normal;
 }

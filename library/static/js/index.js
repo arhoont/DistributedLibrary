@@ -13,14 +13,14 @@ var sort ={
 };
 function castPage(){
     tableReq();
-    $("#prevBut").click(function () {
-        if ((page.num > 1) && ($("#prevBut").hasClass('actNB'))) {
+    $("#prevButP").click(function (e) {
+        if ((page.num > 1) && (!$("#prevBut").hasClass('disabled'))) {
             page.num--;
             tableReq();
         }
     });
-    $("#nextBut").click(function () {
-        if ($("#nextBut").hasClass('actNB')) {
+    $("#nextButA").click(function (e) {
+        if (!$("#nextBut").hasClass('disabled')) {
             page.num++;
             tableReq();
         }
@@ -46,6 +46,10 @@ function castPage(){
     var d = new Date()
     var n = d.getTimezoneOffset();
     console.log(n);
+    $('#tabletabs a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    })
 }
 
 function changeSort(field){
@@ -98,19 +102,22 @@ function castMainTable(objForm) {
 //        listed += '<div class="separator"></div>';
         $("#rows").append(listed);
     }
+
+
     $("#page").html(page.num.toString());
     if (objForm.count<=page.num*page.size) {
-        $("#nextBut").removeClass("actNB");
-        $("#nextBut").addClass("nactNB");
+//        $("#nextBut").removeClass("actNB");
+        $("#nextBut").addClass("disabled");
     } else {
-        $("#nextBut").removeClass("nactNB");
-        $("#nextBut").addClass("actNB");
+        $("#nextBut").removeClass("disabled");
+//        $("#nextBut").addClass("actNB");
     }
     if (page.num == 1) {
-        $("#prevBut").removeClass("actNB");
-        $("#prevBut").addClass("nactNB");
+        $("#prevBut").addClass("disabled");
+//        $("#prevBut").addClass("disabled");
     } else {
-        $("#prevBut").removeClass("nactNB");
-        $("#prevBut").addClass("actNB");
+        $("#prevBut").removeClass("disabled");
+//        $("#prevBut").addClass("actNB");
     }
+
 }

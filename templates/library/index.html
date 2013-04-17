@@ -9,15 +9,17 @@
 {% endblock %}
 
 {% block content %}
-
+    <ul class="nav nav-tabs" id="tabletabs">
+        <li class="active"><a href="#">Все</a></li>
+        <li><a href="#">Читаемые</a></li>
+        <li><a href="#">Мои</a></li>
+    </ul>
     <table class="table table-striped table-condensed" id="mtable">
         {#        <div id="tabs">#}
         {#            <div class="tab tabActive">Все</div>#}
         {#            <div class="tab">Читаемые</div>#}
         {#            <div class="tab">Мои</div>#}
         {#        </div>#}
-
-        {#        <div class="separator"></div>#}
         <thead>
         <tr class="headRow">
             <th class="blockIsbn blockHeads isbnColum" onclick="changeSort('isbn')" >ISBN <span>&#x25BC;</span></th>
@@ -34,13 +36,14 @@
         <tbody id="rows">
 
         </tbody>
-        {#        <div id="fmtable">#}
-        {#            <div id="navig">#}
-        {#                <button id="prevBut" class="navBut isButton">Назад</button>#}
-        {#                <div id="page" class="">1</div>#}
-        {#                <button id="nextBut" class="navBut isButton">Вперед</button>#}
-        {#            </div>#}
-        {#        </div>#}
     </table>
+    <div class="separator"></div>
+    <div class="pagination pagination-centered" id="fmtable">
+        <ul>
+            <li id="prevBut"><a href="#" id="prevButP">&laquo;</a></li>
+            <li><a id="page">1</a></li>
+            <li id="nextBut"><a href="#" id="nextButA">&raquo;</a></li>
+        </ul>
+    </div>
 
 {% endblock %}
