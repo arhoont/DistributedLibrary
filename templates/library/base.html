@@ -28,8 +28,9 @@
 
                 <div class="nav-collapse collapse">
                     <div class="form-search  navbar-search input-append input-prepend" id="search">
-                        <button class="btn disabled" type="button"><i class="icon-cog icon-white"></i></button>
+                        <button id="search-setting" class="btn disabled" type="button"><i class="icon-cog icon-white"></i></button>
                         <input class="span3" id="searchInput" type="text" placeholder="Поиск"/>
+                        <button onclick="clearSearch()" type="button" class="close" id="clear-icon">&times;</button>
                         <button class="btn" type="button" id="searchButton"><i class="icon-search icon-white"></i>
                         </button>
                     </div>

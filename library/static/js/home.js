@@ -40,6 +40,7 @@ function castPage(){
     });
     $('#searchInput').keydown(function (event) {
         if (event.keyCode == 13) {
+            $('#searchInput').blur();
             $('#searchButton').click();
         }
     });
@@ -50,6 +51,13 @@ function castPage(){
         e.preventDefault();
         $(this).tab('show');
     })
+
+}
+
+function clearSearch(){
+    $('#searchInput').val("");
+    $('#searchButton').click();
+
 }
 
 function changeSort(field){

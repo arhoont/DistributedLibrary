@@ -3,7 +3,7 @@ function castPage(){
         url: "/getlastbooks",
         type: "post",
         dataType: "json",
-        data: JSON.stringify({"count":7}),
+        data: JSON.stringify({"count":6}),
         success: function (data) {
             castMainTable(data);
         },

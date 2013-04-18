@@ -13,12 +13,14 @@ import json
 from library.models import Book
 from django.db import transaction
 
+
 def isauth(request):
-    context=Context()
+    context = Context()
     if request.session.get('person_id', False):
-        context['person_id']= request.session["person_id"]
-        context['person_login']= request.session["person_login"]
+        context['person_id'] = request.session["person_id"]
+        context['person_login'] = request.session["person_login"]
     return context
+
 
 def index(request):
     context = isauth(request)
@@ -27,6 +29,7 @@ def index(request):
         return render(request, 'library/home.html', context)
     else:
         return render(request, 'library/index.html', context)
+
 
 def error(request):
     context = Context({
@@ -37,27 +40,26 @@ def error(request):
 
 def bookadd(request):
     context = isauth(request)
-    authors=Author.objects.all()
-    keywords=Keyword.objects.all()
-    languages=Language.objects.all()
+    authors = Author.objects.all()
+    keywords = Keyword.objects.all()
+    languages = Language.objects.all()
 
-    context["authors"]=authors
-    context["keywords"]=keywords
-    context["languages"]=languages
+    context["authors"] = authors
+    context["keywords"] = keywords
+    context["languages"] = languages
     return render(request, 'library/bookadd.html', context)
 
+
 def login(request):
-    context=Context()
-    if request.session.get('person_id', False):
-        context['person_id']= request.session["person_id"]
-        context['person_login']= request.session["person_login"]
-    else:
-        context['type']= 1
-    return render(request, 'library/home.html', context)
+    context = Context()
+    context["registred"] = "yes"
+    return render(request, 'library/index.html', context)
+
 
 def registr(request):
     context = Context()
     return render(request, 'library/registr.html', context)
+
 
 def randstring(n):
     a = string.ascii_letters + string.digits
@@ -69,168 +71,179 @@ def strHash(string):
     hash.update(string.encode())
     return hash.hexdigest()
 
-def regajax(request):
-    query=json.loads(str(request.body.decode()))
-    log=query["login"]
-    email=query["email"]
-    fname=query["fname"]
-    lname=query["lname"]
-    pwd=query["pwd"]
 
-    p=Person.objects.filter(login=log, domain=" ")
+def regajax(request):
+    query = json.loads(str(request.body.decode()))
+    log = query["login"]
+    email = query["email"]
+    fname = query["fname"]
+    lname = query["lname"]
+    pwd = query["pwd"]
+
+    p = Person.objects.filter(login=log, domain=" ")
     if p:
         return HttpResponse(json.dumps({"info": 2}))
 
-    salt=randstring(10)
-    pwd_hash=strHash(strHash(pwd)+salt)
-    d=Domain.objects.get(pk=" ")
-    p=Person(domain=d, login=log, email=email,fname=fname,lname=lname,pwd=pwd_hash, salt=salt, adm=0, status=1)
+    salt = randstring(10)
+    pwd_hash = strHash(strHash(pwd) + salt)
+    d = Domain.objects.get(pk=" ")
+    p = Person(domain=d, login=log, email=email, fname=fname, lname=lname, pwd=pwd_hash, salt=salt, adm=0, status=1)
     p.save()
     # print(p.login)
-    return HttpResponse(json.dumps({"info": 1, "domain":" "}))
+    return HttpResponse(json.dumps({"info": 1, "domain": " "}))
+
 
 def checkBook(request):
-    query=json.loads(str(request.body.decode()))
-    typeQ=query["type"]
-    isbn=query["isbn"]
-    title=query["title"]
+    query = json.loads(str(request.body.decode()))
+    typeQ = query["type"]
+    isbn = query["isbn"]
+    title = query["title"]
 
-    if typeQ==1:
-        booklist=Book.objects.filter(isbn=isbn)
-    if typeQ==2:
-        booklist=Book.objects.filter(title__icontains=title)
+    if typeQ == 1:
+        booklist = Book.objects.filter(isbn=isbn)
+    if typeQ == 2:
+        booklist = Book.objects.filter(title__icontains=title)
     if booklist:
-        return HttpResponse(json.dumps({"info": 1, "books":[b.getValues() for b in booklist]}))
+        return HttpResponse(json.dumps({"info": 1, "books": [b.getValues() for b in booklist]}))
 
-    return HttpResponse(json.dumps({"info": 2, "books":""}))
+    return HttpResponse(json.dumps({"info": 2, "books": ""}))
+
 
 def checkUser(request):
-    query=json.loads(str(request.body.decode()))
-    login=query["login"]
-    p=Person.objects.filter(domain=" ", login=login)
+    query = json.loads(str(request.body.decode()))
+    login = query["login"]
+    p = Person.objects.filter(domain=" ", login=login)
 
     if p:
         return HttpResponse(json.dumps({"info": 1}))
     return HttpResponse(json.dumps({"info": 2}))
 
+
 @transaction.commit_on_success
 def addbajax(request):
-    query=json.loads(str(request.body.decode()))
-    isbn=query["isbn"]
+    query = json.loads(str(request.body.decode()))
+    isbn = query["isbn"]
 
-    book=Book.objects.filter(isbn=isbn)
+    book = Book.objects.filter(isbn=isbn)
     if book: # book exists
         return HttpResponse(json.dumps({"info": 2}))
 
-    link=query["link"]
-    title=query["title"]
-    lang=query["lang"]
-    desc=query["desc"]
-    val=query["val"]
-    authors=set(query["authors"])
-    keywords=set(query["keywords"])
+    link = query["link"]
+    title = query["title"]
+    lang = query["lang"]
+    desc = query["desc"]
+    val = query["val"]
+    authors = set(query["authors"])
+    keywords = set(query["keywords"])
 
-    l=Language(language="asda")
+    l = Language(language="asda")
     l.save()
-    person=Person.objects.get(pk=request.session["person_id"])
+    person = Person.objects.get(pk=request.session["person_id"])
     if not person: # not registr
         return HttpResponse(json.dumps({"info": 4}))
 
     language, created = Language.objects.get_or_create(language=lang)
 
-    book=Book(isbn=isbn,ozon=link,title=title,language=language,description=desc)
+    book = Book(isbn=isbn, ozon=link, title=title, language=language, description=desc)
     book.save()
 
     for auth in authors:
-        author=auth.split(" ",1)
-        author, created = Author.objects.get_or_create(fname=author[0],lname=author[1])
+        author = auth.split(" ", 1)
+        author, created = Author.objects.get_or_create(fname=author[0], lname=author[1])
         book.authors.add(author)
 
     for key in keywords:
         keyw, created = Keyword.objects.get_or_create(word=key)
         book.keywords.add(keyw)
 
-    bi=BookItem(isbn=book,owner=person,reader=person,value=val)
+    bi = BookItem(isbn=book, owner=person, reader=person, value=val)
     bi.save()
     bi.itemstatus_set.create(status=1, date=timezone.now())
 
-    return HttpResponse(json.dumps({"info": 1, "isbn" : book.isbn}))
+    return HttpResponse(json.dumps({"info": 1, "isbn": book.isbn}))
 
 
 def signin(request):
-    username=request.POST.get("username")
-    password=request.POST.get("password")
-    domain=request.POST.get("domain")
-    remember=request.POST.get("remember")
-    django_timezone=request.POST.get("django_timezone")
-    p=Person.objects.filter(login=username, domain=domain)
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    domain = request.POST.get("domain")
+    remember = request.POST.get("remember")
+    django_timezone = request.POST.get("django_timezone")
+    p = Person.objects.filter(login=username, domain=domain)
     if p:
-        salt=p[0].salt
-        passHash = strHash(strHash(password)+salt)
-        if passHash==p[0].pwd:
-            request.session["person_id"]=p[0].id
-            request.session["person_login"]=p[0].login
-            request.session["django_timezone"]=django_timezone
-            if remember=="on":
+        salt = p[0].salt
+        passHash = strHash(strHash(password) + salt)
+        if passHash == p[0].pwd:
+            request.session["person_id"] = p[0].id
+            request.session["person_login"] = p[0].login
+            request.session["django_timezone"] = django_timezone
+            if remember == "on":
                 request.session.set_expiry(timedelta(days=30))
             else:
                 request.session.set_expiry(0)
             return HttpResponseRedirect(reverse('index'))
     return HttpResponseRedirect(reverse('error'))
 
+
 def error(request):
-    context=Context()
-    context["form_error"]= "yes"
+    context = Context()
+    context["form_error"] = "yes"
     return render(request, 'library/index.html', context)
+
 
 def logout(request):
     request.session.flush()
     return HttpResponseRedirect(reverse('index'))
 
+
 def getbooks(request):
-    query=json.loads(str(request.body.decode()))
-    pageS=int(query["page"]["size"])
-    pageN=int(query["page"]["num"])
-    start=(pageN-1)*pageS
+    query = json.loads(str(request.body.decode()))
+    pageS = int(query["page"]["size"])
+    pageN = int(query["page"]["num"])
+    start = (pageN - 1) * pageS
 
-    if query["search"]["type"]==0 and \
-            (query["sort"]["field"]=="isbn" or query["sort"]["field"]=="title" or query["sort"]["field"]=="ozon"):
-        if query["sort"]["type"]==0:
-            bookslist=[b.getValues() for b in Book.objects.all().order_by(query["sort"]["field"])[start:start+pageS]]
+    if query["search"]["type"] == 0 and \
+            (query["sort"]["field"] == "isbn" or query["sort"]["field"] == "title" or query["sort"]["field"] == "ozon"):
+        if query["sort"]["type"] == 0:
+            bookslist = [b.getValues() for b in
+                         Book.objects.all().order_by(query["sort"]["field"])[start:start + pageS]]
         else:
-            bookslist=[b.getValues() for b in Book.objects.all().order_by("-"+query["sort"]["field"])[start:start+pageS]]
-        count=Book.objects.count()
+            bookslist = [b.getValues() for b in
+                         Book.objects.all().order_by("-" + query["sort"]["field"])[start:start + pageS]]
+        count = Book.objects.count()
     else:
-        queryStr="select * from allbooks"
+        queryStr = "select * from allbooks"
 
-        if query["search"]["type"]==1:
-            searchW=query["search"]["word"]
+        if query["search"]["type"] == 1:
+            searchW = query["search"]["word"]
             queryStr += " where isbn like upper('%%" + searchW + \
                         "%%') or upper(ozon) like upper('%%" + searchW + \
                         "%%') or upper(title) like upper('%%" + searchW + \
-                        "%%') or upper(language) like upper('%%" + searchW+\
-                        "%%') or upper(authors) like upper('%%" + searchW+ \
-                        "%%') or upper(keywords) like upper('%%" + searchW+"%%')"
-        queryStr += " order by "+query["sort"]["field"]
-        if query["sort"]["type"]==1:
-            queryStr +=" desc"
+                        "%%') or upper(language) like upper('%%" + searchW + \
+                        "%%') or upper(authors) like upper('%%" + searchW + \
+                        "%%') or upper(keywords) like upper('%%" + searchW + "%%')"
+        queryStr += " order by " + query["sort"]["field"]
+        if query["sort"]["type"] == 1:
+            queryStr += " desc"
         cursor = connection.cursor()
         cursor.execute(queryStr)
-        count=cursor.rowcount
-        if count>0:
+        count = cursor.rowcount
+        if count > 0:
             cursor.scroll(start)
             bookslist = cursor.fetchmany(pageS)
         else:
-            bookslist=[]
+            bookslist = []
 
-    return HttpResponse(json.dumps({"info": "yes","count":count, "books":bookslist}))
+    return HttpResponse(json.dumps({"info": "yes", "count": count, "books": bookslist}))
+
 
 def getlastbooks(request):
-    query=json.loads(str(request.body.decode()))
-    count=int(query["count"])
-    bookslist=[[b.isbn, b.title, b.getPrintAuthors(), b.language.language] for b in Book.objects.all().order_by("isbn")[:count]]
+    query = json.loads(str(request.body.decode()))
+    count = int(query["count"])
+    bookslist = [[b.isbn, b.title, b.getPrintAuthors(), b.language.language] for b in
+                 Book.objects.all().order_by("isbn")[:count]]
 
-    return HttpResponse(json.dumps({"books":bookslist}))
+    return HttpResponse(json.dumps({"books": bookslist}))
 
 
 def castbooks(request):

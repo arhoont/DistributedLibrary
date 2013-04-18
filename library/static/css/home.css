@@ -1,30 +1,37 @@
 .isbnColum{
     width: 130px;
     max-width: 130px;
+    mib-width: 130px;
 }
 .titleColum{
-    width: 290px;
-    max-width: 290px;
+    width: 310px;
+    max-width: 310px;
+    min-width: 310px;
 }
 .langColum{
     width: 100px;
     max-width: 100px;
+    min-width: 100px;
 }
 .authColum{
-    width: 300px;
-    max-width: 200px;
+    width: 280px;
+    max-width: 280px;
+    min-width: 280px;
 }
 .keyColum{
     width: 150px;
     max-width: 150px;
+    min-width: 150px;
 }
 .ratingColum{
     width: 80px;
     max-width: 80px;
+    min-width: 80px;
 }
 .countColum{
     width: 80px;
     max-width: 80px;
+    min-width: 80px;
     text-align: center !important;
 }
 #mtable td {
@@ -33,9 +40,9 @@
     text-overflow: ellipsis;
     word-wrap: normal;
 }
-#mtable th :hover{
+#mtable th:hover{
     cursor: pointer;
-    background: #f7f7f7;
+    background-color: #f7f7f7;
 
 }
 #blockHeads{
@@ -48,5 +55,5 @@
     margin-top: 5px;
 }
 #tabletabs{
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }

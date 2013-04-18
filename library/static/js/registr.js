@@ -1,6 +1,6 @@
 function castPage() {
 
-    $('#regForm').submit(function (e) {
+    $('#reg-form').submit(function (e) {
         e.preventDefault();
         register();
     });
@@ -21,30 +21,32 @@ function castPage() {
                 },
                 error: function () {
                     $('#regError').html('проблемы соединения с сервером');
-                }
+                },
+                crossDomain: false
             });
         }
     });
-    $("#reg-passRe").focusout(function () {
-        pwdTest();
-    });
-    $("#reg-pass").focusout(function () {
+    $("#reg-pwdd").focusout(function () {
         pwdTest();
     });
 }
 function pwdTest() {
     isconc = $('#reg-pwd').val() == $('#reg-pwdd').val();
+    if (isconc){
+        markGood("#reg-pwdd-cg","");
+    } else {
+        markBad("#reg-pwdd-cg","Должны совпадать");
 
+    }
     return isconc;
 }
 function register() {
-
     if (!pwdTest()) {
         $('#regError').html('пароли не совпадают');
     } else if ($("#reg-logF").hasClass("badField")) {
         $('#regError').html('такой логин уже есть');
     } else {
-        $('#regError').html('');
+//        $('#reg-form').html('');
         $.ajax({
             type: "POST",
             url: "/regajax",
@@ -53,7 +55,6 @@ function register() {
                 'pwd': $('#reg-pwd').val()}),
             dataType: "json",
             success: function (data) {
-                console.log(data);
                 if (parseInt(data.info) == 1) {
                     window.location = "/login";
                 }

@@ -10,9 +10,9 @@ $(document).ready(function () {
             }
         }
     });
-    castPage();
     $('body').off('.data-api');
 
+    castPage();
 });
 
 function getCookie(name) {
@@ -51,12 +51,12 @@ function sameOrigin(url) {
 
 
 function markGood(cg, text) {
-    $(cd).removeClass("error");
-    $(cd).addClass("success");
-    $(cd+" .help-inline").html(text);
+    $(cg).removeClass("error");
+    $(cg).addClass("success");
+    $(cg+" .help-inline").html(text);
 }
 function markBad(cg, text) {
-    $(cd).removeClass("success");
-    $(cd).addClass("error");
-    $(cd+" .help-inline").html(text);
+    $(cg).removeClass("success");
+    $(cg).addClass("error");
+    $(cg+" .help-inline").html(text);
 }

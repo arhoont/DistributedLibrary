@@ -12,7 +12,14 @@
     {% if form_error  == "yes" %}
         <div class="alert alert-block alert-error">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h5>Неправильные имя пользователя или пароль</h5>
+            <h5>Неправильные имя пользователя или пароль.</h5>
+        </div>
+    {% endif %}
+    {% if registred  == "yes" %}
+        <div class="alert alert-block alert-success">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h3>Благодарим за регистрацию!</h3>
+            Пожалуйста войдите в систему, использую данные, указанные при регистрации.
         </div>
     {% endif %}
     <script>
@@ -49,11 +56,9 @@
                 </tbody>
             </table>
             </p>
-{#            <p><a class="btn" href="#">View details &raquo;</a></p>#}
         </div>
 
         <p>
-
         <div style="display: inline-block;" class="pull-right">
             <div class="" id="login-div">
                 <div class="form-header"><h3>Вход</h3></div>
@@ -97,23 +102,6 @@
         </div>
         </p>
     </div>
-    {#    {% if form_error  == "yes" %}#}
-    {#        <script>#}
-    {##}
-    {#            $("#login").focus(function () {#}
-    {#                $("#loginfset").removeClass("error");#}
-    {#                $("#signin-error").html('')#}
-    {#            });#}
-    {#            $("#password").focus(function () {#}
-    {#                $("#loginfset").removeClass("error");#}
-    {#                $("#signin-error").html('')#}
-    {#            });#}
-    {##}
-    {#            $(".f-log-set").addClass("error");#}
-    {#        </script>#}
-
-
-
 {% endblock %}
 
 
