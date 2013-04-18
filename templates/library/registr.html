@@ -9,79 +9,48 @@
 {% endblock %}
 
 {% block content %}
-    <div id="div-regForm" title="Регистрация" class="dialogForm form-title">
-        <div class="form-sub-title">Все поля являеются обязательными</div>
-        <form id="regForm" action="" method="post">
-            <table>
-                <tbody>
-                <tr>
-                    <td><label for="reg-fname">Логин:</label></td>
-                    <td>
-                        <div class="input-container">
-                            <input name="reg-logF" id="reg-logF" type="text" required>
-                            <div id='logspan' class="tick"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label for="reg-email">Email:</label></td>
-                    <td>
-                        <div class="input-container">
-                            <input name="reg-email" id="reg-email" type="text" required>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label for="reg-fname">Имя:</label></td>
-                    <td>
-                        <div class="input-container">
-                            <input name="reg-fname" id="reg-fname" type="text" required>
-
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label for="reg-lname">Фамилия:</label></td>
-
-                    <td>
-                        <div class="input-container">
-                            <input name="reg-lname" id="reg-lname" type="text" required>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td><label for="reg-pass">Пароль:</label></td>
-                    <td>
-                        <div class="input-container">
-                            <input name="reg-pass" id="reg-pass" type="password" required>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label for="reg-passRe">Еще раз:</label></td>
-                    <td>
-                        <div class="input-container">
-                            <input name="reg-passRe" id="reg-passRe" type="password" required>
-                            <div id='passspn' class="tick"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td><input type="submit" class="isButton greenButton" value="Зарегистрироваться"/></td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                        <div id='regError'></div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </form>
-        <div id="error">
-            &nbsp;
+    <form class="form-horizontal" action="" method="post" id="reg-form">
+        <div class="control-group" id="reg-login-cg">
+            <label class="control-label" for="reg-login">Логин</label>
+            <div class="controls">
+                <input type="text" id="reg-login" name="reg-login" placeholder="Логин">
+                <span class="help-inline"></span>
+            </div>
         </div>
-    </div>
+        <div class="control-group">
+            <label class="control-label" for="reg-email">Email</label>
+            <div class="controls">
+                <input type="text" id="reg-email" name="reg-email" placeholder="Email">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="reg-fname">Имя</label>
+            <div class="controls">
+                <input type="text" id="reg-fname" name="reg-fname" placeholder="Имя">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="reg-lname">Фамилия</label>
+            <div class="controls">
+                <input type="text" id="reg-lname" name="reg-lname" placeholder="Фамилия">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="reg-pwd">Пароль</label>
+            <div class="controls">
+                <input type="password" id="reg-pwd" name="reg-pwd" placeholder="Пароль">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for=reg-pwdd>Еще раз</label>
+            <div class="controls">
+                <input type="password" id="reg-pwdd" name="reg-pwdd" placeholder="Еще раз">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            </div>
+        </div>
+    </form>
 {% endblock %}

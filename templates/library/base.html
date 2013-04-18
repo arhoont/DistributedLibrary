@@ -17,32 +17,22 @@
     <title>{% block title %}Распределенная библиотека{% endblock %}</title>
 </head>
 <body>
+
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="brand" href="/">Dl</a>
+        <span id="brand-span">
+            <a class="brand" href="/">Библиотека</a>
+        </span>
+            {% if person_id %}
 
-            <div class="nav-collapse collapse">
-                <div class="form-search  navbar-search input-append input-prepend" id="search">
-                    <button class="btn disabled" type="button"><i class="icon-cog icon-white"></i></button>
-                    <input class="span3" id="searchInput" type="text" placeholder="Поиск"/>
-                    <button class="btn" type="button" id="searchButton"><i class="icon-search icon-white"></i>
-                    </button>
-                </div>
-
-                {% if person_id  == null %}
-                    <div class="navbar-search pull-right input-append btn-group">
-                        <button class="btn btn-primary" id="signin-button">Войти</button>
-                        <a href="/registr">
-                            <button class="btn">Регистрация</button>
-                        </a>
+                <div class="nav-collapse collapse">
+                    <div class="form-search  navbar-search input-append input-prepend" id="search">
+                        <button class="btn disabled" type="button"><i class="icon-cog icon-white"></i></button>
+                        <input class="span3" id="searchInput" type="text" placeholder="Поиск"/>
+                        <button class="btn" type="button" id="searchButton"><i class="icon-search icon-white"></i>
+                        </button>
                     </div>
-                {% else %}
                     <div class="pull-right input-append btn-group">
                         <a type="button" class="btn" href="/"><i class="icon-home icon-white"></i></a>
                         <a type="button" class="btn" href="/bookadd">Добавить книгу</a>
@@ -57,97 +47,25 @@
                             {# check it #}
                             <li><a href="#"><i class="i"></i> Администрирование</a></li>
                         </ul>
-
                     </div>
-                {% endif %}
-            </div>
-
+                </div>
+            {% else %}
+            {% endif %}
         </div>
-        <!--/.nav-collapse -->
     </div>
 </div>
-</div>
 
-
-<div class="container" id="content">
+<div class="container">
     {% block content %}{% endblock %}
     <hr>
     <footer>
-        <p>&copy; Copyright 2013, DL.
-        <span><a href="/help">HELP</a></span>
-        <span><a href="/Doc">Документация</a></span></p>
+        <p>&copy; Copyright 2013, DL. |
+            <span><a href="/help">HELP</a></span> |
+            <span><a href="/Doc">Документация</a></span></p>
     </footer>
 </div>
 <br>
 
-{% if person_id  == null %}
-    <div class="modal fade signin-modal">
-        <a class="modal-header close" data-dismiss="modal">&times;</a>
-
-        <form class="form-signin" action="">
-            <h2 class="form-signin-heading">Вход</h2>
-
-            <div class="control-group" id="loginfset">
-                <div class="controls">
-                    <input type="text" class="input-block-level" placeholder="Логин" id="login" required>
-                    <input type="password" class="input-block-level" placeholder="Пароль" id="pwd" required>
-                </div>
-            </div>
-
-            <label>
-                <select name="domain" id="domain">
-                    <option value=" " selected>standart</option>
-                    <option value="domain1">domain1</option>
-                    <option value="domain2">domain2</option>
-                </select>
-                <span>Домен</span>
-            </label>
-            <label class="checkbox">
-                <input type="checkbox" id="remember" checked> Запомнить
-            </label>
-
-            <button class="btn btn-large btn-primary" type="submit">Войти</button>
-            <span class="pull-right" id="signin-error"></span>
-        </form>
-    </div>
-    <script>
-        $("#signin-button").click(function () {
-            $('.signin-modal').modal("show");
-        });
-        $(".form-signin").submit(function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: "/signin",
-                type: "post",
-                dataType: "json",
-                data: JSON.stringify({"login": $(".form-signin #login").val(),
-                    "pwd": $(".form-signin #pwd").val(),
-                    "domain": $(".form-signin #domain").val(),
-                    "remember": $(".form-signin #remember").is(':checked'),
-                    "django_timezone": "Europe/Moscow"}),
-                success: function (data) {
-                    if (data.info == 1) {
-                        window.location = "/";
-                    } else {
-                        $("#loginfset").addClass("error");
-                        $("#signin-error").html('проверьте данные')
-                    }
-                },
-                crossDomain: false
-            });
-        });
-        $("#login").focus(function () {
-            $("#loginfset").removeClass("error");
-            $("#signin-error").html('')
-        });
-        $("#pwd").focus(function () {
-            $("#loginfset").removeClass("error");
-            $("#signin-error").html('')
-        });
-    </script>
-{% else %}
-
-{% endif %}
 
 </body>
 </html>

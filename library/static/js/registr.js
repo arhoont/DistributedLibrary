@@ -4,19 +4,19 @@ function castPage() {
         e.preventDefault();
         register();
     });
-    $("#reg-logF").focusout(function () {
-        if ($("#reg-logF").val().length > 0) {
+    $("#reg-login").focusout(function () {
+        if ($("#reg-login").val().length > 0) {
             $.ajax({
                 type: "POST",
                 url: "/checkUser",
-                data: JSON.stringify({'type': 1, 'login': $("#reg-logF").val()}),
+                data: JSON.stringify({'type': 1, 'login': $("#reg-login").val()}),
                 dataType: "json",
                 success: function (data) {
                     if (parseInt(data.info) == 1) {
-                        markBad("#logspan","#reg-logF");
+                        markBad("#reg-login-cg","Такой уже есть");
                     }
                     else {
-                        markGood("#logspan","#reg-logF");
+                        markGood("#reg-login-cg","");
                     }
                 },
                 error: function () {
@@ -33,15 +33,8 @@ function castPage() {
     });
 }
 function pwdTest() {
-    isconc = $('#reg-pass').val() == $('#reg-passRe').val();
-    if (!isconc) {
-        $("#passspn").html('<img src="' + path + 'img/close.png"/>');
-        $("reg-passRe").removeClass("goodField");
-    }
-    else {
-        $("#passspn").html('<img src="' + path + 'img/tick.png"/>');
-        $("#reg-passRe").addClass("goodField");
-    }
+    isconc = $('#reg-pwd').val() == $('#reg-pwdd').val();
+
     return isconc;
 }
 function register() {
@@ -55,9 +48,9 @@ function register() {
         $.ajax({
             type: "POST",
             url: "/regajax",
-            data: JSON.stringify({'log': $('#reg-logF').val(), 'email': $('#reg-email').val(),
+            data: JSON.stringify({'login': $('#reg-login').val(), 'email': $('#reg-email').val(),
                 'fname': $('#reg-fname').val(), 'lname': $('#reg-lname').val(),
-                'pwd': $('#reg-pass').val()}),
+                'pwd': $('#reg-pwd').val()}),
             dataType: "json",
             success: function (data) {
                 console.log(data);

@@ -1,44 +1,57 @@
-.isbnColum{
-    width: 130px;
-    max-width: 130px;
+#login-div{
+    display: inline-block;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
+#login-div h3{
+    border-bottom: 1px solid #e5e5e5;
+}
+#login-div .form-body{
+    padding: 0 20px 0px 20px;
+}
+#login-div h3{
+    padding-left: 20px;;
+}
+#login-div .btn{
+    margin-left: 60px;
+}
+
+#login-div .control-group{
+    margin: 0;
+}
+
+#login-div .control-label{
+    font-weight: bold;
+}
+.reg-but-div{
+    padding: 10px 20px;
+}
+
+.indexbrand{
+    color: #000 !important;
+    font-weight: bold !important;
+    font-size: 30px !important;
+}
+
 .titleColum{
-    width: 340px;
-    max-width: 290px;
+    width: 180px;
+    max-width: 180px;
 }
 .langColum{
-    width: 100px;
-    max-width: 100px;
+    width: 80px;
+    max-width: 80px;
 }
 .authColum{
-    width: 300px;
-    max-width: 200px;
-}
-.keyColum{
     width: 150px;
     max-width: 150px;
 }
-.ratingColum{
-    width: 80px;
-    max-width: 80px;
-}
-.countColum{
-    width: 80px;
-    max-width: 80px;
-    text-align: center !important;
-}
-#mtable td {
+
+
+#index-table td {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     word-wrap: normal;
-}
-#mtable{
-    margin-bottom: 5px;
-}
-#fmtable {
-    margin-top: 5px;
-}
-#tabletabs{
-    margin-bottom: 0px;
 }

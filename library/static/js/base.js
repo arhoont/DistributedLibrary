@@ -50,13 +50,13 @@ function sameOrigin(url) {
 }
 
 
-function markGood(span,field) {
-    $(span).html('<img src="' + path + 'img/tick.png"/>');
-    $(field).removeClass("badField");
-    $(field).addClass("goodField");
+function markGood(cg, text) {
+    $(cd).removeClass("error");
+    $(cd).addClass("success");
+    $(cd+" .help-inline").html(text);
 }
-function markBad(span, field) {
-    $(span).html('<img src="' + path + 'img/close.png"/>');
-    $(field).removeClass("goodField");
-    $(field).addClass("badField");
+function markBad(cg, text) {
+    $(cd).removeClass("success");
+    $(cd).addClass("error");
+    $(cd+" .help-inline").html(text);
 }

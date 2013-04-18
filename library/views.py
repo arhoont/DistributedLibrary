@@ -22,13 +22,17 @@ def isauth(request):
 
 def index(request):
     context = isauth(request)
-    return render(request, 'library/index.html', context)
+    print(context)
+    if context.has_key('person_id'):
+        return render(request, 'library/home.html', context)
+    else:
+        return render(request, 'library/index.html', context)
 
 def error(request):
     context = Context({
         'type': 0
     })
-    return render(request, 'library/index.html', context)
+    return render(request, 'library/home.html', context)
 
 
 def bookadd(request):
@@ -40,7 +44,6 @@ def bookadd(request):
     context["authors"]=authors
     context["keywords"]=keywords
     context["languages"]=languages
-    print(context)
     return render(request, 'library/bookadd.html', context)
 
 def login(request):
@@ -50,7 +53,7 @@ def login(request):
         context['person_login']= request.session["person_login"]
     else:
         context['type']= 1
-    return render(request, 'library/index.html', context)
+    return render(request, 'library/home.html', context)
 
 def registr(request):
     context = Context()
@@ -68,7 +71,7 @@ def strHash(string):
 
 def regajax(request):
     query=json.loads(str(request.body.decode()))
-    log=query["log"]
+    log=query["login"]
     email=query["email"]
     fname=query["fname"]
     lname=query["lname"]
@@ -155,27 +158,30 @@ def addbajax(request):
 
 
 def signin(request):
-    query=json.loads(str(request.body.decode()))
-    login=query["login"]
-    pwd=query["pwd"]
-    domain=query["domain"]
-    remember=query["remember"]
-    django_timezone=query["django_timezone"]
-
-    p=Person.objects.filter(login=login, domain=domain)
+    username=request.POST.get("username")
+    password=request.POST.get("password")
+    domain=request.POST.get("domain")
+    remember=request.POST.get("remember")
+    django_timezone=request.POST.get("django_timezone")
+    p=Person.objects.filter(login=username, domain=domain)
     if p:
         salt=p[0].salt
-        passHash = strHash(strHash(pwd)+salt)
+        passHash = strHash(strHash(password)+salt)
         if passHash==p[0].pwd:
             request.session["person_id"]=p[0].id
             request.session["person_login"]=p[0].login
             request.session["django_timezone"]=django_timezone
-            if remember=="yes":
+            if remember=="on":
                 request.session.set_expiry(timedelta(days=30))
             else:
                 request.session.set_expiry(0)
-            return HttpResponse(json.dumps({"info": 1}))
-    return HttpResponse(json.dumps({"info": 2}))
+            return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('error'))
+
+def error(request):
+    context=Context()
+    context["form_error"]= "yes"
+    return render(request, 'library/index.html', context)
 
 def logout(request):
     request.session.flush()
@@ -218,6 +224,13 @@ def getbooks(request):
             bookslist=[]
 
     return HttpResponse(json.dumps({"info": "yes","count":count, "books":bookslist}))
+
+def getlastbooks(request):
+    query=json.loads(str(request.body.decode()))
+    count=int(query["count"])
+    bookslist=[[b.isbn, b.title, b.getPrintAuthors(), b.language.language] for b in Book.objects.all().order_by("isbn")[:count]]
+
+    return HttpResponse(json.dumps({"books":bookslist}))
 
 
 def castbooks(request):
