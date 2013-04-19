@@ -1,57 +1,34 @@
-#login-div{
-    display: inline-block;
-    border: 1px solid #e5e5e5;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-}
-#login-div h3{
-    border-bottom: 1px solid #e5e5e5;
-}
 #login-div .form-body{
-    padding: 0 20px 0px 20px;
+    padding: 0 20px 0 20px;
 }
 #login-div h3{
-    padding-left: 20px;;
+    padding-left: 20px;
 }
 #login-div .btn{
     margin-left: 60px;
-}
-
-#login-div .control-group{
-    margin: 0;
-}
-
-#login-div .control-label{
-    font-weight: bold;
 }
 .reg-but-div{
     padding: 10px 20px;
 }
 
-.indexbrand{
-    color: #000 !important;
-    font-weight: bold !important;
-    font-size: 30px !important;
+#login-wrapper{
+    margin-left: 40px;
 }
-
-.titleColum{
-    width: 180px;
-    max-width: 180px;
+#index-table {
+    table-layout: fixed;
 }
-.langColum{
-    width: 80px;
-    max-width: 80px;
-}
-.authColum{
-    width: 150px;
-    max-width: 150px;
-}
-
-
 #index-table td {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    word-wrap: normal;
 }
+.titleColum{
+    width: 50%;
+}
+.langColum{
+    width: 20%;
+}
+.authColum{
+    width: 30%;
+}
+

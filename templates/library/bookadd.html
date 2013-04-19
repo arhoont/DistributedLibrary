@@ -4,153 +4,131 @@
 
 {% block title %}Распределенная библиотека{% endblock %}
 {% block include %}
-    <link rel="stylesheet" href="{% static "css/book.css" %}">
+    <link rel="stylesheet" href="{% static "css/formcss.css" %}">
     <script type="text/javascript" charset="utf-8" src="{% static "js/bookadd.js" %}"></script>
 {% endblock %}
-
 {% block content %}
-    <div id="div-bookAdd" class="dialogForm">
-        <div class="form-title">Добавить книгу</div>
 
-        <div class="form-sub-title"></div>
-        <img src="img/notbook.jpg" id="bookimage">
 
-        <div class="flR">
-            <form id="bookForm" method="post">
-                <table>
-                    <tbody>
-                    <tr>
-                        <td><label for="balink">Ссылка на OZON.ru:</label></td>
-                        <td>
-                            <div class="input-container">
-                                <input name="balink" id="balink" type="text">
-                                <input  type="button" class="isButton greenButton" id="loadB"
-                                       value="Загрузить"/>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label for="baisbn">ISBN:</label></td>
-                        <td>
-                            <div class="input-container">
-                                <input name="baisbn" id="baisbn" type="text" required>
+    <div class="row">
+        <div class="form-wrapper" id="ba-form-wrapper">
 
-                                <div id='isbnspan' class="tick"></div>
+            <div class="form-div" id="ba-form-div">
+                <div>
+                    <div class="form-header">
+                        <h3>
+                            <a href="/" class="btn pull-left" type="button" id="back-btn"><i
+                                    class="icon-arrow-left icon-white"></i>
+                            </a>
+                            <span>Добавление книги</span>
+                        </h3>
+                    </div>
+                    <div class="form-body">
+                        <form class="form-horizontal" action="" method="post" id="ba-form-r">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="span2" id="image-div">
+                                    <a href="#" class="thumbnail">
+                                        <img src="{% static "img/pizza.jpg" %}" alt="">
+                                    </a>
+                                </div>
+                                <div class="span5 right-inputs">
+                                    <div class="control-group" id="ba-link-cg">
+                                        <label class="control-label" for="ba-link">Ссылка</label>
 
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label for="batitle">Название:</label></td>
-                        <td>
-                            <div class="input-container">
-                                <input name="batitle" id="batitle" type="text" required>
-                                <div id='titlespan' class="tick"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label for="baauth">Авторы:</label></td>
+                                        <div class="controls">
+                                            <input type="text" id="ba-link" name="ba-link" placeholder="Ссылка">
+                                            <button type="button" class="btn" onclick=""><i
+                                                    class="icon-download icon-white"></i></button>
+                                            <span class="help-inline"></span>
 
-                        <td>
-                            <div class="input-container">
-                            <span id="baauth">
-                            </span>
-                                <input type="button" class="isButton plusBut" value="+" id="addAuth"/></input>
-                            </div>
-                        </td>
-                    </tr>
+                                        </div>
+                                    </div>
+                                    <div class="control-group" id="ba-isbn-cg">
+                                        <label class="control-label" for="ba-isbn">ISBN</label>
 
-                    <tr>
-                        <td><label for="balang">Язык:</label></td>
-                        <td>
-                            <div class="input-container">
-                                <select type="text" name="balang" id="balang" class="flR"/>
-                                {% for lang in languages %}
-                                    <option value="{{ lang.language }}"> {{ lang.language }} </option>
-                                {% endfor %}
-                                <option value="15">--добавить--</option>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label for="bakeyw">Ключевые слова:</label></td>
-                        <td>
-                            <div class="input-container">
-                            <span id="bakeyw">
-                            </span>
-                                <input type="button" class="isButton plusBut" value="+" id="addKeyW"/></input>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label>Ценность:</label></td>
-                        <td>
-                            <div class="input-container" id="valCont">
-                                <div id="radioset">
-                                    <input class="valR" type="radio" id="radio1" name="radio" value="1"><label
-                                        for="radio1" class="radio">+</label>
-                                    <input class="valR" type="radio" id="radio2" name="radio" value="2"
-                                           checked="checked"><label for="radio2" class="radio">++</label>
-                                    <input class="valR" type="radio" id="radio3" name="radio" value="3"><label
-                                        for="radio3" class="radio">+++</label>
+                                        <div class="controls">
+                                            <input type="text" id="ba-isbn" name="ba-isbn" placeholder="ISBN" required>
+                                        </div>
+                                    </div>
+                                    <div class="control-group" id="ba-title-cg">
+                                        <label class="control-label" for="ba-title">Название</label>
+
+                                        <div class="controls">
+                                            <input type="text" id="ba-title" name="ba-title" placeholder="Название"
+                                                   required>
+                                        </div>
+                                    </div>
+                                    <div class="control-group" id="ba-lang-cg">
+                                        <label class="control-label" for="ba-lang">Язык</label>
+
+                                        <div class="controls">
+                                            <select id="ba-lang" name="ba-lang">
+                                                {% for lang in languages %}
+                                                    <option value="{{ lang.language }}"> {{ lang.language }} </option>
+                                                {% endfor %}
+                                                <option value="15">--добавить--</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="control-group" id="ba-val-cg" data-toggle="buttons-radio">
+                                        <label class="control-label" for=ba-val>Ценность</label>
+
+                                        <div class="controls">
+
+                                            <div class="btn-group" id="ba-val" data-toggle="buttons-radio">
+                                                <button type="button" class="btn btn-info">1</button>
+                                                <button type="button" class="btn btn-info active">2</button>
+                                                <button type="button" class="btn btn-info">3</button>
+                                            </div>
+                                            <a class="infoValues" onclick=""><i
+                                                    class="icon-question-sign icon-white"></i></a>
+
+                                            <span class="help-inline"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label for="badisc">Описание:</label></td>
-                        <td>
-                            <div class="input-container">
-                                <textarea name="badisc" id="badisc"></textarea>
+                        </form>
+                        <form class="" action="" method="post" id="ba-form-b">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="span4 control-group" id="ba-auth-cg">
+                                    <label class="control-label" for="ba-auth">Авторы</label>
+
+                                    <div class="controls" id="authicontrol">
+                                    </div>
+                                    <button type="button" class="btn" onclick="addEAuthor()"><i
+                                            class="icon-plus-sign icon-white"></i></button>
+                                </div>
+
+
+                                <div class="control-group span1" id="ba-key-cg">
+                                    <label class="control-label" for=ba-key>Ключевые слова</label>
+
+                                    <div class="controls" id="keywordsf">
+
+                                    </div>
+                                    <button type="button" class="btn" onclick="addEKW()"><i
+                                            class="icon-plus-sign icon-white"></i></button>
+
+                                </div>
+                                <div class="control-group span2" id="ba-desc-cg">
+                                    <label class="control-label" for=ba-desc>Описание</label>
+
+                                    <div class="controls">
+                                        <textarea rows=4 id="ba-desc" name="ba-desc" placeholder="Описание"></textarea>
+                                        <button type="submit" class="btn btn-primary pull-right" id="ba-btn">Добавить
+                                        </button>
+                                    </div>
+                                </div>
+
                             </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>
-                            <span id='toolSpan'><input type="submit" class="isButton greenButton" value="Добавить"
-                                                       id="addBookBut"/></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>
-                            <div id='errBook'></div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        </form>
 
-            </form>
-
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div id="dialogAuthors" style="display: none">
-        <label for="dAuthInput">Автор:</label>
-        <input type="text" id="dAuthInput" name="dAuthInput" placeholder="Имя Фамилия" value=""/>
-        <span class="subtitle">Выберите автора</span>
-        <ul class="dAuthlist">
-            <script>
-                var authors = [];
-                {% for auth in authors %}
-                    authors.push("{{ auth.fname }} {{ auth.lname }}");
-                {% endfor %}
-            </script>
-        </ul>
-    </div>
-
-    <div id="dialogKeywords" style="display: none">
-        <label for="dKeyInput">Слово:</label>
-        <input type="text" id="dKeyInput" name="dKeyInput" value=""/>
-        <span class="subtitle">Выберите слово</span>
-        <ul class="dKeyList">
-            <script>
-                var keywords = [];
-                {% for key in keywords %}
-                    keywords.push("{{ key.word }}");
-                {% endfor %}
-            </script>
-        </ul>
     </div>
 {% endblock %}

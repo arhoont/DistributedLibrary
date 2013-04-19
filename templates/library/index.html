@@ -4,6 +4,7 @@
 
 {% block title %}Распределенная библиотека{% endblock %}
 {% block include %}
+    <link rel="stylesheet" href="{% static "css/formcss.css" %}">
     <link rel="stylesheet" href="{% static "css/index.css" %}">
     <script type="text/javascript" charset="utf-8" src="{% static "js/index.js" %}"></script>
 {% endblock %}
@@ -25,7 +26,8 @@
     <script>
         $("#brand-span").html('<a class="brand indexbrand" href="/"> Распределенная библиотека</a>');
     </script>
-    <div class="row">
+
+    <div class="row container-fluid">
         <div class="span4">
             <h2>О системе</h2>
 
@@ -38,9 +40,8 @@
 
             <p><a class="btn btn-info" href="#">HELP</a></p>
         </div>
-        <div class="span5">
+        <div class="span4" id="newBooksIndex">
             <h2>Новые книги</h2>
-            <p>
             <table class="table table-striped table-condensed" id="index-table">
                 <thead>
                 <tr class="headRow">
@@ -55,12 +56,12 @@
                 <tbody id="rows">
                 </tbody>
             </table>
-            </p>
         </div>
 
-        <p>
-        <div style="display: inline-block;" class="pull-right">
-            <div class="" id="login-div">
+
+        <div style="display: inline-block;" id="login-wrapper">
+            <p>
+            <div class="form-div" id="login-div">
                 <div class="form-header"><h3>Вход</h3></div>
                 <div class="form-body">
                     <form id='login' action='/signin' method='post' id="login-form">

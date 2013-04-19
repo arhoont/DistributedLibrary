@@ -1,0 +1,94 @@
+.form-div{
+    display: inline-block;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.form-wrapper{
+    display: inline-block;
+}
+.form-div h3{
+    border-bottom: 1px solid #e5e5e5;
+}
+h3 span{
+    margin-left: 70px;
+}
+#back-btn{
+    margin: 0 20px;
+}
+#form-div #reg-btn{
+    margin-left: 60px;
+}
+
+.form-div .control-label{
+    font-weight: bold;
+}
+
+.indexbrand{
+    color: #000 !important;
+    font-weight: bold !important;
+    font-size: 30px !important;
+}
+
+#reg-form-div{
+    width: 550px;
+}
+#reg-form-wrapper{
+    margin-left: 370px;
+}
+
+#ba-form-div{
+    width: 690px;
+}
+#ba-form-div .form-body{
+    display: inline-block;
+}
+
+
+#ba-form-div textarea{
+    width: 230px;
+    resize: none;
+}
+#ba-form-div #ba-btn{
+    margin-left: 20px;
+}
+#ba-form-wrapper{
+    margin-left: 300px;
+}
+#ba-form-wrapper #image-div{
+    margin-left: 50px;
+}
+#ba-form-wrapper .right-inputs .control-label{
+    width: 70px;
+}
+#ba-form-wrapper .right-inputs .controls{
+    margin-left: 80px;
+}
+#ba-form-wrapper .right-inputs .control-group{
+    margin: 5px !important;
+}
+#ba-form-wrapper .right-inputs .control-group input{
+    width: 255px;
+}
+
+#ba-form-wrapper #ba-auth-cg{
+    margin-left: 50px;
+    width: 200px;
+
+}
+#authicontrol input{
+    width: 170px;
+}
+
+#ba-key-cg{
+    width: 150px;
+}
+#ba-key-cg input{
+    width: 120px;
+}
+
+.infoValues{
+    cursor: pointer;
+    margin-left: 5px;
+}

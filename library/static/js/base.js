@@ -10,7 +10,7 @@ $(document).ready(function () {
             }
         }
     });
-    $('body').off('.data-api');
+//    $('body').off('.data-api');
 
     castPage();
 });

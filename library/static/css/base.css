@@ -1,13 +1,12 @@
 body {
     padding-top: 60px;
     padding-bottom: 40px;
+
     /*font-size: 12px;*/
 }
-
 table {
     /*font-size: 12px;*/
 }
-
 .separator {
     background-color: #e5e5e5;
     border-bottom: 1px solid #ffffff;

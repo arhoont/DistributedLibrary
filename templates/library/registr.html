@@ -4,7 +4,7 @@
 
 {% block title %}Распределенная библиотека{% endblock %}
 {% block include %}
-    <link rel="stylesheet" href="{% static "css/registr.css" %}">
+    <link rel="stylesheet" href="{% static "css/formcss.css" %}">
     <script type="text/javascript" charset="utf-8" src="{% static "js/registr.js" %}"></script>
 {% endblock %}
 
@@ -13,9 +13,9 @@
         $("#brand-span").html('<a class="brand indexbrand" href="/"> Распределенная библиотека</a>');
     </script>
 
-    <div class="reg-form-wrapper">
+    <div class="form-wrapper" id="reg-form-wrapper">
 
-        <div class="" id="reg-div">
+        <div class="form-div" id="reg-form-div">
 
             <div class="form-header">
                 <h3>
@@ -24,7 +24,7 @@
                     <span>Регистрация</span>
                 </h3>
             </div>
-            <div class="form-body">
+            <div class="form-body" id="">
                 <form class="form-horizontal" action="" method="post" id="reg-form">
                     {% csrf_token %}
                     <div class="control-group" id="reg-login-cg">
