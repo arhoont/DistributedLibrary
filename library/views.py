@@ -37,16 +37,53 @@ def error(request):
     return render(request, 'library/home.html', context)
 
 
-def bookadd(request):
+def bookadd(request): # page
+    print(request.GET)
     context = isauth(request)
-    authors = Author.objects.all()
-    keywords = Keyword.objects.all()
+    authors = [a.getPrintName() for a in Author.objects.all()]
+    keywords = [k.word for k in Keyword.objects.all()]
     languages = Language.objects.all()
 
     context["authors"] = authors
     context["keywords"] = keywords
     context["languages"] = languages
     return render(request, 'library/bookadd.html', context)
+
+
+def bookinfo(request): # page
+
+    isbn = request.GET['isbn']
+
+    book = Book.objects.filter(isbn=isbn)
+    if len(book) == 0:
+        # book not found
+        return HttpResponseRedirect(reverse('index'))
+    book = book[0]
+    context = isauth(request)
+
+    # p=Person.objects.
+    # if editable
+    # authors = [a.getPrintName() for a in Author.objects.all()]
+    # keywords = [k.word for k in Keyword.objects.all()]
+    # languages = Language.objects.all()
+    #
+    # context["authors"] = authors
+    # context["keywords"] = keywords
+    # context["languages"] = languages
+    # context["owner"] = True
+    # return render(request, 'library/bookadd.html', context)
+    #==========================
+
+    bauthors = [a.getPrintName() for a in book.authors.all()]
+    bkeywords = [k.word for k in book.keywords.all()]
+    blanguage = book.language.language
+
+    context["bauthors"] = bauthors
+    context["bkeywords"] = bkeywords
+    context["bitems"] = book.bookitem_set
+    context["book"] = book
+
+    return render(request, 'library/bookinfo.html', context)
 
 
 def login(request):
@@ -251,36 +288,39 @@ def castbooks(request):
 
     l = Language(language="Русский")
     l.save()
-    p1=Person(domain=d,login="test1",email="test1@mail.com",fname="ftest1",lname="ltest1",pwd="ptest1",salt="psalt1",adm=1,status=1)
+    p1 = Person(domain=d, login="test1", email="test1@mail.com", fname="ftest1", lname="ltest1", pwd="ptest1",
+                salt="psalt1", adm=1, status=1)
     p1.save()
     p1 = Person.objects.get(pk=1)
-    p2=Person(domain=d,login="test2",email="test2@mail.com",fname="ftest2",lname="ltest2",pwd="ptest2",salt="psalt1",adm=1,status=1)
+    p2 = Person(domain=d, login="test2", email="test2@mail.com", fname="ftest2", lname="ltest2", pwd="ptest2",
+                salt="psalt1", adm=1, status=1)
     p2.save()
     p2 = Person.objects.get(pk=2)
 
-    authors=[]
+    authors = []
     for i in range(10):
-        authors.append(Author(fname="fauthor"+str(i),lname="lauthor"+str(i),info="ololo"+str(i)))
+        authors.append(Author(fname="fauthor" + str(i), lname="lauthor" + str(i), info="ololo" + str(i)))
         authors[i].save()
     authors = Author.objects.all()
 
-    keywords=[]
+    keywords = []
     for i in range(10):
-        keywords.append(Keyword(word="key"+str(i)))
+        keywords.append(Keyword(word="key" + str(i)))
         keywords[i].save()
     keywords = Keyword.objects.all()
 
-    books=[]
+    books = []
     for i in range(5):
-        books.append(Book(isbn="123123213"+str(i),ozon="ozon"+str(i),title="title"+str(i),language=l,description="desc"+str(i)))
+        books.append(Book(isbn="123123213" + str(i), ozon="ozon" + str(i), title="title" + str(i), language=l,
+                          description="desc" + str(i)))
         books[i].save()
         books[i].authors.add(authors[i])
-        books[i].authors.add(authors[i+2])
+        books[i].authors.add(authors[i + 2])
         books[i].keywords.add(keywords[i])
-        books[i].keywords.add(keywords[i+2])
-        books[i].keywords.add(keywords[i+3])
+        books[i].keywords.add(keywords[i + 2])
+        books[i].keywords.add(keywords[i + 3])
         for j in range(3):
-            bi=BookItem(isbn=books[i],owner=p1,reader=p2,value=1)
+            bi = BookItem(isbn=books[i], owner=p1, reader=p2, value=1)
             bi.save()
             bi.itemstatus_set.create(status=1, date=timezone.now())
 

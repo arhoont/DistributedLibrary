@@ -1,56 +1,56 @@
-.isbnColum{
-    width: 130px;
-    max-width: 130px;
-    mib-width: 130px;
+.isbnColum {
+    width: 13%;
 }
-.titleColum{
-    width: 310px;
-    max-width: 310px;
-    min-width: 310px;
+
+.titleColum {
+    width: 26%;
 }
-.langColum{
-    width: 100px;
-    max-width: 100px;
-    min-width: 100px;
+
+.langColum {
+    width: 8%;
 }
-.authColum{
-    width: 280px;
-    max-width: 280px;
-    min-width: 280px;
+
+.authColum {
+    width: 24%;
 }
-.keyColum{
-    width: 150px;
-    max-width: 150px;
-    min-width: 150px;
+
+.keyColum {
+    width: 13%;
 }
-.ratingColum{
-    width: 80px;
-    max-width: 80px;
-    min-width: 80px;
+
+.ratingColum {
+    width: 8%;
 }
-.countColum{
-    width: 80px;
-    max-width: 80px;
-    min-width: 80px;
+
+.countColum {
+    width: 8%;
     text-align: center !important;
 }
+
+#mtable {
+    table-layout: fixed;
+}
+
 #mtable td {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    word-wrap: normal;
 }
-#mtable th:hover{
+
+#mtable th:hover {
     cursor: pointer;
     background-color: #f7f7f7;
 
 }
-#mtable{
+
+#mtable {
     margin-bottom: 5px;
 }
+
 #fmtable {
     margin-top: 5px;
 }
-#tabletabs{
+
+#tabletabs {
     margin-bottom: 0;
 }

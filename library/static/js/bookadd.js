@@ -1,270 +1,183 @@
-var colors = ["red", "blue", "green", "yellow", "brown", "black"];
 function castPage() {
 //    $("#ba-val").buttonset();
 //    setDialogKeywords();
 //    setDialogAuthors();
+    $('#ba-form-r').submit(function (e) {
+        e.preventDefault();
+        addButtonBook();
+    });
     $('#ba-form-b').submit(function (e) {
         e.preventDefault();
-//        addButtonF();
+        $('#rform-submit').click();
     });
-//    $("#baisbn").focusout(function () {
-//        if ($("#baisbn").val().length > 0) {
-//            $.ajax({
-//                type: "POST",
-//                url: "/checkBook",
-//                data: JSON.stringify({'type': 1, 'link': "", "isbn": $("#baisbn").val(), "title": ""}),
-//                dataType: "json",
-//                success: function (data) {
-//                    if (parseInt(data.info) == 1) {
-//                        markBad("#isbnspan", "#baisbn")
-//                    }
-//                    else {
-//                        markGood("#isbnspan", "#baisbn")
-//                    }
-//                },
-//                error: function () {
-//                    $('#errBook').html('проблемы соединения с сервером');
-//                }
-//            });
-//        }
-//    });
-//    $("#batitle").focusout(function () {
-//        if ($("#batitle").val().length > 0) {
-//            $.ajax({
-//                type: "POST",
-//                url: "/checkBook",
-//                data: JSON.stringify({'type': 2, 'link': "", "isbn": "", "title": $("#batitle").val()}),
-//                dataType: "json",
-//                success: function (data) {
-//                    if (parseInt(data.info) == 1) {
-//                        markBad("#titlespan", "#batitle");
-//                    }
-//                    else {
-//                        markGood("#titlespan", "#batitle");
-//                    }
-//                },
-//                error: function () {
-//                    $('#errBook').html('проблемы соединения с сервером');
-//                }
-//            });
-//        }
-//    });
+    $('.infoValues').click(function () {
+        $('#valuesInfoModal').modal('show');
+    });
+    $("#ba-isbn").focusout(function () {
+        if ($("#ba-isbn").val().length > 0) {
+            $.ajax({
+                type: "POST",
+                url: "/checkBook",
+                data: JSON.stringify({'type': 1, 'link': "", "isbn": $.trim($("#ba-isbn").val()), "title": ""}),
+                dataType: "json",
+                success: function (data) {
+                    if (parseInt(data.info) == 1) {
+                        markBad("#ba-isbn-cg", "");
+                        isbnFail(data.books[0][0]);
+                    }
+                    else {
+                        markGood("#ba-isbn-cg", "");
+                        $('#ba-isbn').popover('destroy');
+                    }
+                },
+                error: function () {
+                    $('#errBook').html('проблемы соединения с сервером');
+                }
+            });
+        }
+    });
+    $("#ba-title").focusout(function () {
+        if ($("#ba-title").val().length > 0) {
+            $.ajax({
+                type: "POST",
+                url: "/checkBook",
+                data: JSON.stringify({'type': 2, 'link': "", "isbn": "", "title": $.trim($("#ba-title").val())}),
+                dataType: "json",
+                success: function (data) {
+                    if (parseInt(data.info) == 1) {
+                        markBad("#ba-title-cg", "");
+                        titleFail(data.books);
+                    }
+                    else {
+                        markGood("#ba-title-cg", "");
+                    }
+                },
+                error: function () {
+                    $('#errBook').html('проблемы соединения с сервером');
+                }
+            });
+        }
+    });
     $("#authicontrol").append('<div class="author">' +
         '<input type="text" value="" class="aname" placeholder="Фамилия Имя">' +
-//        '<input type="text" value="" class="afname" placeholder="Имя">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
     $("#keywordsf").append('<div class="author">' +
         '<input type="text" value="" class="kword" placeholder="Слово">' +
-//        '<input type="text" value="" class="afname" placeholder="Имя">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
 
-    $('.aname').typeahead({source: colors});
-//    $('.aname').bind("change", function (e) {
-//        if (!e.originalEvent) {
-//            debug("as1d");
-//        }
-//    })
-    $('.kword').typeahead({source: colors});
+    $('.aname').typeahead({source: authors});
+    $('.kword').typeahead({source: keywords});
 }
 
 function addEAuthor() {
     $("#authicontrol").append('<div class="author">' +
         '<input type="text" value="" class="aname" placeholder="Фамилия Имя">' +
-//        '<input type="text" value="" class="afname" placeholder="Имя">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
-    $('.aname').typeahead({source: colors});
+    $('.aname').typeahead({source: authors});
 
 }
 
 function addEKW() {
     $("#keywordsf").append('<div class="author">' +
         '<input type="text" value="" class="kword" placeholder="Слово">' +
-//        '<input type="text" value="" class="afname" placeholder="Имя">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
-    $('.kword').typeahead({source: colors});
+    $('.kword').typeahead({source: keywords});
 }
 
-//function addButtonF() {
-//    newKWList = [];
-//    $(".listKW").each(function (key, value) {
-//        newKWList.push($(this).html());
-//
-//    });
-//    newAuthList = [];
-//    $(".listA").each(function (key, value) {
-//        newAuthList.push($(this).html());
-//    });
-//    if (newAuthList.length == 0) {
-//        $("#errBook").html('Выберите авторов');
-//    } else if ($("#baisbn").hasClass("badField")) {
-//        $("#errBook").html('Такая книга уже есть добавьте экземпляр');
-//    } else if ($("#batitle").hasClass("badField")) {
-//        $("#errBook").html('Есть похожая книга');
-//    }
-//    else {
-//        $.ajax({
-//            type: "POST",
-//            url: "/addbajax",
-//            data: JSON.stringify({'link': $('#balink').val(),
-//                'isbn': $('#baisbn').val(),
-//                'title': $('#batitle').val(),
-//                'authors': newAuthList,
-//                'lang': $('#balang').val(),
-//                'keywords': newKWList,
-//                'desc': $('#badisc').val(),
-//                'val': $('.valR:checked').val()}),
-//            dataType: "json",
-//            success: function (data) {
-//                if (parseInt(data.info) == 1) {
-//                    $('#errBook').html('добавлено');
-//                }
-//                else if (parseInt(data.info) == 2) {
-//                    $('#errBook').html('такая книгу уже есть');
-//                }
-//                else if (parseInt(data.info) == 3) {
-//                    $('#errBook').html('что-то не работает');
-//                }
-//            },
-//            error: function () {
-//                $('#errBook').html('проблемы соединения с сервером');
-//            }
-//        });
-//    }
-//}
-//
-//function addWordInList(word) {
-//    $(".dKeyList").append('<li class="dKWList">' + word + '</li>');
-//}
-//function addWordList() {
-//    $(".dKeyList").html('');
-//    for (i in keywords) {
-//        addWordInList(keywords[i]);
-//    }
-//}
-//function addAuthorInList(word) {
-//    $(".dAuthlist").append('<li class="dAList">' + word + '</li>');
-//}
-//function addAurhorList() {
-//    $(".dAuthlist").html('');
-//    for (i in authors) {
-//        addAuthorInList(authors[i]);
-//    }
-//}
-//
-//function setDialogKeywords() {
-//    $('#dialogKeywords').dialog({
-//        autoOpen: false,
-//        modal: true,
-//        resizable: false,
-//        width: 250,
-//        height: 300,
-//        close: function () {
-//            $('#dKeyInput').prop('value', '');
-//            addWordList();
-//        }
-//    });
-//    $('#addKeyW').click(function () {
-//        $('#dialogKeywords').dialog('open');
-//    });
-//    addWordList();
-//    $("#dKeyInput").live("keyup", function () {
-//        var searchWord = $(this).val();
-//        $(".dKeyList").html('');
-//        if (searchWord.length >= 1) {
-//            var k = 0;
-//            for (i in keywords) {
-//                if (keywords[i].match(new RegExp(searchWord, "i"))) {
-//                    addWordInList(keywords[i]);
-//                    k++;
-//                }
-//            }
-//            if (k == 0) {
-//                $(".dKeyList").append('<input class="isButton" value="Добавить" id="dNewKWBut"/></input>')
-//            }
-//        } else {
-//            addWordList();
-//        }
-//        $(this).change();
-//    });
-//    $('.listKW').live('click', function () {
-//        $(this).remove();
-//    });
-//    $('#dNewKWBut').live('click', function () {
-//        $("#bakeyw").append('<span class="listKW">' + $("#dKeyInput").val() + '</span>')
-////                    $('#keyWordsList').dialog('close');
-//    });
-//    $('.dKWList').live('click', function () {
-//        $("#bakeyw").append('<span class="listKW">' + $(this).html() + '</span>')
-////                    $('#keyWordsList').dialog('close');
-//    });
-//    $('#dKeyInput').keydown(function (event) {
-//        if (event.keyCode == 13) {
-//            $('#dNewKWBut').click();
-//        }
-//    });
-//
-//}
-//function setDialogAuthors() {
-//    $('#dialogAuthors').dialog({
-//        autoOpen: false,
-//        modal: true,
-//        resizable: false,
-//        width: 250,
-//        height: 300,
-//        close: function () {
-//            $('#dAuthInput').prop('value', '');
-//            addAurhorList();
-//        }
-//    });
-//    $('#addAuth').click(function () {
-//        $('#dialogAuthors').dialog('open');
-//    });
-//    addAurhorList();
-//    $('#addAuth').click(function () {
-//        $('#dialogAuthors').dialog('open');
-//    });
-//    $("#dAuthInput").bind("keyup", function () {
-//        var searchAuthor = $(this).val();
-//
-//        $(".dAuthlist").html('');
-//        if (searchAuthor.length >= 1) {
-//            var k = 0;
-//            for (i in authors) {
-//                if (authors[i].match(new RegExp(searchAuthor, "i"))) {
-//                    addAuthorInList(authors[i]);
-//                    k++;
-//                }
-//            }
-//            if (k == 0) {
-//                $(".dAuthlist").append('<input class="isButton" value="Добавить" id="dNewABut"/></input>')
-//            }
-//        } else {
-//            addAurhorList();
-//        }
-//        $(this).change();
-//    });
-//// добавление
-////                $(".addW").each(function (key, value){
-////                    console.log($(this).html());
-////                });
-//    $('.listA').live('click', function () {
-//        $(this).remove();
-//    });
-//    $('#dNewABut').live('click', function () {
-//        $("#baauth").append('<span class="listA">' + $("#dAuthInput").val() + '</span>')
-////                    $('#keyWordsList').dialog('close');
-//    });
-//    $('.dAList').live('click', function () {
-//        $("#baauth").append('<span class="listA">' + $(this).html() + '</span>')
-////                    $('#keyWordsList').dialog('close');
-//    });
-//    $('#dAuthInput').keydown(function (event) {
-//        if (event.keyCode == 13) {
-//            $('#dNewABut').click();
-//        }
-//    });
-//}
+function addButtonBook() {
+    newKWList = [];
+    $(".kword").each(function (key, value) {
+        if ($(this).val().length > 0) {
+            newKWList.push($.trim($(this).val()));
+        }
+    });
+
+    newAuthList = [];
+    $(".aname").each(function (key, value) {
+        if ($(this).val().length > 0) {
+            newAuthList.push($.trim($(this).val()));
+        }
+    });
+
+    if (newAuthList.length == 0) {
+        bookError("Выберите авторов");
+    } else if ($("#ba-isbn-cg").hasClass("error")) {
+        bookError("Такая книга уже есть");
+    } else if ($("#ba-title-cg").hasClass("error")) {
+        bookError("Похожая книгу есть");
+
+    } else {
+        $.ajax({
+            type: "POST",
+            url: "/addbajax",
+            data: JSON.stringify({'link': $.trim($('#ba-link').val()),
+                'isbn': $.trim($('#ba-isbn').val()),
+                'title': $.trim($('#ba-title').val()),
+                'authors': newAuthList,
+                'lang': $.trim($('#ba-lang').val()),
+                'keywords': newKWList,
+                'desc': $.trim($('#ba-desc').val()),
+                'val': $.trim($("#ba-val .active").html())}),
+            dataType: "json",
+            success: function (data) {
+                if (parseInt(data.info) == 1) {
+                    bookError("добавлено");
+                } else if (parseInt(data.info) == 2) {
+                    bookError("Такая книга уже есть");
+                } else if (parseInt(data.info) == 3) {
+                    bookError("что-то не работает");
+                }
+            },
+            error: function () {
+                bookError("проблемы соединения с сервером");
+            }
+        });
+    }
+}
+
+function bookError(text) {
+    $(".alertSpan").html('    <div class="alert" id="bookAlert">' +
+        '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+        '<span class="alertText">' + text + '</span>' +
+        '</div>');
+}
+
+function isbnFail(isbn) {
+    $('#ba-isbn').popover({
+        html: true,
+        title: '<strong>Ошибка</strong>',
+        content: '<div>Такая книга уже есть <a class="btn btn-info" href="/book?isbn=' + isbn + '">Посмотреть</a></div>',
+        trigger: 'manual'
+
+    });
+    $('#ba-isbn').popover('show');
+}
+function titleFail(books) {
+    $('#ba-title').popover({
+        template: '<div class="popover special-class popover-wrapper"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>',
+        html: true,
+        title: '<strong>Похожие книги</strong>' +
+            '<button type="button" id="closeTitleFail" class="close">&times;</button>',
+        content: '<span id="spanTFTable"><table class="table table-striped table-condensed sim-books-table"><tbody id="simBooks"></tbody><table></span>' +
+            '<button class="btn btn-info" id="closeTFB">Закрыть</button>',
+        trigger: 'manual'
+
+    });
+    $('#ba-title').popover('show');
+    $('#closeTitleFail').click(function () {
+        $('#ba-title').popover('destroy');
+        markGood("#ba-title-cg", "");
+    });
+    $('#closeTFB').click(function () {
+        $('#ba-title').popover('destroy');
+        markGood("#ba-title-cg", "");
+    });
+    for (book in books){
+        $("#simBooks").append("<tr><td class='isbnColum'><a href='/book/info?isbn="+books[book][0]+"'>"+books[book][0]+"</a></td> " +
+            "<td class='titleColum'><a href='/book/info?isbn="+books[book][0]+"'>"+books[book][2]+"</a></td><td class='authColum'>"+books[book][4]+"</td></tr>");
+    }
+}

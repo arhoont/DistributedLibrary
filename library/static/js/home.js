@@ -93,8 +93,8 @@ function castMainTable(objForm) {
     for (i = 0; i < k; i++) {
         var isbn = objForm.books[i][0];
         listed = '<tr class="oneRow" id=' + isbn + '>';
-        listed += '<td class="isbnColum"><a href="/book?isbn='+isbn+'">' + objForm.books[i][0] + '</a></td>';
-        listed += '<td class="titleColum"><a href="/book?isbn='+isbn+'">' + objForm.books[i][2] + '</a></td>';
+        listed += '<td class="isbnColum"><a href="/book/info?isbn='+isbn+'">' + objForm.books[i][0] + '</a></td>';
+        listed += '<td class="titleColum"><a href="/book/info?isbn='+isbn+'">' + objForm.books[i][2] + '</a></td>';
         listed += '<td class="authColum">' + objForm.books[i][4] + '&nbsp</td>';
         listed += '<td class="keyColum">' + objForm.books[i][5] + '</td>';
         listed += '<td class="langColum">' + objForm.books[i][3] + '</td>';
