@@ -6,6 +6,7 @@
 {% block include %}
 
     <link rel="stylesheet" href="{% static "css/formcss.css" %}">
+    <link rel="stylesheet" href="{% static "css/bookinfo.css" %}">
     {#    <script type="text/javascript" charset="utf-8" src="{% static "js/bookadd.js" %}"></script>#}
 {% endblock %}
 {% block content %}
@@ -22,10 +23,10 @@
                             <a href="/" class="btn pull-left" type="button" id="back-btn"><i
                                     class="icon-arrow-left icon-white"></i>
                             </a>
-                            <span>Добавление книги</span>
+                            <span>Информация</span>
                         </h3>
                     </div>
-                    <div class="form-body">
+                    <div class="form-body pull-left">
                         <form class="form-horizontal" action="" method="post" id="ba-form-r">
                             {% csrf_token %}
                             <div class="row">
@@ -34,9 +35,9 @@
                                         <img src="{% static "img/pizza.jpg" %}" alt="">
                                     </a>
                                 </div>
-                                <div class="span5 right-inputs">
+                                <div class="span4 right-inputs">
                                     <div class="control-group" id="ba-link-cg">
-                                        <label class="control-label" for="ba-link">Ссылка</label>
+                                        <label class="control-label" for="ba-link">Ссылка:</label>
 
                                         <div class="controls">
                                             <a href="http://{{ book.ozon }}" id="ba-link"
@@ -45,7 +46,7 @@
                                         </div>
                                     </div>
                                     <div class="control-group" id="ba-isbn-cg">
-                                        <label class="control-label" for="ba-isbn">ISBN</label>
+                                        <label class="control-label" for="ba-isbn">ISBN:</label>
 
                                         <div class="controls">
                                             <span id="ba-isbn" name="ba-isbn">{{ book.isbn }}</span>
@@ -53,7 +54,7 @@
                                         </div>
                                     </div>
                                     <div class="control-group" id="ba-title-cg">
-                                        <label class="control-label" for="ba-title">Название</label>
+                                        <label class="control-label" for="ba-title">Название:</label>
 
                                         <div class="controls">
                                             <span id="ba-title" name="ba-title">{{ book.title }}</span>
@@ -62,10 +63,17 @@
 
                                     </div>
                                     <div class="control-group" id="ba-lang-cg">
-                                        <label class="control-label" for="ba-lang">Язык</label>
+                                        <label class="control-label" for="ba-lang">Язык:</label>
 
                                         <div class="controls">
                                             <span id="ba-lang" name="ba-lang">{{ book.language.language }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group" id="ba-count-cg">
+                                        <label class="control-label" for="ba-count">Кол-во:</label>
+
+                                        <div class="controls">
+                                            <span id="ba-lang" name="ba-count">{{ bcount }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -74,19 +82,19 @@
                         <form class="" action="" method="post" id="ba-form-b">
                             {% csrf_token %}
                             <div class="row">
-                                <div class="span4 control-group" id="ba-auth-cg">
+                                <div class="span2 control-group" id="ba-auth-cg">
                                     <label class="control-label" for="ba-auth">Авторы</label>
 
                                     <div class="controls" id="authicontrol">
                                         {% for auth in bauthors %}
-                                            <div>{{ auth }}</div>
+                                            <div>{{ auth}}</div>
                                         {% endfor %}
                                     </div>
                                 </div>
 
 
-                                <div class="control-group span1" id="ba-key-cg">
-                                    <label class="control-label" for=ba-key>Ключевые слова</label>
+                                <div class="control-group span2" id="ba-key-cg">
+                                    <label class="control-label" for=ba-key>Ключевые слова:</label>
 
                                     <div class="controls" id="keywordsf">
                                         {% for key in bkeywords %}
@@ -96,20 +104,45 @@
 
                                 </div>
                                 <div class="control-group span2" id="ba-desc-cg">
-                                    <label class="control-label" for=ba-desc>Описание</label>
+                                    <label class="control-label" for=ba-desc>Описание:</label>
 
                                     <div class="controls">
-                                        <div>{{ book.description }}</div>
+                                        <div id="ba-desc">{{ book.description }}</div>
+{#                                        <textarea rows=4 id="ba-desc" name="ba-desc" placeholder="Описание" readonly>{{ book.description }}</textarea>#}
                                     </div>
                                 </div>
                             </div>
-                            <div style="margin-left:20px;">
-                                <button type="button" class="btn">Взять</button>
-                                <button type="button" class="btn">Отзыв</button>
-                                <button type="button" class="btn">Ссылка</button>
+                            <div id="butsdiv">
+                                {#<button type="button" class="btn btn-primary">Взять</button>#}
+                                <button type="button" class="btn btn-primary">Взять случайный экземпляр</button>
+                                <button type="button" class="btn btn-info">Оставить отзыв</button>
+                                <button type="button" class="btn btn-info">Добавить ссылку</button>
                             </div>
                         </form>
 
+                    </div>
+                    <div class="pull-left" id="itemsTalbeDiv">
+                        <caption class="caption"><strong>Экземпляры:</strong></caption>
+                        <table class="table table-striped table-condensed" id="itemsTalbeDiv">
+                            <thead>
+                            <tr class="headRow">
+                                <th onclick="">Владелец</th>
+                                <th onclick="">Читатель</th>
+                                <th onclick="">Ценность</th>
+                            </tr>
+                            </thead>
+                            <tbody id="rows">
+                            {% for bi in bitems %}
+                                <tr>
+                                    <td>{{ bi.owner }}</td>
+                                    <td>{{ bi.reader }}</td>
+                                    <td>{{ bi.value }}</td>
+                                    <td> <button class="btn btn-primary btn-mini">Взять</button> </td>
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

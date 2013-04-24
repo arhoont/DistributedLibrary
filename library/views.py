@@ -78,9 +78,10 @@ def bookinfo(request): # page
     bkeywords = [k.word for k in book.keywords.all()]
     blanguage = book.language.language
 
-    context["bauthors"] = bauthors
+    context["bauthors"] = [a.getPrintName() for a in book.authors.all()]
     context["bkeywords"] = bkeywords
-    context["bitems"] = book.bookitem_set
+    context["bitems"] = book.bookitem_set.all()
+    context["bcount"] = book.bookitem_set.all().count()
     context["book"] = book
 
     return render(request, 'library/bookinfo.html', context)

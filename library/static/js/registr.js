@@ -1,4 +1,4 @@
-function castPage() {
+ function castPage() {
 
     $('#reg-form').submit(function (e) {
         e.preventDefault();

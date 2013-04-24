@@ -31,12 +31,15 @@ class Person(models.Model):
 
 #Book
 class Author(models.Model):
-    fname = models.CharField(max_length=255)
     lname = models.CharField(max_length=255)
+    fname = models.CharField(max_length=255)
+
     info = models.TextField(null=True)
 
     def getPrintName(self):
-        return self.fname + " " + self.lname
+        return self.lname + " " + self.fname
+    def getPrintNameSh(self):
+        return self.lname + " " + self.fname[0:1]+"."
 
     class Meta:
         unique_together = ("fname", "lname")
@@ -62,6 +65,10 @@ class Book(models.Model):
     def getPrintAuthors(self):
         d=", "
         authors=[a.getPrintName() for a in self.authors.all()]
+        return d.join(authors)
+    def getPrintAuthorsSh(self):
+        d=", "
+        authors=[a.getPrintNameSh() for a in self.authors.all()]
         return d.join(authors)
     def getPrintKeywords(self):
         d=", "

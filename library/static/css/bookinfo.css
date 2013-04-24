@@ -1,0 +1,36 @@
+#ba-form-r .controls {
+    padding-top: 5px;
+}
+
+#ba-form-r .control-group, .controls, .control-label {
+    margin: 0 10px 0 0 !important;
+    padding: 0 !important;
+
+}
+
+#ba-form-div {
+    width: 100%;
+}
+
+#butsdiv {
+    margin-left: 20px;
+}
+
+#itemsTalbeDiv {
+    margin-right: 20px;
+}
+
+#ba-desc {
+    height: 100px;
+    width: 200px;
+    word-wrap: break-word;
+    overflow: auto;
+}
+
+#ba-auth-cg {
+    width: 150px !important;
+}
+
+#ba-key-cg {
+    width: 140px !important;
+}
