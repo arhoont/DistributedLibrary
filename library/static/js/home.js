@@ -102,7 +102,7 @@ function castMainTable(objForm) {
         listed += '<td class="ratingColum">';
         var rating = objForm.books[i][6];
         for (var j = 0; j < objForm.books[i][6]; j++) {
-            listed += '<span>&#9734;</span>';
+            listed += '<i class="icon-star icon-white"></i>';
         }
         listed += '&nbsp</td>'
         listed += '<td class="countColum">' + objForm.books[i][7] + '&nbsp</td>';

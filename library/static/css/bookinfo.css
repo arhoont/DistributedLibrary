@@ -34,3 +34,16 @@
 #ba-key-cg {
     width: 140px !important;
 }
+
+#opinionTextArea {
+    margin-top: 10px;
+    width: 97%;
+    resize: none;
+}
+
+.optext {
+    width: 1000px;
+    margin-left: 10px;
+    word-wrap: break-word;
+    overflow: auto;
+}

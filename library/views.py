@@ -79,7 +79,7 @@ def bookinfo(request): # page
     context["bitems"] = book.bookitem_set.all()
     context["bcount"] = book.bookitem_set.all().count()
     context["book"] = book
-
+    context["opinions"] = book.opinion_set.all()
     return render(request, 'library/bookinfo.html', context)
 
 
@@ -139,6 +139,23 @@ def addItem(request):
     bi = BookItem(isbn=book, owner=person, reader=person, value=val)
     bi.save()
     bi.itemstatus_set.create(status=1, date=timezone.now())
+
+    return HttpResponse(json.dumps({"info": 1}))
+
+def addOpinion(request):
+    query = json.loads(str(request.body.decode()))
+    isbn = query["isbn"]
+    opiniontext = query["opiniontext"]
+    rating = query["rating"]
+
+    person = Person.objects.get(pk=request.session["person_id"])
+    if not person: # not registred
+        return HttpResponse(json.dumps({"info": 4}))
+
+    book = Book.objects.get(pk=isbn)
+
+    opinion=Opinion(person=person,isbn=book,date=timezone.now(),rating=rating,text=opiniontext)
+    opinion.save()
 
     return HttpResponse(json.dumps({"info": 1}))
 

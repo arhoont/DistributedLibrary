@@ -50,7 +50,7 @@
 
                                         <div class="controls">
                                             <span id="ba-isbn" name="ba-isbn">{{ book.isbn }}</span>
-                                            <script>isbn="{{ book.isbn }}"</script>
+                                            <script>isbn = "{{ book.isbn }}"</script>
                                             <span class="help-inline"></span>
                                         </div>
                                     </div>
@@ -116,7 +116,7 @@
                             <div id="butsdiv">
                                 {#<button type="button" class="btn btn-primary">Взять</button>#}
                                 <button type="button" class="btn btn-primary">Взять случайный экземпляр</button>
-                                <button type="button" class="btn btn-info">Оставить отзыв</button>
+                                <button type="button" class="btn btn-info" id="addOpinionB">Оставить отзыв</button>
                                 <button type="button" class="btn btn-info">Добавить ссылку</button>
                                 <button type="button" class="btn btn-info" id="addItemBut">Добавить экземпляр</button>
                             </div>
@@ -150,7 +150,30 @@
                     </div>
                 </div>
             </div>
+            <div id="opinions">
+                <h4>Отзывы:</h4>
+                {% load apptags %}
+                {% for op in opinions %}
+                    <hr>
+
+                    <div>
+                        {% for i in op.rating|times %}
+                           <i class="icon-star icon-white"></i>
+                        {% endfor %}
+{#                        {% for i in op.rating|utimes %}#}
+{#                           <i class="icon-star-empty icon-white"></i>#}
+{#                        {% endfor %}#}
+                    </div>
+                    <div class="muted">
+                        <small>{{ op.person.fname }} {{ op.person.lname }}, {{ op.date }}</small>
+                    </div>
+                    <div class="optext">{{ op.text }}</div>
+
+                {% endfor %}
+            </div>
+
         </div>
+
     </div>
 
     <div id="takeModal" class="modal hide fade" tabindex="-1" role="dialog">
@@ -177,6 +200,32 @@
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal">Закрыть</button>
             <button class="btn btn-primary" id="addItemB">Добавить</button>
+        </div>
+    </div>
+
+    <div id="opinionModal" class="modal hide fade" tabindex="-1" role="dialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3 id="myModalLabel">Оставить отзыв</h3>
+        </div>
+        <div class="modal-body">
+            <strong>Рейтинг:</strong>
+
+            <div class="btn-group" id="ba-rating" data-toggle="buttons-radio">
+                <button type="button" class="btn btn-info btn-mini">1</button>
+                <button type="button" class="btn btn-info btn-mini">2</button>
+                <button type="button" class="btn btn-info btn-mini active">3</button>
+                <button type="button" class="btn btn-info btn-mini">4</button>
+                <button type="button" class="btn btn-info btn-mini">5</button>
+            </div>
+            <div>
+                <textarea rows="6" id="opinionTextArea"></textarea>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">Закрыть</button>
+            <button class="btn btn-primary" id="addOpinion">Написать</button>
         </div>
     </div>
     <script>
