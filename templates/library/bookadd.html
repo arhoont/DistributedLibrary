@@ -12,7 +12,7 @@
 
     <span class="alertSpan"></span>
     <div class="row">
-        <div class="form-wrapper" id="ba-form-wrapper">
+        <div class="form-wrapper pull-left" id="ba-form-wrapper">
 
             <div class="form-div" id="ba-form-div">
                 <div>
@@ -85,9 +85,13 @@
                                                 <button type="button" class="btn btn-info active">2</button>
                                                 <button type="button" class="btn btn-info">3</button>
                                             </div>
-                                            <a class="infoValues" onclick=""><i
-                                                    class="icon-question-sign icon-white"></i></a>
-
+                                            {#                                            <a class="infoValuesButton" onclick=""><i#}
+                                            {#                                                    class="icon-question-sign icon-white"></i></a>#}
+                                            <a class="infoValuesButton" data-toggle="popover" data-placement="right"
+                                               data-content="Ценность позволяет установить количество запросов...а аааааааааааааа"
+                                               title="Ценность
+                                        <button type='button' class='close closeInfoPop' id='closeInfoPop'>&times;</button>">
+                                                <i class="icon-question-sign icon-white"></i></a>
                                             <span class="help-inline"></span>
                                         </div>
                                     </div>
@@ -136,19 +140,12 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div id="valuesInfoModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Ценность книги</h3>
-        </div>
-        <div class="modal-body">
-            <p>Ололо трололо, мы угнали НЛО</p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <div class="span4" id="infoDiv">
+{#            <div id="infoValue" class="hidden">#}
+{#                <h3>Ценность</h3>#}
+{##}
+{#                <div id="infoValText">Ценность позволяет установить количество запросов...ааааааааааааааа</div>#}
+{#            </div>#}
         </div>
     </div>
     <script>

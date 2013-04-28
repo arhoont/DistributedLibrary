@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="{% static "css/formcss.css" %}">
     <link rel="stylesheet" href="{% static "css/bookinfo.css" %}">
-    {#    <script type="text/javascript" charset="utf-8" src="{% static "js/bookadd.js" %}"></script>#}
+    <script type="text/javascript" charset="utf-8" src="{% static "js/bookinfo.js" %}"></script>
 {% endblock %}
 {% block content %}
 
@@ -50,6 +50,7 @@
 
                                         <div class="controls">
                                             <span id="ba-isbn" name="ba-isbn">{{ book.isbn }}</span>
+                                            <script>isbn="{{ book.isbn }}"</script>
                                             <span class="help-inline"></span>
                                         </div>
                                     </div>
@@ -87,7 +88,7 @@
 
                                     <div class="controls" id="authicontrol">
                                         {% for auth in bauthors %}
-                                            <div>{{ auth}}</div>
+                                            <div>{{ auth }}</div>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -108,7 +109,7 @@
 
                                     <div class="controls">
                                         <div id="ba-desc">{{ book.description }}</div>
-{#                                        <textarea rows=4 id="ba-desc" name="ba-desc" placeholder="Описание" readonly>{{ book.description }}</textarea>#}
+                                        {#                                        <textarea rows=4 id="ba-desc" name="ba-desc" placeholder="Описание" readonly>{{ book.description }}</textarea>#}
                                     </div>
                                 </div>
                             </div>
@@ -117,6 +118,7 @@
                                 <button type="button" class="btn btn-primary">Взять случайный экземпляр</button>
                                 <button type="button" class="btn btn-info">Оставить отзыв</button>
                                 <button type="button" class="btn btn-info">Добавить ссылку</button>
+                                <button type="button" class="btn btn-info" id="addItemBut">Добавить экземпляр</button>
                             </div>
                         </form>
 
@@ -137,7 +139,9 @@
                                     <td>{{ bi.owner }}</td>
                                     <td>{{ bi.reader }}</td>
                                     <td>{{ bi.value }}</td>
-                                    <td> <button class="btn btn-primary btn-mini">Взять</button> </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-mini">Взять</button>
+                                    </td>
                                 </tr>
 
                             {% endfor %}
@@ -149,21 +153,35 @@
         </div>
     </div>
 
-    <div id="valuesInfoModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
+    <div id="takeModal" class="modal hide fade" tabindex="-1" role="dialog">
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Ценность книги</h3>
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3 id="myModalLabel">Добавить экземпляр</h3>
         </div>
         <div class="modal-body">
-            <p>Ололо трололо, мы угнали НЛО</p>
+            <p>Вы уверены, что у вас есть книга <strong>"{{ book.title }}"</strong>и вы хотите добавить свой экземпляр в
+                библиотеку?</p>
+            <strong>Выберите ценность:</strong>
+
+            <div class="btn-group" id="ba-val" data-toggle="buttons-radio">
+                <button type="button" class="btn btn-info">1</button>
+                <button type="button" class="btn btn-info active">2</button>
+                <button type="button" class="btn btn-info">3</button>
+            </div>
+            <a class="infoValuesButton" data-toggle="popover" data-placement="right"
+               data-content="Ценность позволяет установить количество запросов...а аааааааааааааа"
+               title="Ценность
+                                        <button type='button' class='close closeInfoPop' id='closeInfoPop'>&times;</button>">
+                <i class="icon-question-sign icon-white"></i></a>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            <button class="btn" data-dismiss="modal">Закрыть</button>
+            <button class="btn btn-primary" id="addItemB">Добавить</button>
         </div>
     </div>
     <script>
         var authors = {{authors|safe}};
         var keywords = {{keywords|safe}};
     </script>
+
 {% endblock %}

@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     (r'^checkUser', views.checkUser),
     (r'^addbajax', views.addbajax),
     (r'^getlastbooks', views.getlastbooks),
+    (r'^addItem', views.addItem),
 )

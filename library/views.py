@@ -38,7 +38,6 @@ def error(request):
 
 
 def bookadd(request): # page
-    print(request.GET)
     context = isauth(request)
     authors = [a.getPrintName() for a in Author.objects.all()]
     keywords = [k.word for k in Keyword.objects.all()]
@@ -53,7 +52,6 @@ def bookadd(request): # page
 def bookinfo(request): # page
 
     isbn = request.GET['isbn']
-
     book = Book.objects.filter(isbn=isbn)
     if len(book) == 0:
         # book not found
@@ -74,9 +72,7 @@ def bookinfo(request): # page
     # return render(request, 'library/bookadd.html', context)
     #==========================
 
-    bauthors = [a.getPrintName() for a in book.authors.all()]
     bkeywords = [k.word for k in book.keywords.all()]
-    blanguage = book.language.language
 
     context["bauthors"] = [a.getPrintName() for a in book.authors.all()]
     context["bkeywords"] = bkeywords
@@ -128,6 +124,23 @@ def regajax(request):
     p.save()
     # print(p.login)
     return HttpResponse(json.dumps({"info": 1, "domain": " "}))
+
+
+def addItem(request):
+    query = json.loads(str(request.body.decode()))
+    isbn = query["isbn"]
+    val = query["val"]
+
+    person = Person.objects.get(pk=request.session["person_id"])
+    if not person: # not registred
+        return HttpResponse(json.dumps({"info": 4}))
+    book = Book.objects.get(pk=isbn)
+
+    bi = BookItem(isbn=book, owner=person, reader=person, value=val)
+    bi.save()
+    bi.itemstatus_set.create(status=1, date=timezone.now())
+
+    return HttpResponse(json.dumps({"info": 1}))
 
 
 def checkBook(request):

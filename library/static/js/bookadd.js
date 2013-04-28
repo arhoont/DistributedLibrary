@@ -7,9 +7,9 @@ function castPage() {
         e.preventDefault();
         $('#rform-submit').click();
     });
-    $('.infoValues').click(function () {
-        $('#valuesInfoModal').modal('show');
-    });
+//    $('.infoValues').click(function () {
+//        $('#valuesInfoModal').modal('show');
+//    });
     $("#ba-isbn").focusout(function () {
         if ($("#ba-isbn").val().length > 0) {
             $.ajax({
@@ -33,28 +33,6 @@ function castPage() {
             });
         }
     });
-//    $("#ba-title").focusout(function () {
-//        if ($("#ba-title").val().length > 0) {
-//            $.ajax({
-//                type: "POST",
-//                url: "/checkBook",
-//                data: JSON.stringify({'type': 2, 'link': "", "isbn": "", "title": $.trim($("#ba-title").val())}),
-//                dataType: "json",
-//                success: function (data) {
-//                    if (parseInt(data.info) == 1) {
-//                        markBad("#ba-title-cg", "");
-//                        titleFail(data.books);
-//                    }
-//                    else {
-//                        markGood("#ba-title-cg", "");
-//                    }
-//                },
-//                error: function () {
-//                    $('#errBook').html('проблемы соединения с сервером');
-//                }
-//            });
-//        }
-//    });
     $("#authicontrol").append('<div class="author">' +
         '<input type="text" value="" class="aname" placeholder="Фамилия Имя">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
@@ -66,6 +44,13 @@ function castPage() {
 
     $('.aname').typeahead({source: authors});
     $('.kword').typeahead({source: keywords});
+//    $('.infoValuesButton').click(function(){
+//        $("#infoValue").toggleClass("hidden");
+//    });
+    $('.infoValuesButton').popover({html: 'true'});
+    $('.closeInfoPop').live('click', function(){
+        $('.infoValuesButton').click();
+    });
 }
 
 function addEAuthor() {
@@ -104,9 +89,6 @@ function addButtonBook() {
         bookError("Выберите авторов");
     } else if ($("#ba-isbn-cg").hasClass("error")) {
         bookError("Такая книга уже есть");
-//    } else if ($("#ba-title-cg").hasClass("error")) {
-//        bookError("Похожая книгу есть");
-//
     } else {
         $.ajax({
             type: "POST",
@@ -147,34 +129,9 @@ function isbnFail(isbn) {
     $('#ba-isbn').popover({
         html: true,
         title: '<strong>Ошибка</strong>',
-        content: '<div>Такая книга уже есть <a class="btn btn-info" href="/book/add?isbn=' + isbn + '">Посмотреть</a></div>',
+        content: '<div>Такая книга уже есть, добавьте экземпляр на странице информации <a class="btn btn-info" href="/book/add?isbn=' + isbn + '">Перейти к книге</a></div>',
         trigger: 'manual'
 
     });
     $('#ba-isbn').popover('show');
 }
-//function titleFail(books) {
-//    $('#ba-title').popover({
-//        template: '<div class="popover special-class popover-wrapper"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>',
-//        html: true,
-//        title: '<strong>Похожие книги</strong>' +
-//            '<button type="button" id="closeTitleFail" class="close">&times;</button>',
-//        content: '<span id="spanTFTable"><table class="table table-striped table-condensed sim-books-table"><tbody id="simBooks"></tbody><table></span>' +
-//            '<button class="btn btn-info" id="closeTFB">Закрыть</button>',
-//        trigger: 'manual'
-//
-//    });
-//    $('#ba-title').popover('show');
-//    $('#closeTitleFail').click(function () {
-//        $('#ba-title').popover('destroy');
-//        markGood("#ba-title-cg", "");
-//    });
-//    $('#closeTFB').click(function () {
-//        $('#ba-title').popover('destroy');
-//        markGood("#ba-title-cg", "");
-//    });
-//    for (book in books){
-//        $("#simBooks").append("<tr><td class='isbnColum'><a href='/book/info?isbn="+books[book][0]+"'>"+books[book][0]+"</a></td> " +
-//            "<td class='titleColum'><a href='/book/info?isbn="+books[book][0]+"'>"+books[book][2]+"</a></td><td class='authColum'>"+books[book][4]+"</td></tr>");
-//    }
-//}
