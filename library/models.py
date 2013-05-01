@@ -22,7 +22,8 @@ class Person(models.Model):
         unique_together = ("domain", "login")
     def __str__(self):
         return self.login
-
+    def getPrintableName(self):
+        return self.fname + " " + self.lname
 # no!
 # class Email(models.Model):
 #     person = models.ForeignKey(Person)
@@ -37,9 +38,9 @@ class Author(models.Model):
     info = models.TextField(null=True)
 
     def getPrintName(self):
-        return self.lname + " " + self.fname
+        return self.fname + " " + self.lname
     def getPrintNameSh(self):
-        return self.lname + " " + self.fname[0:1]+"."
+        return self.fname + " " + self.lname[0:1]+"."
 
     class Meta:
         unique_together = ("fname", "lname")
@@ -108,13 +109,17 @@ class Link(models.Model):
     url = models.CharField(max_length=255)
     text = models.TextField()
 
-class Request(models.Model):
+
+class Conversation(models.Model):
     item=models.ForeignKey(BookItem)
     personFrom=models.ForeignKey(Person, related_name="requestfrom")
     personTo=models.ForeignKey(Person, related_name="requestto")
-    dateSend = models.DateTimeField()
-    dateReply = models.DateTimeField(null=True)
-    answer= models.IntegerField(null=True)
+
+class Message(models.Model):
+    conversation=models.ForeignKey(Conversation)
+    date = models.DateTimeField()
+    mtype = models.IntegerField()
+    resp = models.IntegerField()
     comment = models.TextField(null=True)
     isRead = models.IntegerField(null=True)
 

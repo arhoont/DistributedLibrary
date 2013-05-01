@@ -12,7 +12,11 @@ from django.utils import timezone
 import json
 from library.models import Book
 from django.db import transaction
+from django.core.serializers.json import DjangoJSONEncoder
 
+
+# pages
+#================================================
 
 def isauth(request):
     context = Context()
@@ -79,7 +83,7 @@ def bookinfo(request): # page
     context["bitems"] = book.bookitem_set.all()
     context["bcount"] = book.bookitem_set.all().count()
     context["book"] = book
-    context["opinions"] = book.opinion_set.all()
+    context["opinions"] = book.opinion_set.all().order_by("date")
     return render(request, 'library/bookinfo.html', context)
 
 
@@ -94,6 +98,18 @@ def registr(request):
     return render(request, 'library/registr.html', context)
 
 
+def error(request):
+    context = Context()
+    context["form_error"] = "yes"
+    return render(request, 'library/index.html', context)
+
+
+def logout(request):
+    request.session.flush()
+    return HttpResponseRedirect(reverse('index'))
+
+#================================================
+
 def randstring(n):
     a = string.ascii_letters + string.digits
     return ''.join([random.choice(a) for i in range(n)])
@@ -104,7 +120,8 @@ def strHash(string):
     hash.update(string.encode())
     return hash.hexdigest()
 
-
+# user function
+#================================================
 def regajax(request):
     query = json.loads(str(request.body.decode()))
     log = query["login"]
@@ -126,6 +143,39 @@ def regajax(request):
     return HttpResponse(json.dumps({"info": 1, "domain": " "}))
 
 
+def checkUser(request):
+    query = json.loads(str(request.body.decode()))
+    login = query["login"]
+    p = Person.objects.filter(domain=" ", login=login)
+
+    if p:
+        return HttpResponse(json.dumps({"info": 1}))
+    return HttpResponse(json.dumps({"info": 2}))
+
+
+def signin(request):
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    domain = request.POST.get("domain")
+    remember = request.POST.get("remember")
+    django_timezone = request.POST.get("django_timezone")
+    p = Person.objects.filter(login=username, domain=domain)
+    if p:
+        salt = p[0].salt
+        passHash = strHash(strHash(password) + salt)
+        if passHash == p[0].pwd:
+            request.session["person_id"] = p[0].id
+            request.session["person_login"] = p[0].login
+            request.session["django_timezone"] = django_timezone
+            if remember == "on":
+                request.session.set_expiry(timedelta(days=30))
+            else:
+                request.session.set_expiry(0)
+            return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('error'))
+
+#================================================
+
 def addItem(request):
     query = json.loads(str(request.body.decode()))
     isbn = query["isbn"]
@@ -142,6 +192,7 @@ def addItem(request):
 
     return HttpResponse(json.dumps({"info": 1}))
 
+
 def addOpinion(request):
     query = json.loads(str(request.body.decode()))
     isbn = query["isbn"]
@@ -154,7 +205,7 @@ def addOpinion(request):
 
     book = Book.objects.get(pk=isbn)
 
-    opinion=Opinion(person=person,isbn=book,date=timezone.now(),rating=rating,text=opiniontext)
+    opinion = Opinion(person=person, isbn=book, date=timezone.now(), rating=rating, text=opiniontext)
     opinion.save()
 
     return HttpResponse(json.dumps({"info": 1}))
@@ -174,16 +225,6 @@ def checkBook(request):
         return HttpResponse(json.dumps({"info": 1, "books": [b.getValues() for b in booklist]}))
 
     return HttpResponse(json.dumps({"info": 2, "books": ""}))
-
-
-def checkUser(request):
-    query = json.loads(str(request.body.decode()))
-    login = query["login"]
-    p = Person.objects.filter(domain=" ", login=login)
-
-    if p:
-        return HttpResponse(json.dumps({"info": 1}))
-    return HttpResponse(json.dumps({"info": 2}))
 
 
 @transaction.commit_on_success
@@ -228,39 +269,6 @@ def addbajax(request):
     bi.itemstatus_set.create(status=1, date=timezone.now())
 
     return HttpResponse(json.dumps({"info": 1, "isbn": book.isbn}))
-
-
-def signin(request):
-    username = request.POST.get("username")
-    password = request.POST.get("password")
-    domain = request.POST.get("domain")
-    remember = request.POST.get("remember")
-    django_timezone = request.POST.get("django_timezone")
-    p = Person.objects.filter(login=username, domain=domain)
-    if p:
-        salt = p[0].salt
-        passHash = strHash(strHash(password) + salt)
-        if passHash == p[0].pwd:
-            request.session["person_id"] = p[0].id
-            request.session["person_login"] = p[0].login
-            request.session["django_timezone"] = django_timezone
-            if remember == "on":
-                request.session.set_expiry(timedelta(days=30))
-            else:
-                request.session.set_expiry(0)
-            return HttpResponseRedirect(reverse('index'))
-    return HttpResponseRedirect(reverse('error'))
-
-
-def error(request):
-    context = Context()
-    context["form_error"] = "yes"
-    return render(request, 'library/index.html', context)
-
-
-def logout(request):
-    request.session.flush()
-    return HttpResponseRedirect(reverse('index'))
 
 
 def getbooks(request):
@@ -312,49 +320,123 @@ def getlastbooks(request):
 
     return HttpResponse(json.dumps({"books": bookslist}))
 
+def loadItems(request):
+    query = json.loads(str(request.body.decode()))
+    count = int(query["count"])
+    bookslist = [[b.isbn, b.title, b.getPrintAuthors(), b.language.language] for b in
+                 Book.objects.all().order_by("isbn")[:count]]
 
-def castbooks(request):
-    d = Domain(domain=" ")
-    d.save()
+    return HttpResponse(json.dumps({"books": bookslist}))
 
-    l = Language(language="Русский")
-    l.save()
-    p1 = Person(domain=d, login="test1", email="test1@mail.com", fname="ftest1", lname="ltest1", pwd="ptest1",
-                salt="psalt1", adm=1, status=1)
-    p1.save()
-    p1 = Person.objects.get(pk=1)
-    p2 = Person(domain=d, login="test2", email="test2@mail.com", fname="ftest2", lname="ltest2", pwd="ptest2",
-                salt="psalt1", adm=1, status=1)
-    p2.save()
-    p2 = Person.objects.get(pk=2)
 
-    authors = []
-    for i in range(10):
-        authors.append(Author(fname="fauthor" + str(i), lname="lauthor" + str(i), info="ololo" + str(i)))
-        authors[i].save()
-    authors = Author.objects.all()
+def testBIConv(request):
+    query = json.loads(str(request.body.decode()))
+    itemId = query["itemId"]
 
-    keywords = []
-    for i in range(10):
-        keywords.append(Keyword(word="key" + str(i)))
-        keywords[i].save()
-    keywords = Keyword.objects.all()
+    queryStr = 'select * from library_conversation as conv where item_id=%s and ' \
+               'exists(select * from library_message where conversation_id=conv.id and "isRead"=0);'
+    cursor = connection.cursor()
+    cursor.execute(queryStr, str(itemId))
+    conv = cursor.fetchone()
+    if conv:
+        return HttpResponse(json.dumps({"info": 3}))
+    else:
+        return HttpResponse(json.dumps({"info": 1}))
 
-    books = []
-    for i in range(5):
-        books.append(Book(isbn="123123213" + str(i), ozon="ozon" + str(i), title="title" + str(i), language=l,
-                          description="desc" + str(i)))
-        books[i].save()
-        books[i].authors.add(authors[i])
-        books[i].authors.add(authors[i + 2])
-        books[i].keywords.add(keywords[i])
-        books[i].keywords.add(keywords[i + 2])
-        books[i].keywords.add(keywords[i + 3])
-        for j in range(3):
-            bi = BookItem(isbn=books[i], owner=p1, reader=p2, value=1)
+
+@transaction.commit_on_success
+def takeReq(request):
+    query = json.loads(str(request.body.decode()))
+
+    itemId = query["itemId"]
+
+    personFrom = Person.objects.get(pk=request.session["person_id"])
+
+    if not personFrom: # not registred
+        return HttpResponse(json.dumps({"info": 3}))
+
+    bi = BookItem.objects.get(pk=itemId)
+    personTo = Person.objects.get(pk=bi.reader_id)
+
+
+    conv = Conversation(item=bi, personFrom=personFrom, personTo=personTo)
+    conv.save()
+    conv.message_set.create(date=timezone.now(), mtype=1, isRead=0, resp=1)
+    if bi.value==1:
+        bi.reader = conv.personFrom
+        bi.save()
+
+    return HttpResponse(json.dumps({"info": 1}))
+
+
+def getMessages(request):
+    query = json.loads(str(request.body.decode()))
+    mType = query["mType"]
+    isRead = query["isRead"]
+    person = Person.objects.get(pk=request.session["person_id"])
+    if not person:
+        return HttpResponse(json.dumps({"info": 3}))
+
+    cursor = connection.cursor()
+    queryStr = ""
+    if mType == "in":
+        queryStr = 'select mess.id, conversation_id, item_id, "personFrom_id" from library_message mess join library_conversation conv ' \
+                   'on mess.conversation_id=conv.id  where  "isRead" = %s and "personTo_id"=%s'
+    elif mType == "out":
+        queryStr = 'select mess.id, conversation_id, item_id, "personTo_id" from library_message mess join library_conversation conv ' \
+                   'on mess.conversation_id=conv.id  where  "isRead" = %s and "personFrom_id"=%s;'
+
+    cursor.execute(queryStr, (isRead, person.id))
+    messages = cursor.fetchall()
+    formatedMes = []
+    for mess in messages:
+        message = Message.objects.get(pk=mess[0])
+        # conv=Conversation.objects.get(pk=mess[1])
+        bi = BookItem.objects.get(pk=mess[2])
+        p_new = Person.objects.get(pk=mess[3])
+        formatedMes.append((message.id, bi.id, bi.value, bi.isbn.title,
+                            p_new.getPrintableName(), message.date, message.resp,message.mtype))
+
+    return HttpResponse(json.dumps({"info": 1, "messages": formatedMes}, cls=DjangoJSONEncoder))
+
+
+@transaction.commit_on_success
+def replyMessage(request):
+    query = json.loads(str(request.body.decode()))
+    mess_id = query["mess_id"]
+    resp = query["resp"]
+
+    person = Person.objects.get(pk=request.session["person_id"])
+
+    if not person:
+        return HttpResponse(json.dumps({"info": 3}))
+
+    mess = Message.objects.get(pk=mess_id)
+    conv = mess.conversation
+    bi = conv.item
+
+    mess.isRead = 1
+    mess.save()
+
+    if mess.mtype==bi.value: # read
+        return HttpResponse(json.dumps({"info": 1}))
+
+    mess_new = Message(conversation=conv, date=timezone.now(), mtype=mess.mtype+1, resp=resp, isRead=0)
+    mess_new.save()
+
+    if resp==2: # refuse
+        return HttpResponse(json.dumps({"info": 1}))
+
+    if resp==1: # ok
+        if bi.value==mess_new.mtype:
+            bi.reader = conv.personFrom
             bi.save()
-            bi.itemstatus_set.create(status=1, date=timezone.now())
+            return HttpResponse(json.dumps({"info": 2}))
+        return HttpResponse(json.dumps({"info": 1}))
 
-    books = Book.objects.all()
-    return HttpResponse(json.dumps({"info": 5}))
+    return HttpResponse(json.dumps({"info": 3}))
+
+
+
+
 

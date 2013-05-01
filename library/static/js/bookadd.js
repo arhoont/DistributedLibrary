@@ -34,7 +34,7 @@ function castPage() {
         }
     });
     $("#authicontrol").append('<div class="author">' +
-        '<input type="text" value="" class="aname" placeholder="Фамилия Имя">' +
+        '<input type="text" value="" class="aname" placeholder="Имя Фамилия">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
     $("#keywordsf").append('<div class="author">' +
@@ -44,9 +44,7 @@ function castPage() {
 
     $('.aname').typeahead({source: authors});
     $('.kword').typeahead({source: keywords});
-//    $('.infoValuesButton').click(function(){
-//        $("#infoValue").toggleClass("hidden");
-//    });
+
     $('.infoValuesButton').popover({html: 'true'});
     $('.closeInfoPop').live('click', function(){
         $('.infoValuesButton').click();
@@ -55,7 +53,7 @@ function castPage() {
 
 function addEAuthor() {
     $("#authicontrol").append('<div class="author">' +
-        '<input type="text" value="" class="aname" placeholder="Фамилия Имя">' +
+        '<input type="text" value="" class="aname" placeholder="Имя Фамилия">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
     $('.aname').typeahead({source: authors});

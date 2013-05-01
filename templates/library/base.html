@@ -28,7 +28,8 @@
 
                 <div class="nav-list">
                     <div class="form-search  navbar-search input-append input-prepend" id="search">
-                        <button id="search-setting" class="btn disabled" type="button"><i class="icon-cog icon-white"></i></button>
+                        <button id="search-setting" class="btn disabled" type="button"><i
+                                class="icon-cog icon-white"></i></button>
                         <input class="span3" id="searchInput" type="text" placeholder="Поиск"/>
                         <button onclick="clearSearch()" type="button" class="close" id="clear-icon">&times;</button>
                         <button class="btn" type="button" id="searchButton"><i class="icon-search icon-white"></i>
@@ -36,13 +37,15 @@
                     </div>
                     <div class="pull-right input-append btn-group">
                         <a type="button" class="btn" href="/"><i class="icon-home icon-white"></i></a>
-                        <a type="button" class="btn" href="/book/add">Добавить книгу</a>
+                        <a type="button" class="btn" id="messageButton"><i class="icon-envelope icon-white"></i>
+                            Сообщения</a>
+
+                        <a type="button" class="btn" href="/book/add"><i class="icon-plus-sign icon-white"></i> Добавить
+                            книгу</a>
                         <a class="btn"><i class="icon-user icon-white"></i> {{ person_login }}</a>
                         <a class="btn dropdown-toggle" data-toggle="dropdown"><span
                                 class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
-                            <li><a href="#"><i class="icon-trash"></i> Delete</a></li>
                             <li><a href="/logout"><i class="icon-off"></i> Выйти</a></li>
                             <li class="divider"></li>
                             {# check it #}
@@ -67,6 +70,56 @@
 </div>
 <br>
 
+<div id="messageModal" class="modal hide fade" tabindex="-1" role="dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3 id="myModalLabel">Сообщения</h3>
+    </div>
+    <div class="modal-body">
+        <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a href="#messIn" id="in">Входящие</a></li>
+            <li><a href="#messOut" id="out">Исходящие</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="messIn">
+                <table class="table table-hover messtable" id="table-in">
+                    <thead>
+                    <tr>
+                        <th>Книга</th>
+                        <th>Человек</th>
+                        <th>Экземпляр(id)</th>
+                        <th>Дата</th>
+                        <th>Тип</th>
+                        <th>&nbsp</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-body">
+                    <tr><td>ad</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane" id="messOut">
+                <table class="table table-hover messtable" id="table-out">
+                    <thead>
+                    <tr>
+                        <th>Книга</th>
+                        <th>Человек</th>
+                        <th>Экземпляр</th>
+                        <th>Дата</th>
+                        <th>Тип</th>
+                        <th>&nbsp</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+    </div>
+</div>
 
 </body>
 </html>

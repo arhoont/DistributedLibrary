@@ -4,9 +4,11 @@ body {
 
     /*font-size: 12px;*/
 }
+
 table {
     /*font-size: 12px;*/
 }
+
 .separator {
     background-color: #e5e5e5;
     border-bottom: 1px solid #ffffff;
@@ -20,4 +22,15 @@ table {
     right: 42px;
 }
 
+.messtable tr {
+    cursor: pointer;
+}
 
+#myTab {
+    margin-bottom: 0;
+}
+
+#messageModal {
+    width: 1000px;
+    margin-left: -500px;
+}
