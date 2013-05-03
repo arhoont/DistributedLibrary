@@ -418,7 +418,7 @@ def replyMessage(request):
     mess.isRead = 1
     mess.save()
 
-    if mess.mtype==bi.value: # read
+    if mess.mtype==bi.value or mess.resp==2: # read
         return HttpResponse(json.dumps({"info": 1}))
 
     mess_new = Message(conversation=conv, date=timezone.now(), mtype=mess.mtype+1, resp=resp, isRead=0)

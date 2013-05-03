@@ -143,7 +143,7 @@ function loadItems() {
                         listed += '<td><button class="btn btn-primary btn-mini" ' +
                             'onclick="takeItem(' + bi[1] + ',' + bi[4] + ')">Взять</button></td>';
                     } else if (bi[5] == 2) {
-                        listed += '<td>' + bi[6] + '</td>';
+                        listed += '<td>' + parseInt(bi[6]/60)+':'+pad(parseInt(bi[6]%60),2) + '</td>';
                     } else if (bi[5] == 1) {
                         listed += '<td>' + 'x' + '</td>';
                     }
@@ -162,3 +162,13 @@ function loadItems() {
     });
 }
 
+function pad(number, length) {
+
+    var str = '' + number;
+    while (str.length < length) {
+        str = '0' + str;
+    }
+
+    return str;
+
+}

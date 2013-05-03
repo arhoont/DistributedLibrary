@@ -130,7 +130,11 @@ function addInMessage(messages) {
                     listed += '<i class="icon-ban-circle icon-white"></i>';
                 }
             } else {
-                listed += '<i class="icon-question-sign icon-white"></i>';
+                if (mess[6] == 1) {
+                    listed += '<i class="icon-question-sign icon-white"></i>';
+                } else if (mess[6] == 2) {
+                    listed += '<i class="icon-ban-circle icon-white"></i>';
+                }
             }
             listed += '</td><td>&nbsp</td>';
         } else {
@@ -191,15 +195,21 @@ function addOutMessage(messages) {
                     '<i class="icon-ok-circle icon-white"></i></button>';
                 listed += '</td>';
             } else {
-                listed += '<i class="icon-question-sign icon-white"></i>';
-                listed += '</td><td>';
-                listed += '<div class="btn-group">';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1)">' +
-                    '<i class="icon-ok-circle icon-white"></i></button>';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2)">' +
-                    '<i class="icon-ban-circle icon-white"></i></button>';
-                listed += '</div>';
-
+                if (mess[6] == 2) {
+                    listed += '<i class="icon-ban-circle icon-white"></i>';
+                    listed += '</td><td>';
+                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1)">' +
+                        '<i class="icon-ok-circle icon-white"></i></button>';
+                } else if (mess[6] == 1) {
+                    listed += '<i class="icon-question-sign icon-white"></i>';
+                    listed += '</td><td>';
+                    listed += '<div class="btn-group">';
+                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1)">' +
+                        '<i class="icon-ok-circle icon-white"></i></button>';
+                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2)">' +
+                        '<i class="icon-ban-circle icon-white"></i></button>';
+                    listed += '</div>';
+                }
             }
         } else {
             if (mess[7] == mess[2]) {
