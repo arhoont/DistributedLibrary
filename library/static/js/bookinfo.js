@@ -57,6 +57,7 @@ function castPage() {
             }
         });
     });
+    loadItems();
 }
 function takeItem(itemId, val) {
     $.ajax({
@@ -127,7 +128,22 @@ function loadItems() {
         dataType: "json",
         success: function (data) {
             if (parseInt(data.info) == 1) {
-                location.reload();
+                $("#itemsTalbeDiv #rows").html("");
+                var k = data.bilist.length;
+                for (i = 0; i < k; i++) {
+                    bi = data.bilist[i];
+
+                    listed = '<tr id="bi' + bi[1] + '">';
+                    listed += '<td>' + bi[1] + '</td>';
+                    listed += '<td>' + bi[2] + '</td>';
+                    listed += '<td>' + bi[3] + '</td>';
+                    listed += '<td>' + bi[4] + '</td>';
+
+                    listed += '<td><button class="btn btn-primary btn-mini" ' +
+                        'onclick="takeItem('+bi[1]+','+bi[4]+')">Взять</button></td>';
+                    listed += '</tr>';
+                    $("#itemsTalbeDiv #rows").append(listed);
+                }
             } else if (parseInt(data.info) == 2) {
 
             } else if (parseInt(data.info) == 3) {

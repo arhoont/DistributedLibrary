@@ -186,7 +186,7 @@ def addItem(request):
         return HttpResponse(json.dumps({"info": 4}))
     book = Book.objects.get(pk=isbn)
 
-    bi = BookItem(isbn=book, owner=person, reader=person, value=val)
+    bi = BookItem(book=book, owner=person, reader=person, value=val)
     bi.save()
     bi.itemstatus_set.create(status=1, date=timezone.now())
 
@@ -322,11 +322,10 @@ def getlastbooks(request):
 
 def loadItems(request):
     query = json.loads(str(request.body.decode()))
-    count = int(query["count"])
-    bookslist = [[b.isbn, b.title, b.getPrintAuthors(), b.language.language] for b in
-                 Book.objects.all().order_by("isbn")[:count]]
+    isbn = query["isbn"]
+    bilist=[bi.getValues() for bi in Book.objects.get(pk=isbn).bookitem_set.all()]
 
-    return HttpResponse(json.dumps({"books": bookslist}))
+    return HttpResponse(json.dumps({"info":1, "bilist": bilist}))
 
 
 def testBIConv(request):
@@ -394,7 +393,7 @@ def getMessages(request):
         # conv=Conversation.objects.get(pk=mess[1])
         bi = BookItem.objects.get(pk=mess[2])
         p_new = Person.objects.get(pk=mess[3])
-        formatedMes.append((message.id, bi.id, bi.value, bi.isbn.title,
+        formatedMes.append((message.id, bi.id, bi.value, bi.book.title,
                             p_new.getPrintableName(), message.date, message.resp,message.mtype))
 
     return HttpResponse(json.dumps({"info": 1, "messages": formatedMes}, cls=DjangoJSONEncoder))

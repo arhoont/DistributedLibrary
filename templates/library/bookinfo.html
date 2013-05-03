@@ -137,22 +137,6 @@
                             </tr>
                             </thead>
                             <tbody id="rows">
-                            {% for bi in bitems %}
-                                <tr>
-                                    <td>{{ bi.id }}</td>
-                                    <td>{{ bi.owner }}</td>
-                                    <td>{{ bi.reader }}</td>
-                                    <td>{{ bi.value }}</td>
-                                    <td>
-                                        {% if bi.reader.id != person_id %}
-                                            <button class="btn btn-primary btn-mini" onclick="takeItem({{ bi.id}},{{ bi.value }})">
-                                                Взять
-                                            </button>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-
-                            {% endfor %}
                             </tbody>
                         </table>
                     </div>

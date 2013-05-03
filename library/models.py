@@ -83,11 +83,13 @@ class Book(models.Model):
         return (self.isbn,self.ozon,self.title,self.language.language,self.getPrintAuthors(),self.getPrintKeywords(), self.getAvgRating(),self.bookitem_set.count())
 
 class BookItem(models.Model):
-    isbn=models.ForeignKey(Book)
+    book=models.ForeignKey(Book)
     owner=models.ForeignKey(Person, related_name="itemowner")
     reader=models.ForeignKey(Person, related_name="itemreader")
     value = models.IntegerField(default=1)
     rdate = models.DateTimeField(null=True)
+    def getValues(self):
+        return (self.book.isbn, self.id, self.owner.login,self.reader.login,self.value)
 
 class ItemStatus(models.Model):
     item=models.ForeignKey(BookItem)
