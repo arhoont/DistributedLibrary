@@ -2,6 +2,7 @@ import hashlib
 import random
 import string
 from django.core.urlresolvers import reverse
+from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import Context
@@ -205,7 +206,7 @@ def addOpinion(request):
 
     book = Book.objects.get(pk=isbn)
 
-    opinion = Opinion(person=person, isbn=book, date=timezone.now(), rating=rating, text=opiniontext)
+    opinion = Opinion(person=person, book=book, date=timezone.now(), rating=rating, text=opiniontext)
     opinion.save()
 
     return HttpResponse(json.dumps({"info": 1}))
@@ -264,7 +265,7 @@ def addbajax(request):
         keyw, created = Keyword.objects.get_or_create(word=key)
         book.keywords.add(keyw)
 
-    bi = BookItem(isbn=book, owner=person, reader=person, value=val)
+    bi = BookItem(book=book, owner=person, reader=person, value=val)
     bi.save()
     bi.itemstatus_set.create(status=1, date=timezone.now())
 
@@ -322,6 +323,9 @@ def getlastbooks(request):
 
 def loadItems(request):
     query = json.loads(str(request.body.decode()))
+    ss_max_id=SysSetting.objects.all().aggregate(Max('id'))['id__max']
+    sysSet=SysSetting.objects.get(pk=ss_max_id)
+
     isbn = query["isbn"]
     bilist=[bi.getValues() for bi in Book.objects.get(pk=isbn).bookitem_set.all()]
 
@@ -331,16 +335,12 @@ def loadItems(request):
 def testBIConv(request):
     query = json.loads(str(request.body.decode()))
     itemId = query["itemId"]
-
-    queryStr = 'select * from library_conversation as conv where item_id=%s and ' \
-               'exists(select * from library_message where conversation_id=conv.id and "isRead"=0);'
-    cursor = connection.cursor()
-    cursor.execute(queryStr, str(itemId))
-    conv = cursor.fetchone()
-    if conv:
-        return HttpResponse(json.dumps({"info": 3}))
-    else:
+    bi=BookItem.objects.get(pk=itemId)
+    (takeb,takep)=bi.checkTake()
+    if takeb==0:
         return HttpResponse(json.dumps({"info": 1}))
+    else:
+        return HttpResponse(json.dumps({"info": 3}))
 
 
 @transaction.commit_on_success
@@ -355,15 +355,16 @@ def takeReq(request):
         return HttpResponse(json.dumps({"info": 3}))
 
     bi = BookItem.objects.get(pk=itemId)
+    (takeb,takep)=bi.checkTake()
+    if takeb!=0:
+        return HttpResponse(json.dumps({"info": 2}))
     personTo = Person.objects.get(pk=bi.reader_id)
-
 
     conv = Conversation(item=bi, personFrom=personFrom, personTo=personTo)
     conv.save()
     conv.message_set.create(date=timezone.now(), mtype=1, isRead=0, resp=1)
     if bi.value==1:
-        bi.reader = conv.personFrom
-        bi.save()
+        bi.changeReader(conv.personFrom)
 
     return HttpResponse(json.dumps({"info": 1}))
 
@@ -428,8 +429,7 @@ def replyMessage(request):
 
     if resp==1: # ok
         if bi.value==mess_new.mtype:
-            bi.reader = conv.personFrom
-            bi.save()
+            bi.changeReader(conv.personFrom)
             return HttpResponse(json.dumps({"info": 2}))
         return HttpResponse(json.dumps({"info": 1}))
 

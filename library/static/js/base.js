@@ -27,7 +27,6 @@ $(document).ready(function () {
         }
     });
     castPage();
-
 });
 
 function getCookie(name) {

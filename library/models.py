@@ -1,7 +1,9 @@
 from django.db import models
-from django.db.models import Avg
+from django.db.models import Avg, Max
+from django.utils import timezone
 
 # People
+
 class Domain(models.Model):
     domain = models.CharField(max_length=255, primary_key=True)
     def __str__(self):
@@ -88,8 +90,32 @@ class BookItem(models.Model):
     reader=models.ForeignKey(Person, related_name="itemreader")
     value = models.IntegerField(default=1)
     rdate = models.DateTimeField(null=True)
+    takedate = models.DateTimeField(null=True)
+
+    def changeReader(self,person):
+        self.reader=person
+        self.takedate=timezone.now()
+        self.save()
+    def checkTake(self):
+        ss=SysSetting.objects.latest('id')
+        takeb=0
+        takep=''
+        conv_count=self.conversation_set.all().count()
+        if self.takedate:
+            seconds=(timezone.now()-self.takedate).total_seconds()
+            if seconds<ss.transferCd:
+                takeb=2
+                takep=ss.transferCd-seconds
+        if takeb==0 and conv_count>0:
+            conv=self.conversation_set.latest('id')
+            mess=conv.message_set.filter(isRead=0)
+            if mess:
+                takeb=1
+                takep=conv.personFrom.id
+        return (takeb,takep)
     def getValues(self):
-        return (self.book.isbn, self.id, self.owner.login,self.reader.login,self.value)
+        (takeb, takep)=self.checkTake()
+        return (self.book.isbn, self.id, self.owner.login,self.reader.login,self.value,takeb,takep,self.reader_id)
 
 class ItemStatus(models.Model):
     item=models.ForeignKey(BookItem)
@@ -99,14 +125,14 @@ class ItemStatus(models.Model):
 # Opinion and Link
 class Opinion(models.Model):
     person=models.ForeignKey(Person)
-    isbn=models.ForeignKey(Book)
+    book=models.ForeignKey(Book)
     date = models.DateTimeField()
     rating = models.IntegerField()
     text = models.TextField()
 
 class Link(models.Model):
     person=models.ForeignKey(Person)
-    isbn=models.ForeignKey(Book)
+    book=models.ForeignKey(Book)
     opinion = models.ForeignKey(Opinion, null=True)
     url = models.CharField(max_length=255)
     text = models.TextField()

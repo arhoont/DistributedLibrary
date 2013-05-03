@@ -13,7 +13,7 @@ function castPage() {
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
-                    location.reload();
+                    loadItems();
                 } else if (parseInt(data.info) == 2) {
 
                 } else if (parseInt(data.info) == 3) {
@@ -58,6 +58,9 @@ function castPage() {
         });
     });
     loadItems();
+    $('#messageModal').on('hidden', function () {
+        loadItems();
+    })
 }
 function takeItem(itemId, val) {
     $.ajax({
@@ -103,13 +106,8 @@ function takeItem(itemId, val) {
                         }
                     });
                 });
-            } else if (parseInt(data.info) == 2) {
-
             } else if (parseInt(data.info) == 3) {
-                $(".alertSpan").html('<div class="alert" id="bookAlert">' +
-                    '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
-                    '<span class="alertText">Кто-то уже хочет взять этот экземпляр</span>' +
-                    '</div>');
+                loadItems()
             }
         },
         error: function () {
@@ -138,9 +136,17 @@ function loadItems() {
                     listed += '<td>' + bi[2] + '</td>';
                     listed += '<td>' + bi[3] + '</td>';
                     listed += '<td>' + bi[4] + '</td>';
+                    if (bi[7] == person_id) {
+                        listed += '<td>' + 'твоя' + '</td>';
+                    } else if (bi[5] == 0) {
 
-                    listed += '<td><button class="btn btn-primary btn-mini" ' +
-                        'onclick="takeItem('+bi[1]+','+bi[4]+')">Взять</button></td>';
+                        listed += '<td><button class="btn btn-primary btn-mini" ' +
+                            'onclick="takeItem(' + bi[1] + ',' + bi[4] + ')">Взять</button></td>';
+                    } else if (bi[5] == 2) {
+                        listed += '<td>' + bi[6] + '</td>';
+                    } else if (bi[5] == 1) {
+                        listed += '<td>' + 'x' + '</td>';
+                    }
                     listed += '</tr>';
                     $("#itemsTalbeDiv #rows").append(listed);
                 }
