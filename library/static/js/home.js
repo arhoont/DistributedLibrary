@@ -44,9 +44,7 @@ function castPage(){
             $('#searchButton').click();
         }
     });
-    var d = new Date()
-    var n = d.getTimezoneOffset();
-    console.log(n);
+
     $('#tabletabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
@@ -100,32 +98,26 @@ function castMainTable(objForm) {
         listed += '<td class="langColum" >' + objForm.books[i][3] + '</td>';
 
         listed += '<td class="ratingColum">';
-        var rating = objForm.books[i][6];
         for (var j = 0; j < objForm.books[i][6]; j++) {
             listed += '<i class="icon-star icon-white"></i>';
         }
         listed += '&nbsp</td>'
         listed += '<td class="countColum">' + objForm.books[i][7] + '&nbsp</td>';
         listed += '</tr>';
-//        listed += '<div class="separator"></div>';
         $("#rows").append(listed);
     }
 
 
     $("#page").html(page.num.toString());
     if (objForm.count<=page.num*page.size) {
-//        $("#nextBut").removeClass("actNB");
         $("#nextBut").addClass("disabled");
     } else {
         $("#nextBut").removeClass("disabled");
-//        $("#nextBut").addClass("actNB");
     }
     if (page.num == 1) {
         $("#prevBut").addClass("disabled");
-//        $("#prevBut").addClass("disabled");
     } else {
         $("#prevBut").removeClass("disabled");
-//        $("#prevBut").addClass("actNB");
     }
 
 }

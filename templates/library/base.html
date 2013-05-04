@@ -24,8 +24,8 @@
         <span id="brand-span">
             <a class="brand" href="/">Библиотека</a>
         </span>
-            {% if person_id %}
-                <script>person_id = {{ person_id }};</script>
+            {% if person.id %}
+                <script>person_id = {{ person.id }};</script>
                 <div class="nav-list">
                     <div class="form-search  navbar-search input-append input-prepend" id="search">
                         <button id="search-setting" class="btn disabled" type="button"><i
@@ -42,14 +42,16 @@
 
                         <a type="button" class="btn" href="/book/add"><i class="icon-plus-sign icon-white"></i> Добавить
                             книгу</a>
-                        <a class="btn"><i class="icon-user icon-white"></i> {{ person_login }}</a>
+                        <a class="btn"><i class="icon-user icon-white"></i> {{ person.login }}</a>
                         <a class="btn dropdown-toggle" data-toggle="dropdown"><span
                                 class="caret"></span></a>
                         <ul class="dropdown-menu">
+                            <li><a href="/"><i class="icon-pencil"></i> Редактировать</a></li>
                             <li><a href="/logout"><i class="icon-off"></i> Выйти</a></li>
-                            <li class="divider"></li>
-                            {# check it #}
-                            <li><a href="#"><i class="i"></i> Администрирование</a></li>
+                            {% if person.adm ==  1 %}
+                                <li class="divider"></li>
+                                <li><a href="#">Администрирование</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -94,7 +96,9 @@
                     </tr>
                     </thead>
                     <tbody class="table-body">
-                    <tr><td>ad</td></tr>
+                    <tr>
+                        <td>ad</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

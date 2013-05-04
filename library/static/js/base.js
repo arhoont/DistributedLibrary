@@ -119,7 +119,7 @@ function addInMessage(messages) {
 
         listed += '<td>' + mess[7] + '</td>';
 
-        listed += '<td>';
+        listed += '<td class="c-icon-td">';
 
 
         if (mess[7] % 2 == 0) {
@@ -144,17 +144,17 @@ function addInMessage(messages) {
                 } else if (mess[6] == 2) {
                     listed += '<i class="icon-ban-circle icon-white"></i>';
                 }
-                listed += '</td><td>';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1)">' +
+                listed += '</td><td  class="r-btn-td">';
+                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,0)">' +
                     '<i class="icon-ok-circle icon-white"></i></button>';
                 listed += '</td>';
             } else {
                 listed += '<i class="icon-question-sign icon-white"></i>';
-                listed += '</td><td>';
+                listed += '</td><td  class="r-btn-td">';
                 listed += '<div class="btn-group">';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1)">' +
+                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,1)">' +
                     '<i class="icon-ok-circle icon-white"></i></button>';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2)">' +
+                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,1)">' +
                     '<i class="icon-ban-circle icon-white"></i></button>';
                 listed += '</div>';
 
@@ -163,7 +163,7 @@ function addInMessage(messages) {
 
         listed += '</td>';
         listed += '</tr>';
-        $("#table-in .table-body").append(listed);
+        $("#table-in .table-body").prepend(listed);
     }
 }
 function addOutMessage(messages) {
@@ -180,8 +180,7 @@ function addOutMessage(messages) {
 
         listed += '<td>' + mess[7] + '</td>';
 
-        listed += '<td>';
-
+        listed += '<td class="c-icon-td">';
 
         if (mess[7] % 2 == 0) {
             if (mess[7] == mess[2]) {
@@ -191,22 +190,22 @@ function addOutMessage(messages) {
                     listed += '<i class="icon-ban-circle icon-white"></i>';
                 }
                 listed += '</td><td>';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1)">' +
+                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,0)">' +
                     '<i class="icon-ok-circle icon-white"></i></button>';
                 listed += '</td>';
             } else {
                 if (mess[6] == 2) {
                     listed += '<i class="icon-ban-circle icon-white"></i>';
-                    listed += '</td><td>';
-                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1)">' +
+                    listed += '</td><td  class="r-btn-td">';
+                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,0)">' +
                         '<i class="icon-ok-circle icon-white"></i></button>';
                 } else if (mess[6] == 1) {
                     listed += '<i class="icon-question-sign icon-white"></i>';
-                    listed += '</td><td>';
+                    listed += '</td><td  class="r-btn-td">';
                     listed += '<div class="btn-group">';
-                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1)">' +
+                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,1)">' +
                         '<i class="icon-ok-circle icon-white"></i></button>';
-                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2)">' +
+                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,1)">' +
                         '<i class="icon-ban-circle icon-white"></i></button>';
                     listed += '</div>';
                 }
@@ -225,10 +224,24 @@ function addOutMessage(messages) {
         }
         listed += '</td>';
         listed += '</tr>';
-        $("#table-out .table-body").append(listed);
+        $("#table-out .table-body").prepend(listed);
     }
 }
-function replyMessage(mess_id, resp) {
+
+function fomatMessage(msg, mtio) {
+    listed = '<tr id="mess' + mess[0] + '">';
+    listed += '<td>' + mess[3] + '</td>';
+    listed += '<td>' + mess[4] + '</td>';
+    listed += '<td>' + mess[1] + '</td>';
+    listed += '<td>' + (new Date(Date.parse(mess[5]))).toLocaleString() + '</td>';
+
+    listed += '<td>' + mess[7] + '</td>';
+
+    listed += '<td class="c-icon-td">';
+    if (mtio=="in"){}
+    
+}
+function replyMessage(mess_id, resp, mt) {
     $.ajax({
         type: "POST",
         url: "/replyMessage",
@@ -238,7 +251,16 @@ function replyMessage(mess_id, resp) {
         dataType: "json",
         success: function (data) {
             if (parseInt(data.info) == 1) {
-                $("#mess" + mess_id).remove();
+                if (mt == 0) {
+                    $("#mess" + mess_id).remove();
+                } else {
+                    $("#mess" + mess_id + " .r-btn-td").html("");
+                    if (resp == 1) {
+                        $("#mess" + mess_id + " .c-icon-td").html('<i class="icon-ok-circle icon-white"></i>');
+                    } else {
+                        $("#mess" + mess_id + " .c-icon-td").html('<i class="icon-ban-circle icon-white"></i>');
+                    }
+                }
             } else if (parseInt(data.info) == 3) {
                 debug("ошибка");
             }

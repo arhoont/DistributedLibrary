@@ -9,6 +9,12 @@ function castPage(){
         },
         crossDomain: false
     });
+    var d = new Date()
+    var n = d.getTimezoneOffset();
+    if (n==-240){
+        $("#django_timezone").val("Europe/Moscow");
+    }
+    console.log(n);
 }
 function castMainTable(objForm) {
     $("#rows").html("");

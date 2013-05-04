@@ -22,14 +22,13 @@ from django.core.serializers.json import DjangoJSONEncoder
 def isauth(request):
     context = Context()
     if request.session.get('person_id', False):
-        context['person_id'] = request.session["person_id"]
-        context['person_login'] = request.session["person_login"]
+        context['person'] = Person.objects.get(pk=request.session["person_id"])
     return context
 
 
 def index(request):
     context = isauth(request)
-    if context.has_key('person_id'):
+    if context.has_key('person'):
         return render(request, 'library/home.html', context)
     else:
         return render(request, 'library/index.html', context)
@@ -66,10 +65,6 @@ def bookinfo(request): # page
 
     # p=Person.objects.
     # if editable
-    # authors = [a.getPrintName() for a in Author.objects.all()]
-    # keywords = [k.word for k in Keyword.objects.all()]
-    # languages = Language.objects.all()
-    #
     # context["authors"] = authors
     # context["keywords"] = keywords
     # context["languages"] = languages
@@ -425,12 +420,12 @@ def replyMessage(request):
     mess_new.save()
 
     if resp==2: # refuse
+
         return HttpResponse(json.dumps({"info": 1}))
 
     if resp==1: # ok
         if bi.value==mess_new.mtype:
             bi.changeReader(conv.personFrom)
-            return HttpResponse(json.dumps({"info": 2}))
         return HttpResponse(json.dumps({"info": 1}))
 
     return HttpResponse(json.dumps({"info": 3}))

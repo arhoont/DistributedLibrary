@@ -84,9 +84,9 @@ function addButtonBook() {
     });
 
     if (newAuthList.length == 0) {
-        bookError("Выберите авторов");
+        debug("Выберите авторов");
     } else if ($("#ba-isbn-cg").hasClass("error")) {
-        bookError("Такая книга уже есть");
+        debug("Такая книга уже есть");
     } else {
         $.ajax({
             type: "POST",
@@ -102,21 +102,21 @@ function addButtonBook() {
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
-                    bookError("добавлено");
+                    debug("добавлено");
                 } else if (parseInt(data.info) == 2) {
-                    bookError("Такая книга уже есть");
+                    debug("Такая книга уже есть");
                 } else if (parseInt(data.info) == 3) {
-                    bookError("что-то не работает");
+                    debug("что-то не работает");
                 }
             },
             error: function () {
-                bookError("проблемы соединения с сервером");
+                debug("проблемы соединения с сервером");
             }
         });
     }
 }
 
-function bookError(text) {
+function debug(text) {
     $(".alertSpan").html('    <div class="alert" id="bookAlert">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '<span class="alertText">' + text + '</span>' +

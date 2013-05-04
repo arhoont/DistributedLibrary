@@ -21,7 +21,7 @@ function castPage() {
                 }
             },
             error: function () {
-                bookError("проблемы соединения с сервером");
+                debug("проблемы соединения с сервером");
             }
         });
     });
@@ -53,14 +53,17 @@ function castPage() {
                 }
             },
             error: function () {
-                bookError("проблемы соединения с сервером");
+                debug("проблемы соединения с сервером");
             }
         });
     });
     loadItems();
     $('#messageModal').on('hidden', function () {
         loadItems();
-    })
+    });
+    $('#takeModal').on('hidden', function () {
+        loadItems();
+    });
 }
 function takeItem(itemId, val) {
     $.ajax({
@@ -102,7 +105,7 @@ function takeItem(itemId, val) {
                             }
                         },
                         error: function () {
-                            bookError("проблемы соединения с сервером");
+                            debug("проблемы соединения с сервером");
                         }
                     });
                 });
@@ -111,7 +114,7 @@ function takeItem(itemId, val) {
             }
         },
         error: function () {
-            bookError("проблемы соединения с сервером");
+            debug("проблемы соединения с сервером");
         }
     });
 
@@ -145,7 +148,7 @@ function loadItems() {
                     } else if (bi[5] == 2) {
                         listed += '<td>' + parseInt(bi[6]/60)+':'+pad(parseInt(bi[6]%60),2) + '</td>';
                     } else if (bi[5] == 1) {
-                        listed += '<td>' + 'x' + '</td>';
+                        listed += '<td>' + 'ожидание' + '</td>';
                     }
                     listed += '</tr>';
                     $("#itemsTalbeDiv #rows").append(listed);
@@ -157,7 +160,7 @@ function loadItems() {
             }
         },
         error: function () {
-            bookError("проблемы соединения с сервером");
+            debug("проблемы соединения с сервером");
         }
     });
 }
