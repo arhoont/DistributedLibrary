@@ -109,126 +109,31 @@ function addInMessage(messages) {
     $("#table-in .table-body").html("");
     var k = messages.length;
     for (i = 0; i < k; i++) {
-        mess = messages[i];
-
-        listed = '<tr id="mess' + mess[0] + '">';
-        listed += '<td>' + mess[3] + '</td>';
-        listed += '<td>' + mess[4] + '</td>';
-        listed += '<td>' + mess[1] + '</td>';
-        listed += '<td>' + (new Date(Date.parse(mess[5]))).toLocaleString() + '</td>';
-
-        listed += '<td>' + mess[7] + '</td>';
-
-        listed += '<td class="c-icon-td">';
-
-
-        if (mess[7] % 2 == 0) {
-            if (mess[7] == mess[2]) {
-                if (mess[6] == 1) {
-                    listed += '<i class="icon-ok-circle icon-white"></i>';
-                } else if (mess[6] == 2) {
-                    listed += '<i class="icon-ban-circle icon-white"></i>';
-                }
-            } else {
-                if (mess[6] == 1) {
-                    listed += '<i class="icon-question-sign icon-white"></i>';
-                } else if (mess[6] == 2) {
-                    listed += '<i class="icon-ban-circle icon-white"></i>';
-                }
-            }
-            listed += '</td><td>&nbsp</td>';
-        } else {
-            if (mess[7] == mess[2]) {
-                if (mess[6] == 1) {
-                    listed += '<i class="icon-ok-circle icon-white"></i>';
-                } else if (mess[6] == 2) {
-                    listed += '<i class="icon-ban-circle icon-white"></i>';
-                }
-                listed += '</td><td  class="r-btn-td">';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,0)">' +
-                    '<i class="icon-ok-circle icon-white"></i></button>';
-                listed += '</td>';
-            } else {
-                listed += '<i class="icon-question-sign icon-white"></i>';
-                listed += '</td><td  class="r-btn-td">';
-                listed += '<div class="btn-group">';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,1)">' +
-                    '<i class="icon-ok-circle icon-white"></i></button>';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,1)">' +
-                    '<i class="icon-ban-circle icon-white"></i></button>';
-                listed += '</div>';
-
-            }
-        }
-
-        listed += '</td>';
-        listed += '</tr>';
-        $("#table-in .table-body").prepend(listed);
+        $("#table-in .table-body").prepend(fomatMessage(messages[i], "in"));
     }
 }
 function addOutMessage(messages) {
     $("#table-out .table-body").html("");
     var k = messages.length;
     for (i = 0; i < k; i++) {
-        mess = messages[i];
-
-        listed = '<tr id="mess' + mess[0] + '">';
-        listed += '<td>' + mess[3] + '</td>';
-        listed += '<td>' + mess[4] + '</td>';
-        listed += '<td>' + mess[1] + '</td>';
-        listed += '<td>' + (new Date(Date.parse(mess[5]))).toLocaleString() + '</td>';
-
-        listed += '<td>' + mess[7] + '</td>';
-
-        listed += '<td class="c-icon-td">';
-
-        if (mess[7] % 2 == 0) {
-            if (mess[7] == mess[2]) {
-                if (mess[6] == 1) {
-                    listed += '<i class="icon-ok-circle icon-white"></i>';
-                } else if (mess[6] == 2) {
-                    listed += '<i class="icon-ban-circle icon-white"></i>';
-                }
-                listed += '</td><td>';
-                listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,0)">' +
-                    '<i class="icon-ok-circle icon-white"></i></button>';
-                listed += '</td>';
-            } else {
-                if (mess[6] == 2) {
-                    listed += '<i class="icon-ban-circle icon-white"></i>';
-                    listed += '</td><td  class="r-btn-td">';
-                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,0)">' +
-                        '<i class="icon-ok-circle icon-white"></i></button>';
-                } else if (mess[6] == 1) {
-                    listed += '<i class="icon-question-sign icon-white"></i>';
-                    listed += '</td><td  class="r-btn-td">';
-                    listed += '<div class="btn-group">';
-                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,1)">' +
-                        '<i class="icon-ok-circle icon-white"></i></button>';
-                    listed += '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,1)">' +
-                        '<i class="icon-ban-circle icon-white"></i></button>';
-                    listed += '</div>';
-                }
-            }
-        } else {
-            if (mess[7] == mess[2]) {
-                if (mess[6] == 1) {
-                    listed += '<i class="icon-ok-circle icon-white"></i>';
-                } else if (mess[6] == 2) {
-                    listed += '<i class="icon-ban-circle icon-white"></i>';
-                }
-            } else {
-                listed += '<i class="icon-question-sign icon-white"></i>';
-            }
-            listed += '</td><td>&nbsp</td>';
-        }
-        listed += '</td>';
-        listed += '</tr>';
-        $("#table-out .table-body").prepend(listed);
+        $("#table-out .table-body").prepend(fomatMessage(messages[i], "out"));
     }
 }
 
-function fomatMessage(msg, mtio) {
+function fomatMessage(mess, mtio) {
+    yes_i = '<i class="icon-ok-circle icon-white"></i>';
+    no_i = '<i class="icon-ban-circle icon-white"></i>';
+    que_i = '<i class="icon-question-sign icon-white"></i>';
+    yes_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,0)">' +
+        '<i class="icon-ok-circle icon-white"></i></button>';
+    no_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,0)">' +
+        '<i class="icon-ban-circle icon-white"></i></button>';
+    ch_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,1)">' +
+        '<i class="icon-ok-circle icon-white"></i></button>'+
+        '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,1)">' +
+        '<i class="icon-ban-circle icon-white"></i></button>';
+
+
     listed = '<tr id="mess' + mess[0] + '">';
     listed += '<td>' + mess[3] + '</td>';
     listed += '<td>' + mess[4] + '</td>';
@@ -238,9 +143,71 @@ function fomatMessage(msg, mtio) {
     listed += '<td>' + mess[7] + '</td>';
 
     listed += '<td class="c-icon-td">';
-    if (mtio=="in"){}
-    
+    if (mtio == "in") {
+        if (mess[7] % 2 == 0) {
+            if (mess[7] == mess[2]) {
+                if (mess[6] == 1) {
+                    listed += yes_i;
+                } else if (mess[6] == 2) {
+                    listed += no_i;
+                }
+            } else {
+                if (mess[6] == 1) {
+                    listed += que_i;
+                } else if (mess[6] == 2) {
+                    listed += no_i;
+                }
+            }
+            listed += '</td><td>&nbsp';
+        } else {
+            if (mess[7] == mess[2]) {
+                if (mess[6] == 1) {
+                    listed += yes_i;
+                } else if (mess[6] == 2) {
+                    listed += no_i
+                }
+                listed += '</td><td  class="r-btn-td">'+yes_b+'</td>';
+            } else {
+                listed += que_i+'</td><td  class="r-btn-td">';
+                listed += '<div class="btn-group">' + ch_b + '</div>';
+            }
+        }
+    } else if (mtio == "out") {
+        if (mess[7] % 2 == 0) {
+            if (mess[7] == mess[2]) {
+                if (mess[6] == 1) {
+                    listed += yes_i;
+                } else if (mess[6] == 2) {
+                    listed += no_i
+                }
+                listed += '</td><td>'+yes_b+'</td>';
+            } else {
+                if (mess[6] == 2) {
+                    listed += no_i+'</td><td  class="r-btn-td">'+yes_b;
+                } else if (mess[6] == 1) {
+                    listed += que_i+'</td><td  class="r-btn-td">';
+                    listed += '<div class="btn-group">' + ch_b + '</div>';
+                }
+            }
+        } else {
+            if (mess[7] == mess[2]) {
+                if (mess[6] == 1) {
+                    listed += yes_i;
+                } else if (mess[6] == 2) {
+                    listed += no_i;
+                }
+            } else {
+                listed += que_i;
+            }
+            listed += '</td><td>&nbsp';
+        }
+
+    }
+    listed += '</td></tr>';
+    return listed;
 }
+
+
 function replyMessage(mess_id, resp, mt) {
     $.ajax({
         type: "POST",

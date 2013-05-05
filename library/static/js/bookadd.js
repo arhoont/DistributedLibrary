@@ -1,15 +1,10 @@
 function castPage() {
     $('#ba-form-r').submit(function (e) {
         e.preventDefault();
-        addButtonBook();
     });
     $('#ba-form-b').submit(function (e) {
         e.preventDefault();
-        $('#rform-submit').click();
     });
-//    $('.infoValues').click(function () {
-//        $('#valuesInfoModal').modal('show');
-//    });
     $("#ba-isbn").focusout(function () {
         if ($("#ba-isbn").val().length > 0) {
             $.ajax({
@@ -46,8 +41,12 @@ function castPage() {
     $('.kword').typeahead({source: keywords});
 
     $('.infoValuesButton').popover({html: 'true'});
-    $('.closeInfoPop').live('click', function(){
+    $('.closeInfoPop').live('click', function () {
         $('.infoValuesButton').click();
+0    });
+
+    $("#ba-btn").click(function(){
+        addButtonBook();
     });
 }
 

@@ -140,7 +140,7 @@ function loadItems() {
                     listed += '<td>' + bi[3] + '</td>';
                     listed += '<td>' + bi[4] + '</td>';
                     if (bi[7] == person_id) {
-                        listed += '<td>' + 'твоя' + '</td>';
+                        listed += '<td>' + 'Ваша' + '</td>';
                     } else if (bi[5] == 0) {
 
                         listed += '<td><button class="btn btn-primary btn-mini" ' +

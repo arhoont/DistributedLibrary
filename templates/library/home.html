@@ -10,9 +10,10 @@
 
 {% block content %}
         <ul class="nav nav-tabs" id="tabletabs">
-            <li class="active"><a href="#">Все</a></li>
-            <li><a href="#">Читаемые</a></li>
-            <li><a href="#">Мои</a></li>
+            <li class="active"><a href="#" id="readingBooks">Читаемые</a></li>
+            <li><a href="#" id="myBooks">Мои</a></li>
+            <li><a href="#" id="allBooks">Все</a></li>
+            <li><a href="#">Новые</a></li>
         </ul>
         <table class="table table-striped table-condensed" id="mtable">
             <thead>
@@ -27,10 +28,11 @@
                 <th class="blockLanguage blockHeads langColum" onclick="changeSort('language')">Язык
                     <span>&#x25BC;</span></th>
 
-                <th class="blockRating blockHeads ratingColum" onclick="changeSort('rating')">Рейтинг
-                    <span>&#x25BC;</span></th>
                 <th class="blockCount blockHeads countColum" onclick="changeSort('itemcount')">Кол-во
                     <span>&#x25BC;</span></th>
+
+                <th class="blockRating blockHeads ratingColum" onclick="changeSort('rating')">Рейтинг
+                <span>&#x25BC;</span></th>
             </tr>
             </thead>
             <tbody id="rows">

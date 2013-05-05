@@ -273,37 +273,18 @@ def getbooks(request):
     pageN = int(query["page"]["num"])
     start = (pageN - 1) * pageS
 
-    if query["search"]["type"] == 0 and \
-            (query["sort"]["field"] == "isbn" or query["sort"]["field"] == "title" or query["sort"]["field"] == "ozon"):
-        if query["sort"]["type"] == 0:
-            bookslist = [b.getValues() for b in
-                         Book.objects.all().order_by(query["sort"]["field"])[start:start + pageS]]
-        else:
-            bookslist = [b.getValues() for b in
-                         Book.objects.all().order_by("-" + query["sort"]["field"])[start:start + pageS]]
-        count = Book.objects.count()
-    else:
-        queryStr = "select * from allbooks"
-
-        if query["search"]["type"] == 1:
-            searchW = query["search"]["word"]
-            queryStr += " where isbn like upper('%%" + searchW + \
-                        "%%') or upper(ozon) like upper('%%" + searchW + \
-                        "%%') or upper(title) like upper('%%" + searchW + \
-                        "%%') or upper(language) like upper('%%" + searchW + \
-                        "%%') or upper(authors) like upper('%%" + searchW + \
-                        "%%') or upper(keywords) like upper('%%" + searchW + "%%')"
-        queryStr += " order by " + query["sort"]["field"]
-        if query["sort"]["type"] == 1:
-            queryStr += " desc"
-        cursor = connection.cursor()
-        cursor.execute(queryStr)
-        count = cursor.rowcount
-        if count > 0:
-            cursor.scroll(start)
-            bookslist = cursor.fetchmany(pageS)
-        else:
-            bookslist = []
+    person = Person.objects.get(pk=request.session["person_id"])
+    if not person: # not registred
+        return HttpResponse(json.dumps({"info": 3}))
+    bookslist=[]
+    count=0
+    print(query["search"]["person"])
+    if (query["search"]["person"]==1):
+        bookslist,count=person.getBooks("reader_id",query["search"]["word"],query["sort"]["type"],query["sort"]["column"],start,pageS)
+    elif (query["search"]["person"]==2):
+        bookslist,count=person.getBooks("owner_id",query["search"]["word"],query["sort"]["type"],query["sort"]["column"],start,pageS)
+    elif (query["search"]["person"]==0):
+        bookslist,count=Book.getAllFormated(query["search"]["word"],query["sort"]["type"],query["sort"]["column"],start,pageS)
 
     return HttpResponse(json.dumps({"info": "yes", "count": count, "books": bookslist}))
 
@@ -318,9 +299,6 @@ def getlastbooks(request):
 
 def loadItems(request):
     query = json.loads(str(request.body.decode()))
-    ss_max_id=SysSetting.objects.all().aggregate(Max('id'))['id__max']
-    sysSet=SysSetting.objects.get(pk=ss_max_id)
-
     isbn = query["isbn"]
     bilist=[bi.getValues() for bi in Book.objects.get(pk=isbn).bookitem_set.all()]
 
