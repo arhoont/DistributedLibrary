@@ -354,17 +354,18 @@ def getMessages(request):
     queryStr = ""
     if mType == "in":
         queryStr = 'select mess.id, conversation_id, item_id, "personFrom_id" from library_message mess join library_conversation conv ' \
-                   'on mess.conversation_id=conv.id  where  "isRead" = %s and "personTo_id"=%s'
+                   'on mess.conversation_id=conv.id  where  "isRead" = %s and ' \
+                   '(("personTo_id"=%s and mType %% 2=1) or ("personFrom_id"=%s and mType %% 2=0))'
     elif mType == "out":
         queryStr = 'select mess.id, conversation_id, item_id, "personTo_id" from library_message mess join library_conversation conv ' \
-                   'on mess.conversation_id=conv.id  where  "isRead" = %s and "personFrom_id"=%s;'
+                   'on mess.conversation_id=conv.id  where  "isRead" = %s and ' \
+                   '(("personTo_id"=%s and mType %% 2=0) or ("personFrom_id"=%s and mType %% 2=1))'
 
-    cursor.execute(queryStr, (isRead, person.id))
+    cursor.execute(queryStr, (isRead, person.id, person.id))
     messages = cursor.fetchall()
     formatedMes = []
     for mess in messages:
         message = Message.objects.get(pk=mess[0])
-        # conv=Conversation.objects.get(pk=mess[1])
         bi = BookItem.objects.get(pk=mess[2])
         p_new = Person.objects.get(pk=mess[3])
         formatedMes.append((message.id, bi.id, bi.value, bi.book.title,
@@ -398,7 +399,6 @@ def replyMessage(request):
     mess_new.save()
 
     if resp==2: # refuse
-
         return HttpResponse(json.dumps({"info": 1}))
 
     if resp==1: # ok

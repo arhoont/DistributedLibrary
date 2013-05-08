@@ -129,7 +129,7 @@ function fomatMessage(mess, mtio) {
     no_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,0)">' +
         '<i class="icon-ban-circle icon-white"></i></button>';
     ch_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,1)">' +
-        '<i class="icon-ok-circle icon-white"></i></button>'+
+        '<i class="icon-ok-circle icon-white"></i></button>' +
         '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,1)">' +
         '<i class="icon-ban-circle icon-white"></i></button>';
 
@@ -144,64 +144,27 @@ function fomatMessage(mess, mtio) {
 
     listed += '<td class="c-icon-td">';
     if (mtio == "in") {
-        if (mess[7] % 2 == 0) {
-            if (mess[7] == mess[2]) {
-                if (mess[6] == 1) {
-                    listed += yes_i;
-                } else if (mess[6] == 2) {
-                    listed += no_i;
-                }
-            } else {
-                if (mess[6] == 1) {
-                    listed += que_i;
-                } else if (mess[6] == 2) {
-                    listed += no_i;
-                }
-            }
-            listed += '</td><td>&nbsp';
+        if (mess[6] == 2) {
+            listed += no_i;
+        } else if (mess[7] < mess[2]) {
+            listed += que_i;
         } else {
-            if (mess[7] == mess[2]) {
-                if (mess[6] == 1) {
-                    listed += yes_i;
-                } else if (mess[6] == 2) {
-                    listed += no_i
-                }
-                listed += '</td><td  class="r-btn-td">'+yes_b+'</td>';
-            } else {
-                listed += que_i+'</td><td  class="r-btn-td">';
-                listed += '<div class="btn-group">' + ch_b + '</div>';
-            }
+            listed += yes_i;
+        }
+        if ((mess[7] == mess [2]) || (mess[6]==2)) {
+            listed += '</td><td  class="r-btn-td">' + yes_b + '</td>';
+        } else {
+            listed += '</td><td  class="r-btn-td">' + ch_b + '</td>';
         }
     } else if (mtio == "out") {
-        if (mess[7] % 2 == 0) {
-            if (mess[7] == mess[2]) {
-                if (mess[6] == 1) {
-                    listed += yes_i;
-                } else if (mess[6] == 2) {
-                    listed += no_i
-                }
-                listed += '</td><td>'+yes_b+'</td>';
-            } else {
-                if (mess[6] == 2) {
-                    listed += no_i+'</td><td  class="r-btn-td">'+yes_b;
-                } else if (mess[6] == 1) {
-                    listed += que_i+'</td><td  class="r-btn-td">';
-                    listed += '<div class="btn-group">' + ch_b + '</div>';
-                }
-            }
+        if (mess[6] == 2) {
+            listed += no_i;
+        } else if (mess[7] < mess[2]) {
+            listed += que_i;
         } else {
-            if (mess[7] == mess[2]) {
-                if (mess[6] == 1) {
-                    listed += yes_i;
-                } else if (mess[6] == 2) {
-                    listed += no_i;
-                }
-            } else {
-                listed += que_i;
-            }
-            listed += '</td><td>&nbsp';
+            listed += yes_i;
         }
-
+        listed += '</td><td>&nbsp';
     }
     listed += '</td></tr>';
     return listed;
@@ -218,16 +181,7 @@ function replyMessage(mess_id, resp, mt) {
         dataType: "json",
         success: function (data) {
             if (parseInt(data.info) == 1) {
-                if (mt == 0) {
-                    $("#mess" + mess_id).remove();
-                } else {
-                    $("#mess" + mess_id + " .r-btn-td").html("");
-                    if (resp == 1) {
-                        $("#mess" + mess_id + " .c-icon-td").html('<i class="icon-ok-circle icon-white"></i>');
-                    } else {
-                        $("#mess" + mess_id + " .c-icon-td").html('<i class="icon-ban-circle icon-white"></i>');
-                    }
-                }
+                $("#mess" + mess_id).remove();
             } else if (parseInt(data.info) == 3) {
                 debug("ошибка");
             }

@@ -46,6 +46,7 @@ $$  LANGUAGE plpgsql;
 
 
 
+drop view allbooks;
 create or replace view allbooks as
 select isbn, title, take_authors(isbn) as authors, take_keywords(isbn) as keywords,
   language_id as language, (select count(*) from library_bookitem where library_bookitem.book_id=isbn) as itemcount,
