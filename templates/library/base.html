@@ -9,6 +9,7 @@
     <script type="text/javascript" charset="utf-8" src="{% static "js/bootstrap.js" %}"></script>
 
     <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "css/font-awesome.css" %}">
     <link rel="stylesheet" href="{% static "css/bootstrap-responsive.css" %}">
     <link rel="stylesheet" href="{% static "css/base.css" %}">
 
@@ -22,7 +23,7 @@
     <div class="navbar-inner">
         <div class="container">
         <span id="brand-span">
-            <a class="brand" href="/">Библиотека</a>
+            <a class="brand" href="/">{{ libname }}</a>
         </span>
             {% if person.id %}
                 <script>person_id = {{ person.id }};</script>
@@ -36,7 +37,7 @@
                         </button>
                     </div>
                     <div class="pull-right input-append btn-group">
-                        <a type="button" class="btn" href="/"><i class="icon-home icon-white"></i></a>
+                        <a type="button" class="btn" href="/"><i class="icon-home icon-white "></i></a>
                         <a type="button" class="btn" id="messageButton"><i class="icon-envelope icon-white"></i>
                             Сообщения</a>
 
@@ -72,54 +73,36 @@
 </div>
 <br>
 
-<div id="messageModal" class="modal hide fade" tabindex="-1" role="dialog">
+<div id="messageModal" class="modal hide" tabindex="-1" role="dialog">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">×</button>
         <h3 id="myModalLabel">Сообщения</h3>
     </div>
     <div class="modal-body">
         <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a href="#messIn" id="in">Входящие</a></li>
-            <li><a href="#messOut" id="out">Исходящие</a></li>
+            <li class="active"><a href="#" id="in">Входящие</a></li>
+            <li><a href="#" id="out">Исходящие</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane active" id="messIn">
-                <table class="table table-hover messtable" id="table-in">
+            <div class="tab-pane active" id="mess">
+                <table class="table messtable" id="table-msg">
                     <thead>
                     <tr>
                         <th>Книга</th>
                         <th>Человек</th>
-                        <th>Экземпляр(id)</th>
+                        <th>№ экземпляра</th>
                         <th>Дата</th>
                         <th>Тип</th>
                         <th>&nbsp</th>
                     </tr>
                     </thead>
                     <tbody class="table-body">
-                    <tr>
-                        <td>ad</td>
-                    </tr>
+                    <tr><td></td></tr>
                     </tbody>
-                </table>
-            </div>
-            <div class="tab-pane" id="messOut">
-                <table class="table table-hover messtable" id="table-out">
-                    <thead>
-                    <tr>
-                        <th>Книга</th>
-                        <th>Человек</th>
-                        <th>Экземпляр</th>
-                        <th>Дата</th>
-                        <th>Тип</th>
-                        <th>&nbsp</th>
-                    </tr>
-                    </thead>
-                    <tbody class="table-body"></tbody>
                 </table>
             </div>
         </div>
     </div>
-
     <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal">Закрыть</button>
     </div>

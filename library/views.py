@@ -23,6 +23,7 @@ def isauth(request):
     context = Context()
     if request.session.get('person_id', False):
         context['person'] = Person.objects.get(pk=request.session["person_id"])
+    context['libname'] = SysSetting.objects.latest('id').libname
     return context
 
 
@@ -35,9 +36,8 @@ def index(request):
 
 
 def error(request):
-    context = Context({
-        'type': 0
-    })
+    context = isauth(request)
+    context['type'] =0
     return render(request, 'library/home.html', context)
 
 
@@ -54,14 +54,13 @@ def bookadd(request): # page
 
 
 def bookinfo(request): # page
-
+    context = isauth(request)
     isbn = request.GET['isbn']
     book = Book.objects.filter(isbn=isbn)
     if len(book) == 0:
         # book not found
         return HttpResponseRedirect(reverse('index'))
     book = book[0]
-    context = isauth(request)
 
     # p=Person.objects.
     # if editable
@@ -84,18 +83,18 @@ def bookinfo(request): # page
 
 
 def login(request):
-    context = Context()
+    context = isauth(request)
     context["registred"] = "yes"
     return render(request, 'library/index.html', context)
 
 
 def registr(request):
-    context = Context()
+    context = isauth(request)
     return render(request, 'library/registr.html', context)
 
 
 def error(request):
-    context = Context()
+    context = isauth(request)
     context["form_error"] = "yes"
     return render(request, 'library/index.html', context)
 
@@ -184,7 +183,6 @@ def addItem(request):
 
     bi = BookItem(book=book, owner=person, reader=person, value=val)
     bi.save()
-    bi.itemstatus_set.create(status=1, date=timezone.now())
 
     return HttpResponse(json.dumps({"info": 1}))
 
@@ -262,7 +260,6 @@ def addbajax(request):
 
     bi = BookItem(book=book, owner=person, reader=person, value=val)
     bi.save()
-    bi.itemstatus_set.create(status=1, date=timezone.now())
 
     return HttpResponse(json.dumps({"info": 1, "isbn": book.isbn}))
 
@@ -278,7 +275,6 @@ def getbooks(request):
         return HttpResponse(json.dumps({"info": 3}))
     bookslist=[]
     count=0
-    print(query["search"]["person"])
     if (query["search"]["person"]==1):
         bookslist,count=person.getBooks("reader_id",query["search"]["word"],query["sort"]["type"],query["sort"]["column"],start,pageS)
     elif (query["search"]["person"]==2):
@@ -336,8 +332,6 @@ def takeReq(request):
     conv = Conversation(item=bi, personFrom=personFrom, personTo=personTo)
     conv.save()
     conv.message_set.create(date=timezone.now(), mtype=1, isRead=0, resp=1)
-    if bi.value==1:
-        bi.changeReader(conv.personFrom)
 
     return HttpResponse(json.dumps({"info": 1}))
 
@@ -392,21 +386,13 @@ def replyMessage(request):
     mess.isRead = 1
     mess.save()
 
-    if mess.mtype==bi.value or mess.resp==2: # read
+    if mess.mtype==bi.value or mess.resp==2:
         return HttpResponse(json.dumps({"info": 1}))
 
     mess_new = Message(conversation=conv, date=timezone.now(), mtype=mess.mtype+1, resp=resp, isRead=0)
     mess_new.save()
 
-    if resp==2: # refuse
-        return HttpResponse(json.dumps({"info": 1}))
-
-    if resp==1: # ok
-        if bi.value==mess_new.mtype:
-            bi.changeReader(conv.personFrom)
-        return HttpResponse(json.dumps({"info": 1}))
-
-    return HttpResponse(json.dumps({"info": 3}))
+    return HttpResponse(json.dumps({"info": 1}))
 
 
 

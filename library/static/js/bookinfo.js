@@ -26,9 +26,6 @@ function castPage() {
         });
     });
     $('.infoValuesButton').popover({html: 'true'});
-    $('.closeInfoPop').live('click', function () {
-        $('.infoValuesButton').click();
-    });
     $("#addOpinionB").click(function () {
         $("#opinionModal").modal('show');
     });
@@ -97,7 +94,7 @@ function takeItem(itemId, val) {
                         dataType: "json",
                         success: function (data) {
                             if (parseInt(data.info) == 1) {
-                                debug("отправлено")
+                                loadItems();
                             } else if (parseInt(data.info) == 2) {
 
                             } else if (parseInt(data.info) == 3) {
@@ -140,16 +137,22 @@ function loadItems() {
                     listed += '<td>' + bi[3] + '</td>';
                     listed += '<td>' + bi[4] + '</td>';
                     if (bi[7] == person_id) {
-                        listed += '<td>' + 'Ваша' + '</td>';
+                        listed += '<td>' + 'У вас' + '</td>';
                     } else if (bi[5] == 0) {
-
                         listed += '<td><button class="btn btn-primary btn-mini" ' +
                             'onclick="takeItem(' + bi[1] + ',' + bi[4] + ')">Взять</button></td>';
                     } else if (bi[5] == 2) {
-                        listed += '<td>' + parseInt(bi[6]/60)+':'+pad(parseInt(bi[6]%60),2) + '</td>';
+                        listed += '<td>Занята ' + parseInt(bi[6] / 60) + ':' + pad(parseInt(bi[6] % 60), 2) + '</td>';
                     } else if (bi[5] == 1) {
-                        listed += '<td>' + 'ожидание' + '</td>';
+                        if (bi[6] == person_id) {
+                            listed += '<td>' + 'Запрошено' + '</td>';
+                        } else {
+                            listed += '<td>' + 'Занята' + '</td>';
+                        }
                     }
+//                    else if (bi[5] == 3) {
+//                        listed += '<td>'+'Есть сообщение'+'</td>';
+//                    }
                     listed += '</tr>';
                     $("#itemsTalbeDiv #rows").append(listed);
                 }

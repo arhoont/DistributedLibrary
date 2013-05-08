@@ -13,9 +13,7 @@ $(document).ready(function () {
 //    $('body').off('.data-api');
     $("#messageButton").click(function () {
         $("#messageModal").modal('show');
-        getMessage("in", 0);
-        getMessage("out", 0);
-
+        $("#myTab .active a").click();
     });
     $('#myTab a').click(function (e) {
         e.preventDefault();
@@ -106,32 +104,32 @@ function getMessage(mType, isRead) {
 }
 
 function addInMessage(messages) {
-    $("#table-in .table-body").html("");
+    $("#table-msg .table-body").html("");
     var k = messages.length;
     for (i = 0; i < k; i++) {
-        $("#table-in .table-body").prepend(fomatMessage(messages[i], "in"));
+        $("#table-msg .table-body").prepend(fomatMessage(messages[i], "in"));
     }
 }
 function addOutMessage(messages) {
-    $("#table-out .table-body").html("");
+    $("#table-msg .table-body").html("");
     var k = messages.length;
     for (i = 0; i < k; i++) {
-        $("#table-out .table-body").prepend(fomatMessage(messages[i], "out"));
+        $("#table-msg .table-body").prepend(fomatMessage(messages[i], "out"));
     }
 }
 
 function fomatMessage(mess, mtio) {
-    yes_i = '<i class="icon-ok-circle icon-white"></i>';
-    no_i = '<i class="icon-ban-circle icon-white"></i>';
-    que_i = '<i class="icon-question-sign icon-white"></i>';
+    yes_i = '<i class="icon-ok-circle icon-white icon-large"></i>';
+    no_i = '<i class="icon-ban-circle icon-white icon-large"></i>';
+    que_i = '<i class="icon-time icon-white icon-large"></i>';
     yes_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,0)">' +
-        '<i class="icon-ok-circle icon-white"></i></button>';
+        '<i class="icon-ok icon-white icon-large"></i></button>';
     no_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,0)">' +
-        '<i class="icon-ban-circle icon-white"></i></button>';
+        '<i class="icon-ban icon-white icon-large"></i></button>';
     ch_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,1)">' +
-        '<i class="icon-ok-circle icon-white"></i></button>' +
+        '<i class="icon-ok-circle icon-white icon-large"></i></button>' +
         '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,1)">' +
-        '<i class="icon-ban-circle icon-white"></i></button>';
+        '<i class="icon-ban-circle icon-white icon-large"></i></button>';
 
 
     listed = '<tr id="mess' + mess[0] + '">';

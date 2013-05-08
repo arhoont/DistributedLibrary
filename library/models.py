@@ -168,7 +168,7 @@ class BookItem(models.Model):
             if seconds < ss.transferCd:
                 takeb = 2
                 takep = ss.transferCd - seconds
-        if takeb == 0 and conv_count > 0:
+        if takeb==0 and conv_count > 0:
             conv = self.conversation_set.latest('id')
             mess = conv.message_set.filter(isRead=0)
             if mess:
@@ -178,7 +178,14 @@ class BookItem(models.Model):
 
     def getValues(self):
         (takeb, takep) = self.checkTake()
-        return (self.book.isbn, self.id, self.owner.login, self.reader.login, self.value, takeb, takep, self.reader_id)
+        return (self.book.isbn,
+                self.id,
+                self.owner.fname+" "+self.owner.lname,
+                self.reader.fname+" "+self.reader.lname,
+                self.value,
+                takeb,
+                takep,
+                self.reader_id)
 
 
 class ItemStatus(models.Model):
@@ -221,3 +228,4 @@ class Message(models.Model):
 class SysSetting(models.Model):
     authType = models.IntegerField()
     transferCd = models.IntegerField()
+    libname = models.CharField(max_length=255)

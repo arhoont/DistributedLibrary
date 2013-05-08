@@ -45,6 +45,36 @@ END;
 $$  LANGUAGE plpgsql;
 
 
+create or replace function f_new_item() returns trigger
+  as $$
+  begin
+    insert into library_itemstatus (item_id, status, date) values (new.id,1,CURRENT_TIMESTAMP);
+    return null;
+  end;
+  $$
+LANGUAGE plpgsql;
+
+create trigger new_item
+  after insert on library_bookitem
+  for each row
+  execute procedure f_new_item();
+
+create or replace function f_ch_mess_item () returns trigger
+  as $$
+  declare
+    mr record;
+  begin
+    select item_id, value, "personFrom_id" into  mr from library_conversation join library_bookitem
+    on library_conversation.item_id=library_bookitem.id
+    where library_conversation.id = new.conversation_id;
+    RAISE NOTICE 'aaa';
+    if (new.mtype=mr.value and new.resp=1)then
+      update library_bookitem set (reader_id,takedate) = (mr."personFrom_id",CURRENT_TIMESTAMP) where id=mr.item_id;
+    end if;
+    return null ;
+  end;
+  $$
+LANGUAGE plpgsql;
 
 drop view allbooks;
 create or replace view allbooks as
@@ -58,7 +88,7 @@ select isbn, title, take_authors(isbn) as authors, take_keywords(isbn) as keywor
 insert into library_domain values (' ');
 insert into library_language values ('Русский');
 insert into library_language values ('English');
-insert into library_syssetting values (1,1,300);
+insert into library_syssetting values (1,1,300,'lib1');
 
 
 

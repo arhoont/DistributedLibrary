@@ -41,10 +41,6 @@ function castPage() {
     $('.kword').typeahead({source: keywords});
 
     $('.infoValuesButton').popover({html: 'true'});
-    $('.closeInfoPop').live('click', function () {
-        $('.infoValuesButton').click();
-0    });
-
     $("#ba-btn").click(function(){
         addButtonBook();
     });
