@@ -1,9 +1,3 @@
-CREATE or replace FUNCTION getRating(isbnIn varchar) RETURNS float AS $$
-BEGIN
-  return (select CAST(avg(library_opinion.rating)as float8)  from library_opinion where book_id=isbnIn);
-END;
-$$  LANGUAGE plpgsql;
-
 CREATE or replace FUNCTION take_authors(isbnIn varchar) RETURNS text AS $$
 DECLARE
   authors text;
@@ -38,7 +32,7 @@ declare
   que text;
 BEGIN
   que='select isbn,library_book.title, take_authors(isbn), take_keywords(isbn)
-              ,language_id as language, cast(count(*) as int), getrating(isbn) from library_bookitem join
+              ,language_id as language, cast(count(*) as int), rating from library_bookitem join
               library_book on book_id=isbn where '||rot||'='||pid||' group by isbn';
   return query execute (que);
 END;
@@ -76,11 +70,42 @@ create or replace function f_ch_mess_item () returns trigger
   $$
 LANGUAGE plpgsql;
 
+create trigger ch_mess_item
+  after insert on library_message
+  for each row
+  execute procedure f_ch_mess_item();
+
+create or replace function f_new_opinion () returns trigger
+  as $$
+  begin
+    update library_book set rating=(select CAST(avg(library_opinion.rating)as float8)
+                                    from library_opinion where book_id=isbn)
+    where isbn=new.book_id;
+    return null;
+  end;
+  $$
+LANGUAGE plpgsql;
+
+create trigger new_opinion
+  after insert on library_opinion
+  for each row
+  execute procedure f_new_opinion();
+
+create or replace function re_count_rating () returns int
+  as $$
+  begin
+    update library_book set rating=(select CAST(avg(library_opinion.rating)as float8)
+                                    from library_opinion where book_id=isbn);
+    return null ;
+  end;
+  $$
+LANGUAGE plpgsql;
+
 drop view allbooks;
 create or replace view allbooks as
 select isbn, title, take_authors(isbn) as authors, take_keywords(isbn) as keywords,
   language_id as language, (select count(*) from library_bookitem where library_bookitem.book_id=isbn) as itemcount,
-  getrating(isbn) as rating
+  rating
   from library_book
   group by isbn;
 
