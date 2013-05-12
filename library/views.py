@@ -1,6 +1,10 @@
 import hashlib
 import random
 import string
+from PIL import Image
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
@@ -37,7 +41,7 @@ def index(request):
 
 def error(request):
     context = isauth(request)
-    context['type'] =0
+    context['type'] = 0
     return render(request, 'library/home.html', context)
 
 
@@ -184,7 +188,7 @@ def addItem(request):
     bi = BookItem(book=book, owner=person, reader=person, value=val)
     bi.save()
 
-    return HttpResponse(json.dumps({"info": 1}))
+    return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
 
 
 def addOpinion(request):
@@ -221,6 +225,30 @@ def checkBook(request):
     return HttpResponse(json.dumps({"info": 2, "books": ""}))
 
 
+def uploadBI(request):
+
+    if "file" not in request.FILES:
+        return HttpResponse(json.dumps({"info": 2}))
+    if "prev_file" in request.POST:
+        prev_file=request.POST["prev_file"]
+        if (len(prev_file)>0):
+            default_storage.delete(prev_file)
+
+    data = request.FILES['file']
+    try:
+        img = Image.open(data)
+    except BaseException:
+        return HttpResponse(json.dumps({"info": 2}))
+
+    img.thumbnail((200, 300), Image.ANTIALIAS)
+
+    exp = data.name.split('.')[-1]
+    file_name = default_storage.get_available_name('tmp/book.' + exp)
+    path = str(default_storage.location) + '/' + file_name
+    img.save(path)
+    return HttpResponse(json.dumps({"info": 1, "path": file_name}))
+
+
 @transaction.commit_on_success
 def addbajax(request):
     query = json.loads(str(request.body.decode()))
@@ -235,18 +263,27 @@ def addbajax(request):
     lang = query["lang"]
     desc = query["desc"]
     val = query["val"]
+    image = query["image"]
     authors = set(query["authors"])
     keywords = set(query["keywords"])
-
-    l = Language(language="asda")
-    l.save()
     person = Person.objects.get(pk=request.session["person_id"])
     if not person: # not registr
         return HttpResponse(json.dumps({"info": 4}))
 
     language, created = Language.objects.get_or_create(language=lang)
+    path = None
+    try:
+        if len(image)>0:
+            photo = default_storage.open(image)
+            exp = photo.name.split('.')[-1]
+            path = default_storage.save("book_image/" + isbn + "." + exp, ContentFile(photo.read()))
+            default_storage.delete(image)
+    except BaseException:
+        pass
 
     book = Book(isbn=isbn, ozon=link, title=title, language=language, description=desc)
+    if path:
+        book.image = path
     book.save()
 
     for auth in authors:
@@ -261,7 +298,7 @@ def addbajax(request):
     bi = BookItem(book=book, owner=person, reader=person, value=val)
     bi.save()
 
-    return HttpResponse(json.dumps({"info": 1, "isbn": book.isbn}))
+    return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
 
 
 def getbooks(request):
@@ -273,14 +310,17 @@ def getbooks(request):
     person = Person.objects.get(pk=request.session["person_id"])
     if not person: # not registred
         return HttpResponse(json.dumps({"info": 3}))
-    bookslist=[]
-    count=0
-    if (query["search"]["person"]==1):
-        bookslist,count=person.getBooks("reader_id",query["search"]["word"],query["sort"]["type"],query["sort"]["column"],start,pageS)
-    elif (query["search"]["person"]==2):
-        bookslist,count=person.getBooks("owner_id",query["search"]["word"],query["sort"]["type"],query["sort"]["column"],start,pageS)
-    elif (query["search"]["person"]==0):
-        bookslist,count=Book.getAllFormated(query["search"]["word"],query["sort"]["type"],query["sort"]["column"],start,pageS)
+    bookslist = []
+    count = 0
+    if (query["search"]["person"] == 1):
+        bookslist, count = person.getBooks("reader_id", query["search"]["word"], query["sort"]["type"],
+                                           query["sort"]["column"], start, pageS)
+    elif (query["search"]["person"] == 2):
+        bookslist, count = person.getBooks("owner_id", query["search"]["word"], query["sort"]["type"],
+                                           query["sort"]["column"], start, pageS)
+    elif (query["search"]["person"] == 0):
+        bookslist, count = Book.getAllFormated(query["search"]["word"], query["sort"]["type"], query["sort"]["column"],
+                                               start, pageS)
 
     return HttpResponse(json.dumps({"info": "yes", "count": count, "books": bookslist}))
 
@@ -293,20 +333,21 @@ def getlastbooks(request):
 
     return HttpResponse(json.dumps({"books": bookslist}))
 
+
 def loadItems(request):
     query = json.loads(str(request.body.decode()))
     isbn = query["isbn"]
-    bilist=[bi.getValues() for bi in Book.objects.get(pk=isbn).bookitem_set.all()]
+    bilist = [bi.getValues() for bi in Book.objects.get(pk=isbn).bookitem_set.all()]
 
-    return HttpResponse(json.dumps({"info":1, "bilist": bilist}))
+    return HttpResponse(json.dumps({"info": 1, "bilist": bilist}))
 
 
 def testBIConv(request):
     query = json.loads(str(request.body.decode()))
     itemId = query["itemId"]
-    bi=BookItem.objects.get(pk=itemId)
-    (takeb,takep)=bi.checkTake()
-    if takeb==0:
+    bi = BookItem.objects.get(pk=itemId)
+    (takeb, takep) = bi.checkTake()
+    if takeb == 0:
         return HttpResponse(json.dumps({"info": 1}))
     else:
         return HttpResponse(json.dumps({"info": 3}))
@@ -324,8 +365,8 @@ def takeReq(request):
         return HttpResponse(json.dumps({"info": 3}))
 
     bi = BookItem.objects.get(pk=itemId)
-    (takeb,takep)=bi.checkTake()
-    if takeb!=0:
+    (takeb, takep) = bi.checkTake()
+    if takeb != 0:
         return HttpResponse(json.dumps({"info": 2}))
     personTo = Person.objects.get(pk=bi.reader_id)
 
@@ -333,7 +374,7 @@ def takeReq(request):
     conv.save()
     conv.message_set.create(date=timezone.now(), mtype=1, isRead=0, resp=1)
 
-    return HttpResponse(json.dumps({"info": 1}))
+    return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
 
 
 def getMessages(request):
@@ -363,7 +404,7 @@ def getMessages(request):
         bi = BookItem.objects.get(pk=mess[2])
         p_new = Person.objects.get(pk=mess[3])
         formatedMes.append((message.id, bi.id, bi.value, bi.book.title,
-                            p_new.getPrintableName(), message.date, message.resp,message.mtype))
+                            p_new.getPrintableName(), message.date, message.resp, message.mtype))
 
     return HttpResponse(json.dumps({"info": 1, "messages": formatedMes}, cls=DjangoJSONEncoder))
 
@@ -386,10 +427,10 @@ def replyMessage(request):
     mess.isRead = 1
     mess.save()
 
-    if mess.mtype==bi.value or mess.resp==2:
+    if mess.mtype == bi.value or mess.resp == 2:
         return HttpResponse(json.dumps({"info": 1}))
 
-    mess_new = Message(conversation=conv, date=timezone.now(), mtype=mess.mtype+1, resp=resp, isRead=0)
+    mess_new = Message(conversation=conv, date=timezone.now(), mtype=mess.mtype + 1, resp=resp, isRead=0)
     mess_new.save()
 
     return HttpResponse(json.dumps({"info": 1}))

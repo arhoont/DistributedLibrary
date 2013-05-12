@@ -40,18 +40,12 @@ h3 span {
     width: 550px;
 }
 
-
 #ba-form-div {
     width: 690px;
 }
 
 #ba-form-div .form-body {
     display: inline-block;
-}
-
-#ba-form-div textarea {
-    width: 230px;
-    resize: none;
 }
 
 #ba-form-div #ba-btn {
@@ -133,9 +127,21 @@ h3 span {
     width: 30%;
 }
 
-
-#infoValue{
+#infoValue {
     padding-left: 20px;
     border-left: 1px solid #e5e5e5;
     margin-top: 50px;
+}
+
+#ba-desc {
+    margin-left: 20px;
+    resize: none;
+    width: 100%;
+}
+
+#b-img{
+    height: 200px;
+}
+#b-img-a{
+    cursor: pointer;
 }

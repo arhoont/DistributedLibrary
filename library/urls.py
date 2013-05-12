@@ -23,4 +23,5 @@ urlpatterns = patterns('',
     (r'^getMessages', views.getMessages),
     (r'^replyMessage', views.replyMessage),
     (r'^loadItems', views.loadItems),
+    (r'^uploadBI', views.uploadBI),
 )

@@ -6,6 +6,9 @@
 {% block include %}
 
     <link rel="stylesheet" href="{% static "css/formcss.css" %}">
+    <script type="text/javascript" charset="utf-8" src="{% static "js/jquery.printElement.js" %}"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static "js/jquery.form.js" %}"></script>
+
     <script type="text/javascript" charset="utf-8" src="{% static "js/bookadd.js" %}"></script>
 {% endblock %}
 {% block content %}
@@ -29,8 +32,8 @@
                             {% csrf_token %}
                             <div class="row">
                                 <div class="span2" id="image-div">
-                                    <a href="#" class="thumbnail">
-                                        <img src="{% static "img/pizza.jpg" %}" alt="">
+                                    <a class="thumbnail" id="b-img-a">
+                                        <img src="" alt="" id="b-img">
                                     </a>
                                 </div>
                                 <div class="span5 right-inputs">
@@ -87,7 +90,8 @@
                                             </div>
                                             {#                                            <a class="infoValuesButton" onclick=""><i#}
                                             {#                                                    class="icon-question-sign icon-white"></i></a>#}
-                                            <a class="infoValuesButton" data-toggle="popover" data-placement="right" data-trigger="hover"
+                                            <a class="infoValuesButton" data-toggle="popover" data-placement="right"
+                                               data-trigger="hover"
                                                data-content="Ценность позволяет установить количество запросов...а аааааааааааааа"
                                                title="Ценность">
                                                 <i class="icon-question-sign icon-white"></i></a>
@@ -122,28 +126,54 @@
                                             class="icon-plus-sign icon-white"></i></button>
 
                                 </div>
-                                <div class="control-group span2" id="ba-desc-cg">
-                                    <label class="control-label" for=ba-desc>Описание</label>
-
-                                    <div class="controls">
-                                        <textarea rows=4 id="ba-desc" name="ba-desc" placeholder="Описание"></textarea>
-                                        <button type="button" class="btn btn-primary pull-right" id="ba-btn">Добавить
-                                        </button>
-                                    </div>
-                                </div>
 
                             </div>
                         </form>
+                        <div class="control-group" id="ba-desc-cg">
+                            <label class="control-label" for=ba-desc><h4>Описание</h4></label>
 
+                            <div class="controls">
+                                <textarea rows=5 id="ba-desc" name="ba-desc" placeholder="Описание"></textarea>
+                                <button type="button" class="btn btn-primary" id="ba-btn">Добавить
+                                </button>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
         <div class="span4" id="infoDiv"></div>
     </div>
+
+    <div id="printModal" class="modal hide" tabindex="-1" role="dialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3 id="myModalLabel">Книга добавлена</h3>
+        </div>
+
+        <div class="modal-body">
+            <h5 class="text-center"> Распечатайте стикер и наклейте его на книгу</h5>
+
+            <div id="sticker" style="display: inline-block;border: 1px solid #e5e5e5;border-radius: 4px;padding: 5px;">
+                <div style="font-weight: bold; text-align: center">{{ libname }}</div>
+                <div><span>№ экземпляра: </span> <span style="font-weight: bold;" class="biid">1</span></div>
+                <span>Владелец: </span>
+
+                <div class="username" style="margin-left: 10px;">{{ person.fname }} {{ person.lname }}</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">Закрыть</button>
+            <button class="btn btn-primary" id="printBtn"><i class="icon-print icon-white"></i> Печать</button>
+        </div>
+    </div>
+    <form id="imageform" method="post" action='/uploadBI' class="hide">
+        <input type="text" name="prev_file" id="prev_file"/>
+        <input type="file" name="file" id="image-input"/>
+    </form>
     <script>
         var authors = {{authors|safe}};
         var keywords = {{keywords|safe}};
-
     </script>
 {% endblock %}

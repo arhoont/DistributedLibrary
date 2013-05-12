@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static "css/formcss.css" %}">
     <link rel="stylesheet" href="{% static "css/bookinfo.css" %}">
     <script type="text/javascript" charset="utf-8" src="{% static "js/bookinfo.js" %}"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static "js/jquery.printElement.js" %}"></script>
 {% endblock %}
 {% block content %}
 
@@ -34,7 +35,7 @@
                             <div class="row">
                                 <div class="span2" id="image-div">
                                     <a href="#" class="thumbnail">
-                                        <img src="{% static "img/pizza.jpg" %}" alt="">
+                                        <img src="{{ MEDIA_URL}}{{ book.image }}" alt="" id="b-img">
                                     </a>
                                 </div>
                                 <div class="span4 right-inputs">
@@ -106,14 +107,6 @@
                                     </div>
 
                                 </div>
-                                <div class="control-group span2" id="ba-desc-cg">
-                                    <label class="control-label" for=ba-desc>Описание:</label>
-
-                                    <div class="controls">
-                                        <div id="ba-desc">{{ book.description }}</div>
-                                        {#                                        <textarea rows=4 id="ba-desc" name="ba-desc" placeholder="Описание" readonly>{{ book.description }}</textarea>#}
-                                    </div>
-                                </div>
                             </div>
                             <div id="butsdiv">
                                 {#<button type="button" class="btn btn-primary">Взять</button>#}
@@ -123,7 +116,6 @@
                                 <button type="button" class="btn btn-info" id="addItemBut">Добавить экземпляр</button>
                             </div>
                         </form>
-
                     </div>
                     <div class="pull-left" id="itemsTalbeDiv">
                         <caption class="caption"><strong>Экземпляры:</strong></caption>
@@ -140,6 +132,14 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+            <div class="control-group" id="ba-desc-cg">
+                <label class="control-label" for=ba-desc><h4>Описание:</h4></label>
+
+                <div class="controls">
+                    <div id="ba-desc">{{ book.description }}</div>
+                    {#                                        <textarea rows=4 id="ba-desc" name="ba-desc" placeholder="Описание" readonly>{{ book.description }}</textarea>#}
                 </div>
             </div>
             <div id="opinions">
@@ -219,15 +219,39 @@
     <div id="takeModal" class="modal hide" tabindex="-1" role="dialog">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">×</button>
-            <h3 id="myModalLabel">Взять</h3>
+            <h3 id="myModalLabel">Вы уверены?</h3>
         </div>
         <div class="modal-body">
 
         </div>
 
         <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">Отмена</button>
+            <button class="btn btn-info">Справка</button>
+            <button class="btn btn-primary" id="takeButtonModal">Послать запрос</button>
+        </div>
+    </div>
+
+    <div id="printModal" class="modal hide" tabindex="-1" role="dialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3 id="myModalLabel">Экземпляр добавлен</h3>
+        </div>
+
+        <div class="modal-body">
+            <h5 class="text-center"> Распечатайте стикер и наклейте его на книгу</h5>
+
+            <div id="sticker" style="display: inline-block;border: 1px solid #e5e5e5;border-radius: 4px;padding: 5px;">
+                <div style="font-weight: bold; text-align: center">{{ libname }}</div>
+                <div><span>№ экземпляра: </span><span style="font-weight: bold;" class="biid">1</span></div>
+                <span>Владелец: </span>
+
+                <div class="username" style="margin-left: 10px;">{{ person.fname }} {{ person.lname }}</div>
+            </div>
+        </div>
+        <div class="modal-footer">
             <button class="btn" data-dismiss="modal">Закрыть</button>
-            <button class="btn btn-primary" id="takeButtonModal">Взять</button>
+            <button class="btn btn-primary" id="printBtn"><i class="icon-print icon-white"></i> Печать</button>
         </div>
     </div>
     <script>

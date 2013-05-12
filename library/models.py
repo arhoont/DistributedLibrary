@@ -30,7 +30,6 @@ class Person(models.Model):
     salt = models.CharField(max_length=255)
     adm = models.IntegerField(default=0)
     status = models.IntegerField(default=1)
-    session = models.CharField(max_length=255, null=True)
 
     class Meta:
         unique_together = ("domain", "login")
@@ -93,10 +92,12 @@ class Book(models.Model):
     isbn = models.CharField(max_length=255, primary_key=True)
     ozon = models.CharField(max_length=255, null=True)
     title = models.CharField(max_length=255)
+    # image = models.ImageField(upload_to='books')
     language = models.ForeignKey(Language)
     description = models.TextField()
     authors = models.ManyToManyField(Author)
     keywords = models.ManyToManyField(Keyword)
+    image=models.CharField(max_length=255, null=True)
     rating = models.IntegerField()
     def getPrintAuthors(self):
         d = ", "

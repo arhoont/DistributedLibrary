@@ -25,6 +25,41 @@ BEGIN
 END;
 $$  LANGUAGE plpgsql;
 
+CREATE or replace FUNCTION take_keywords(isbnIn varchar) RETURNS text AS $$
+DECLARE
+  keywords text;
+  keyword text;
+  cur cursor for select * from library_book_keywords where book_id=isbnIn;
+BEGIN
+  keywords='';
+  FOR keyword IN cur LOOP
+    keywords:=keywords ||', '|| keyword.keyword_id;
+  END LOOP;
+  return substr(keywords,3);
+END;
+$$  LANGUAGE plpgsql;
+
+CREATE or replace FUNCTION getFormatedBooks(page int, count int) RETURNS table(
+  isbn varchar, title varchar , authors text , keywords text, language varchar , itemcount int ,rating float
+) AS $$
+declare
+  curtb cursor FOR select library_book.isbn, library_book.title, take_authors(library_book.isbn) as authors, take_keywords(library_book.isbn) as keywords,
+  language_id as language, cast((select count(*) from library_bookitem where library_bookitem.book_id=library_book.isbn) as int)as itemcount,
+  library_book.rating
+  from library_book
+  group by library_book.isbn;
+  frow int;
+  que text;
+BEGIN
+    frow = (page-1)*count;
+    OPEN curtb;
+    move FORWARD frow from curtb;
+    que='fetch '||count||' curtb;';
+    return query execute (que);
+    close curtb;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE or replace FUNCTION getPersonBooks(pid int, rot varchar) RETURNS table(
   isbn varchar, title varchar,authors text,keywords text, language varchar, itemcount int, rating float)
 as $$
@@ -61,7 +96,6 @@ create or replace function f_ch_mess_item () returns trigger
     select item_id, value, "personFrom_id" into  mr from library_conversation join library_bookitem
     on library_conversation.item_id=library_bookitem.id
     where library_conversation.id = new.conversation_id;
-    RAISE NOTICE 'aaa';
     if (new.mtype=mr.value and new.resp=1)then
       update library_bookitem set (reader_id,takedate) = (mr."personFrom_id",CURRENT_TIMESTAMP) where id=mr.item_id;
     end if;
@@ -108,12 +142,4 @@ select isbn, title, take_authors(isbn) as authors, take_keywords(isbn) as keywor
   rating
   from library_book
   group by isbn;
-
-
-insert into library_domain values (' ');
-insert into library_language values ('Русский');
-insert into library_language values ('English');
-insert into library_syssetting values (1,1,300,'lib1');
-
-
 

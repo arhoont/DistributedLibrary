@@ -1,4 +1,4 @@
-path = '/static/'
+//path = '/static/';
 function debug(smt) {
     console.log(smt);
 }
