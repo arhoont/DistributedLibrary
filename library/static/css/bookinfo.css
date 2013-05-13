@@ -39,7 +39,6 @@
 }
 
 .optext {
-    width: 1000px;
     margin-left: 10px;
     word-wrap: break-word;
     overflow: auto;
@@ -47,4 +46,15 @@
 
 #b-img{
     height: 200px;
+}
+#image-div{
+    width: 170px;
+    float: left;
+}
+
+.right-inputs{
+    width: 420px;
+}
+#ba-form-r .controls{
+    padding-left: 80px !important;
 }

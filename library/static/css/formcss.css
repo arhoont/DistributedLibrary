@@ -6,7 +6,7 @@
 }
 
 .form-wrapper {
-    margin-left: 30px;
+
     display: inline-block;
 }
 
@@ -41,7 +41,7 @@ h3 span {
 }
 
 #ba-form-div {
-    width: 690px;
+    width: 800px;
 }
 
 #ba-form-div .form-body {
@@ -51,7 +51,6 @@ h3 span {
 #ba-form-div #ba-btn {
     margin-left: 20px;
 }
-
 #ba-form-wrapper #image-div {
     margin-left: 50px;
 }
@@ -144,4 +143,8 @@ h3 span {
 }
 #b-img-a{
     cursor: pointer;
+}
+#image-div{
+    width: 170px;
+    float: left;
 }

@@ -98,7 +98,7 @@ class Book(models.Model):
     authors = models.ManyToManyField(Author)
     keywords = models.ManyToManyField(Keyword)
     image=models.CharField(max_length=255, null=True)
-    rating = models.IntegerField()
+    rating = models.IntegerField(null=True)
     def getPrintAuthors(self):
         d = ", "
         authors = [a.getPrintName() for a in self.authors.all()]

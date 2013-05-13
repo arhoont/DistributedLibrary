@@ -64,6 +64,10 @@ function castPage() {
     $('#image-input').live('change', function () {
         $("#imageform").submit();
     });
+
+    $('#printModal').on('hidden', function () {
+        window.location = "/book/info/?isbn="+$('#ba-isbn').val();
+    });
 }
 
 function addEAuthor() {

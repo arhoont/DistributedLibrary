@@ -189,3 +189,13 @@ function replyMessage(mess_id, resp, mt) {
         }
     });
 }
+
+function Book(json_book){
+    this.isbn=json_book[0];
+    this.title=json_book[0];
+    this.authors=json_book[0];
+    this.keywords=json_book[0];
+    this.language=json_book[0];
+    this.item_count=json_book[0];
+    this.rating=json_book[0];
+}

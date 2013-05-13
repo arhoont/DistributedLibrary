@@ -31,21 +31,23 @@
                         <form class="form-horizontal" action="" method="post" id="ba-form-r">
                             {% csrf_token %}
                             <div class="row">
-                                <div class="span2" id="image-div">
+                                <div class="" id="image-div">
                                     <a class="thumbnail" id="b-img-a">
-                                        <img src="" alt="" id="b-img">
+                                        <img src="{{ STATIC_URL }}img/add_img.png" alt="" id="b-img">
                                     </a>
                                 </div>
-                                <div class="span5 right-inputs">
+                                <div class="span6 right-inputs">
                                     <div class="control-group" id="ba-link-cg">
                                         <label class="control-label" for="ba-link">Ссылка</label>
 
-                                        <div class="controls">
-                                            <input type="text" id="ba-link" name="ba-link" placeholder="Ссылка">
-                                            <button type="button" class="btn" onclick=""><i
-                                                    class="icon-download icon-white"></i></button>
-                                            <span class="help-inline"></span>
+                                        <div class="controls ">
+                                            <div class="input-append">
+                                                <input type="text" id="ba-link" name="ba-link" placeholder="Ссылка">
+                                                <button type="button" class="btn" onclick=""><i
+                                                        class="icon-download icon-white"></i></button>
 
+                                            </div>
+                                            <span class="help-inline"></span>
                                         </div>
                                     </div>
                                     <div class="control-group" id="ba-isbn-cg">

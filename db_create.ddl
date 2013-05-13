@@ -67,7 +67,7 @@ declare
   que text;
 BEGIN
   que='select isbn,library_book.title, take_authors(isbn), take_keywords(isbn)
-              ,language_id as language, cast(count(*) as int), rating from library_bookitem join
+              ,language_id as language, cast(count(*) as int), cast(rating as float)from library_bookitem join
               library_book on book_id=isbn where '||rot||'='||pid||' group by isbn';
   return query execute (que);
 END;
