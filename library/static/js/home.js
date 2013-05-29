@@ -94,20 +94,21 @@ function tableReq() {
         crossDomain: false
     });
 }
-function castMainTable(objForm) {
+function castMainTable(data) {
+    console.log(data);
     $("#rows").html("");
-    var k = objForm.books.length;
+    var k = data.books.length;
     for (i = 0; i < k; i++) {
-        var isbn = objForm.books[i][0];
-        listed = '<tr class="oneRow" id=' + isbn + '>';
-        listed += '<td class="isbnColum"><a href="/book/info?isbn=' + isbn + '">' + isbn + '</a></td>';
-        listed += '<td class="titleColum"><a title="' + objForm.books[i][1] + '" href="/book/info?isbn=' + isbn + '">' + objForm.books[i][1] + '</a></td>';
-        listed += '<td class="authColum" title="' + objForm.books[i][2] + '">' + objForm.books[i][2] + '&nbsp</td>';
-        listed += '<td class="keyColum" title="' + objForm.books[i][3] + '">' + objForm.books[i][3] + '</td>';
-        listed += '<td class="langColum" >' + objForm.books[i][4] + '</td>';
-        listed += '<td class="countColum">' + objForm.books[i][5] + '&nbsp</td>';
+        var book=data.books[i];
+        listed = '<tr class="oneRow" id=' + book.pk + '>';
+        listed += '<td class="isbnColum"><a href="/book/info?isbn=' + book.pk + '">' + book.pk + '</a></td>';
+        listed += '<td class="titleColum"><a title="' + book.fields.title + '" href="/book/info?isbn=' + book.pk + '">' +  book.fields.title + '</a></td>';
+        listed += '<td class="authColum" title="' + book.fields.authors + '">' + book.fields.authors + '&nbsp</td>';
+        listed += '<td class="keyColum" title="' + book.fields.keywords  + '">' + book.fields.keywords + '</td>';
+        listed += '<td class="langColum" >' + book.fields.language + '</td>';
+        listed += '<td class="countColum">' + book.fields.item_count + '&nbsp</td>';
         listed += '<td class="ratingColum">';
-        for (var j = 0; j < objForm.books[i][6]; j++) {
+        for (var j = 0; j < book.fields.rating; j++) {
             listed += '<i class="icon-star icon-white"></i>';
         }
         listed += '&nbsp</td>'
@@ -118,7 +119,7 @@ function castMainTable(objForm) {
 
 
     $("#page").html(page.num.toString());
-    if (objForm.count <= page.num * page.size) {
+    if (book.fields.item_count <= page.num * page.size) {
         $("#nextBut").addClass("disabled");
     } else {
         $("#nextBut").removeClass("disabled");

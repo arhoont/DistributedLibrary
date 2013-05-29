@@ -2,11 +2,12 @@ import hashlib
 import random
 import string
 from PIL import Image
+from django.core import serializers
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import Context
@@ -312,17 +313,38 @@ def getbooks(request):
         return HttpResponse(json.dumps({"info": 3}))
     bookslist = []
     count = 0
-    if (query["search"]["person"] == 1):
-        bookslist, count = person.getBooks("reader_id", query["search"]["word"], query["sort"]["type"],
-                                           query["sort"]["column"], start, pageS)
-    elif (query["search"]["person"] == 2):
-        bookslist, count = person.getBooks("owner_id", query["search"]["word"], query["sort"]["type"],
-                                           query["sort"]["column"], start, pageS)
-    elif (query["search"]["person"] == 0):
-        bookslist, count = Book.getAllFormated(query["search"]["word"], query["sort"]["type"], query["sort"]["column"],
-                                               start, pageS)
 
-    return HttpResponse(json.dumps({"info": "yes", "count": count, "books": bookslist}))
+    # if (query["search"]["person"] == 1):
+    #     bookslist, count = person.getBooks("reader_id", query["search"]["word"], query["sort"]["type"],
+    #                                        query["sort"]["column"], start, pageS)
+    # elif (query["search"]["person"] == 2):
+    #     bookslist, count = person.getBooks("owner_id", query["search"]["word"], query["sort"]["type"],
+    #                                        query["sort"]["column"], start, pageS)
+    # elif (query["search"]["person"] == 0):
+    #     bookslist, count = Book.getAllFormated(query["search"]["word"], query["sort"]["type"], query["sort"]["column"],
+    #                                            start, pageS)
+    sWord=query["search"]["word"]
+    if (query["search"]["person"] == 1):
+        bookslist=Book.objects.filter(bookitem__reader=person).distinct()
+        count=Book.objects.filter(bookitem__reader=person).distinct().count()
+
+        # bookslist, count = person.getBooks("reader_id", query["search"]["word"], query["sort"]["type"],
+        #                                    query["sort"]["column"], start, pageS)
+    elif (query["search"]["person"] == 2):
+        bookslist=Book.objects.filter(bookitem__owner=person).distinct()
+        count=Book.objects.filter(bookitem__owner=person).distinct().count()
+        # bookslist, count = person.getBooks("owner_id", query["search"]["word"], query["sort"]["type"],
+        #                                    query["sort"]["column"], start, pageS)
+    elif (query["search"]["person"] == 0):
+        bookslist=Book.objects.filter(Q(title__icontains=sWord))
+        count=Book.objects.all().count()
+        # bookslist, count = Book.getAllFormated(query["search"]["word"], query["sort"]["type"], query["sort"]["column"],
+        #                                        start, pageS)
+    print(bookslist)
+    bookslist= serializers.serialize("json",bookslist, use_natural_keys=True,
+                                     fields=('ozon','title','language','authors','keywords','rating','item_count'))
+    print(bookslist)
+    return HttpResponse(json.dumps({"info": "yes", "count": count, "books" : json.loads(bookslist)}))
 
 
 def getlastbooks(request):

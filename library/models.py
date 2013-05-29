@@ -68,16 +68,15 @@ class Author(models.Model):
 
     info = models.TextField(null=True)
 
-    def getPrintName(self):
-        return self.fname + " " + self.lname
+    def __str__(self):
+         return self.fname + " " + self.lname
 
-    def getPrintNameSh(self):
-        return self.fname + " " + self.lname[0:1] + "."
+    def natural_key(self):
+        return (self.fname + " " + self.lname,)
 
     class Meta:
         unique_together = ("fname", "lname")
         index_together = [["fname", "lname"], ]
-
 
 class Keyword(models.Model):
     word = models.CharField(max_length=255, primary_key=True)
@@ -99,6 +98,10 @@ class Book(models.Model):
     keywords = models.ManyToManyField(Keyword)
     image=models.CharField(max_length=255, null=True)
     rating = models.IntegerField(null=True)
+    item_count = models.IntegerField(null=True)
+    def __str__(self):
+        return self.isbn+" "+self.title
+
     def getPrintAuthors(self):
         d = ", "
         authors = [a.getPrintName() for a in self.authors.all()]
@@ -125,7 +128,7 @@ class Book(models.Model):
 
     @staticmethod
     def getAllFormated(sew, sot, soc,start,count):
-        que = "select * from allbooks"
+        que = "select * from library_book"
         queSer = ''
         if sew != '':
             queSer = searchPref(sew)
@@ -144,6 +147,7 @@ class Book(models.Model):
             bookslist = []
         cursor.close()
         return bookslist, rc
+
 
 
 class BookItem(models.Model):
