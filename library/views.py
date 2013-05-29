@@ -1,3 +1,4 @@
+from functools import reduce
 import hashlib
 import random
 import string
@@ -11,6 +12,7 @@ from django.db.models import Max, Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import Context
+import operator
 from library.models import *
 from django.db import connection
 from datetime import timedelta
@@ -220,19 +222,18 @@ def checkBook(request):
         booklist = Book.objects.filter(isbn=isbn)
     if typeQ == 2:
         booklist = Book.objects.filter(title__icontains=title)
-    if booklist:
-        return HttpResponse(json.dumps({"info": 1, "books": [b.getValues() for b in booklist]}))
+        # if booklist:
+    #     return HttpResponse(json.dumps({"info": 1, "books": [b.getValues() for b in booklist]}))
 
     return HttpResponse(json.dumps({"info": 2, "books": ""}))
 
 
 def uploadBI(request):
-
     if "file" not in request.FILES:
         return HttpResponse(json.dumps({"info": 2}))
     if "prev_file" in request.POST:
-        prev_file=request.POST["prev_file"]
-        if (len(prev_file)>0):
+        prev_file = request.POST["prev_file"]
+        if (len(prev_file) > 0):
             default_storage.delete(prev_file)
 
     data = request.FILES['file']
@@ -274,7 +275,7 @@ def addbajax(request):
     language, created = Language.objects.get_or_create(language=lang)
     path = None
     try:
-        if len(image)>0:
+        if len(image) > 0:
             photo = default_storage.open(image)
             exp = photo.name.split('.')[-1]
             path = default_storage.save("book_image/" + isbn + "." + exp, ContentFile(photo.read()))
@@ -323,37 +324,41 @@ def getbooks(request):
     # elif (query["search"]["person"] == 0):
     #     bookslist, count = Book.getAllFormated(query["search"]["word"], query["sort"]["type"], query["sort"]["column"],
     #                                            start, pageS)
-    sWord=query["search"]["word"]
-    if (query["search"]["person"] == 1):
-        bookslist=Book.objects.filter(bookitem__reader=person).distinct()
-        count=Book.objects.filter(bookitem__reader=person).distinct().count()
+    sWord = query["search"]["word"]
+    orderF = query["sort"]["column"]
 
-        # bookslist, count = person.getBooks("reader_id", query["search"]["word"], query["sort"]["type"],
-        #                                    query["sort"]["column"], start, pageS)
+    if query["sort"]["type"] == 1:
+        orderF = "-" + orderF
+    qList = [Q(title__icontains=sWord),
+             Q(language__language__icontains=sWord),
+             Q(authors__fname__icontains=sWord),
+             Q(authors__lname__icontains=sWord),
+             Q(keywords__word__icontains=sWord)]
+
+    addQuery={}
+
+    if (query["search"]["person"] == 1):
+        addQuery = {'bookitem__reader': person}
     elif (query["search"]["person"] == 2):
-        bookslist=Book.objects.filter(bookitem__owner=person).distinct()
-        count=Book.objects.filter(bookitem__owner=person).distinct().count()
-        # bookslist, count = person.getBooks("owner_id", query["search"]["word"], query["sort"]["type"],
-        #                                    query["sort"]["column"], start, pageS)
-    elif (query["search"]["person"] == 0):
-        bookslist=Book.objects.filter(Q(title__icontains=sWord))
-        count=Book.objects.all().count()
-        # bookslist, count = Book.getAllFormated(query["search"]["word"], query["sort"]["type"], query["sort"]["column"],
-        #                                        start, pageS)
-    print(bookslist)
-    bookslist= serializers.serialize("json",bookslist, use_natural_keys=True,
-                                     fields=('ozon','title','language','authors','keywords','rating','item_count'))
-    print(bookslist)
-    return HttpResponse(json.dumps({"info": "yes", "count": count, "books" : json.loads(bookslist)}))
+        addQuery={'bookitem__owner': person}
+
+    bookslist = Book.objects.filter(reduce(operator.or_, qList),**addQuery).distinct().order_by(orderF)[start:start + pageS]
+    count = Book.objects.filter(reduce(operator.or_, qList),**addQuery).distinct().count()
+
+    bookslist = serializers.serialize("json", bookslist, use_natural_keys=True,
+                                      fields=(
+                                      'ozon', 'title', 'language', 'authors', 'keywords', 'rating', 'item_count'))
+
+    return HttpResponse(json.dumps({"info": "yes", "count": count, "books": json.loads(bookslist)}))
 
 
 def getlastbooks(request):
     query = json.loads(str(request.body.decode()))
     count = int(query["count"])
-    bookslist = [[b.isbn, b.title, b.getPrintAuthors(), b.language.language] for b in
-                 Book.objects.all().order_by("isbn")[:count]]
+    # bookslist = [[b.isbn, b.title, b.getPrintAuthors(), b.language.language] for b in
+    #              Book.objects.all().order_by("isbn")[:count]]
 
-    return HttpResponse(json.dumps({"books": bookslist}))
+    return HttpResponse(json.dumps({"books": ""}))
 
 
 def loadItems(request):

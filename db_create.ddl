@@ -78,6 +78,19 @@ create or replace function f_new_item() returns trigger
   as $$
   begin
     insert into library_itemstatus (item_id, status, date) values (new.id,1,CURRENT_TIMESTAMP);
+    perform recount_items (new.book_id);
+    return null;
+  end;
+  $$
+LANGUAGE plpgsql;
+
+drop function recount_items (isbn varchar);
+create or replace function recount_items (in_isbn varchar) returns int
+  as $$
+  begin
+    update library_book set item_count=
+      (select count(*) from library_bookitem where book_id=isbn)
+    where isbn=in_isbn;
     return null;
   end;
   $$

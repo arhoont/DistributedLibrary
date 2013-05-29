@@ -95,7 +95,6 @@ function tableReq() {
     });
 }
 function castMainTable(data) {
-    console.log(data);
     $("#rows").html("");
     var k = data.books.length;
     for (i = 0; i < k; i++) {
@@ -119,7 +118,7 @@ function castMainTable(data) {
 
 
     $("#page").html(page.num.toString());
-    if (book.fields.item_count <= page.num * page.size) {
+    if (data.count <= page.num * page.size) {
         $("#nextBut").addClass("disabled");
     } else {
         $("#nextBut").removeClass("disabled");

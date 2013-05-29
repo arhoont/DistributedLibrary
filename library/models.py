@@ -3,14 +3,6 @@ from django.db.models import Avg, Max
 from django.utils import timezone
 
 
-def searchPref(sew):
-    return " where (isbn like upper('%%" + sew + \
-           "%%') or upper(title) like upper('%%" + sew + \
-           "%%') or upper(language) like upper('%%" + sew + \
-           "%%') or upper(authors) like upper('%%" + sew + \
-           "%%') or upper(language) like upper('%%" + sew + \
-           "%%') or upper(keywords) like upper('%%" + sew + "%%'))"
-
 # People
 
 class Domain(models.Model):
@@ -40,26 +32,6 @@ class Person(models.Model):
     def getPrintableName(self):
         return self.fname + " " + self.lname
 
-    def getBooks(self, rot, sew, sot, soc, start, count):
-        que = "select * from getPersonBooks(" + str(self.id) + ", '" + rot + "')"
-        queSer = ''
-        if sew != '':
-            queSer = searchPref(sew)
-
-        queSor = ' order by ' + soc
-        if sot == 1:
-            queSor += ' desc'
-
-        cursor = connection.cursor()
-        cursor.execute(que + queSer + queSor)
-        rc = cursor.rowcount
-        if rc > 0:
-            cursor.scroll(start)
-            bookslist = cursor.fetchmany(count)
-        else:
-            bookslist = []
-        cursor.close()
-        return bookslist, rc
 
 
 class Author(models.Model):
@@ -69,6 +41,9 @@ class Author(models.Model):
     info = models.TextField(null=True)
 
     def __str__(self):
+         return self.fname + " " + self.lname
+
+    def getPrintName(self):
          return self.fname + " " + self.lname
 
     def natural_key(self):
@@ -99,54 +74,9 @@ class Book(models.Model):
     image=models.CharField(max_length=255, null=True)
     rating = models.IntegerField(null=True)
     item_count = models.IntegerField(null=True)
+
     def __str__(self):
         return self.isbn+" "+self.title
-
-    def getPrintAuthors(self):
-        d = ", "
-        authors = [a.getPrintName() for a in self.authors.all()]
-        return d.join(authors)
-
-    def getPrintAuthorsSh(self):
-        d = ", "
-        authors = [a.getPrintNameSh() for a in self.authors.all()]
-        return d.join(authors)
-
-    def getPrintKeywords(self):
-        d = ", "
-        keywords = [k.word for k in self.keywords.all()]
-        return d.join(keywords)
-        # image = models.ImageField
-
-    def getAvgRating(self):
-        return self.opinion_set.aggregate(Avg('rating'))['rating__avg']
-
-    def getValues(self):
-        return (
-            self.isbn, self.ozon, self.title, self.language.language, self.getPrintAuthors(), self.getPrintKeywords(),
-            self.getAvgRating(), self.bookitem_set.count())
-
-    @staticmethod
-    def getAllFormated(sew, sot, soc,start,count):
-        que = "select * from library_book"
-        queSer = ''
-        if sew != '':
-            queSer = searchPref(sew)
-
-        queSor = ' order by ' + soc
-        if sot == 1:
-            queSor += ' desc'
-
-        cursor = connection.cursor()
-        cursor.execute(que + queSer + queSor)
-        rc = cursor.rowcount
-        if rc > 0:
-            cursor.scroll(start)
-            bookslist = cursor.fetchmany(count)
-        else:
-            bookslist = []
-        cursor.close()
-        return bookslist, rc
 
 
 
