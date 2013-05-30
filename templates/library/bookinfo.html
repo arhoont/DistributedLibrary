@@ -13,157 +13,122 @@
 {% block content %}
     <span class="alertSpan"></span>
 
+    <div class="form-header">
+        <h3>
+            <a href="/" class="btn pull-left" type="button" id="back-btn"><i
+                    class="icon-arrow-left icon-white"></i>
+            </a>
+            <span>{{ book.title }}</span>
+
+            <div class="separator"></div>
+        </h3>
+    </div>
+
     <div class="row">
-        <div class="form-wrapper" id="ba-form-wrapper">
+        <div class="span4" id="image-div">
+            <a href="#" class="thumbnail">
+                {% if book.image %}
+                    <img src="{{ MEDIA_URL }}{{ book.image }}" alt="" id="b-img">
+                {% else %}
+                    <img src="{{ STATIC_URL }}img/no_book.png" alt="" id="b-img">
+                {% endif %}
 
-            <div class="form-div" id="ba-form-div">
-                <div>
-                    <div class="form-header">
-                        <h3>
-                            <a href="/" class="btn pull-left" type="button" id="back-btn"><i
-                                    class="icon-arrow-left icon-white"></i>
-                            </a>
-                            <span>Информация</span>
-                        </h3>
-                    </div>
-                    <div class="form-body pull-left">
-                        <form class="form-horizontal" action="" method="post" id="ba-form-r">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="" id="image-div">
-                                    <a href="#" class="thumbnail">
-                                        {% if book.image %}
-                                            <img src="{{ MEDIA_URL }}{{ book.image }}" alt="" id="b-img">
-                                        {% else %}
-                                            <img src="{{ STATIC_URL }}img/no_book.png" alt="" id="b-img">
-                                        {% endif %}
-
-                                    </a>
-                                </div>
-                                <div class="span5 right-inputs">
-                                    <div class="control-group" id="ba-link-cg">
-                                        <label class="control-label" for="ba-link">Ссылка:</label>
-
-                                        <div class="controls">
-                                            <a href="{{ book.ozon }}" id="ba-link"
-                                               name="ba-link">{{ book.ozon }}</a>
-                                            <span class="help-inline"></span>
-                                        </div>
-                                    </div>
-                                    <div class="control-group" id="ba-isbn-cg">
-                                        <label class="control-label" for="ba-isbn">ISBN:</label>
-
-                                        <div class="controls">
-                                            <span id="ba-isbn" name="ba-isbn">{{ book.isbn }}</span>
-                                            <script>isbn = "{{ book.isbn }}"</script>
-                                            <span class="help-inline"></span>
-                                        </div>
-                                    </div>
-                                    <div class="control-group" id="ba-title-cg">
-                                        <label class="control-label" for="ba-title">Название:</label>
-
-                                        <div class="controls">
-                                            <span id="ba-title" name="ba-title">{{ book.title }}</span>
-                                            <span class="help-inline"></span>
-                                        </div>
-
-                                    </div>
-                                    <div class="control-group" id="ba-lang-cg">
-                                        <label class="control-label" for="ba-lang">Язык:</label>
-
-                                        <div class="controls">
-                                            <span id="ba-lang" name="ba-lang">{{ book.language.language }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="control-group" id="ba-count-cg">
-                                        <label class="control-label" for="ba-count">Кол-во:</label>
-
-                                        <div class="controls">
-                                            <span id="ba-lang" name="ba-count">{{ bcount }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <form class="" action="" method="post" id="ba-form-b">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="span2 control-group" id="ba-auth-cg">
-                                    <label class="control-label" for="ba-auth">Авторы</label>
-
-                                    <div class="controls" id="authicontrol">
-                                        {% for auth in bauthors %}
-                                            <div>{{ auth }}</div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-
-
-                                <div class="control-group span2" id="ba-key-cg">
-                                    <label class="control-label" for=ba-key>Ключевые слова:</label>
-
-                                    <div class="controls" id="keywordsf">
-                                        {% for key in bkeywords %}
-                                            <div>{{ key }}</div>
-                                        {% endfor %}
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div id="butsdiv">
-                                {#<button type="button" class="btn btn-primary">Взять</button>#}
-{#                                <button type="button" class="btn btn-primary">Взять случайный экземпляр</button>#}
-                                <button type="button" class="btn btn-info" id="addOpinionB">Оставить отзыв</button>
-                                <button type="button" class="btn btn-info">Добавить ссылку</button>
-                                <button type="button" class="btn btn-info" id="addItemBut">Добавить экземпляр</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="pull-left" id="itemsTalbeDiv">
-                        <caption class="caption"><strong>Экземпляры:</strong></caption>
-                        <table class="table table-condensed" id="itemsTalbeDiv">
-                            <thead>
-                            <tr class="headRow">
-                                <th onclick="">id</th>
-                                <th onclick="">Владелец</th>
-                                <th onclick="">Читатель</th>
-                                <th onclick="">Ценность</th>
-                            </tr>
-                            </thead>
-                            <tbody id="rows">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="control-group" id="ba-desc-cg">
-                <label class="control-label" for=ba-desc><h4>Описание:</h4></label>
-
-                <div class="controls">
-                    <div id="ba-desc">{{ book.description }}</div>
-                    {#                                        <textarea rows=4 id="ba-desc" name="ba-desc" placeholder="Описание" readonly>{{ book.description }}</textarea>#}
-                </div>
-            </div>
-            <div id="opinions">
-                <h4>Отзывы:</h4>
-                {% load apptags %}
-                {% for op in opinions %}
-                    <hr>
-
-                    <div>
-                        {% for i in op.rating|times %}
-                            <i class="icon-star icon-white"></i>
-                        {% endfor %}
-                    </div>
-                    <div class="muted">
-                        <small>{{ op.person.fname }} {{ op.person.lname }}, {{ op.date }}</small>
-                    </div>
-                    <div class="optext">{{ op.text }}</div>
-                {% endfor %}
-            </div>
-
+            </a>
         </div>
 
+
+        <div class="span7" id="MTDiv">
+
+            <table style="overflow: hidden;">
+                <tbody>
+                <tr>
+                    <td class="lTd">Ссылка:</td>
+                    <td>
+                        <a href="{{ book.ozon }}" id="ba-link"
+                           name="ba-link">{{ book.ozon }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="lTd">ISBN:</td>
+                    <td class="rTd">{{ book.isbn }}</td>
+                    <script>isbn = "{{ book.isbn }}";</script>
+                </tr>
+                <tr>
+                    <td class="lTd">Язык:</td>
+                    <td class="rTd">{{ book.language.language }}</td>
+                </tr>
+                <tr>
+                    <td class="lTd">Кол-во:</td>
+                    <td class="rTd">{{ bcount }}</td>
+                </tr>
+                <tr>
+                    <td class="lTd">Авторы:</td>
+                    <td class="rTd">
+                        {% for auth in bauthors %}
+                            <span style="display: inline-block">{{ auth }}</span>,
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="lTd">Ключевые <span>слова:</span></td>
+                    <td class="rTd">
+                        {% for key in bkeywords %}
+                            <span style="display: inline-block">{{ key }}</span>,
+                        {% endfor %}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="itemsTalbeDiv" class="span5">
+            <caption class="caption"><strong>Экземпляры:</strong></caption>
+            <table class="table table-condensed" >
+                <thead>
+                <tr class="headRow">
+                    <th onclick="">id</th>
+                    <th onclick="">Владелец</th>
+                    <th onclick="">Читатель</th>
+                    <th onclick="">Ценность</th>
+                </tr>
+                </thead>
+                <tbody id="rows">
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+    <div id="butsdiv">
+        <button type="button" class="btn btn-info" id="addOpinionB">Оставить отзыв</button>
+        <button type="button" class="btn btn-info">Добавить ссылку</button>
+        <button type="button" class="btn btn-info" id="addItemBut">Добавить экземпляр</button>
+    </div>
+
+    <div class="control-group" id="ba-desc-cg">
+        <label class="control-label" for=ba-desc><h4>Описание:</h4></label>
+
+        <div class="controls">
+            <div id="ba-desc">{{ book.description }}</div>
+        </div>
+    </div>
+
+    <div id="opinions">
+        <h4>Отзывы:</h4>
+        {% load apptags %}
+        {% for op in opinions %}
+            <hr>
+
+            <div>
+                {% for i in op.rating|times %}
+                    <i class="icon-star icon-white"></i>
+                {% endfor %}
+            </div>
+            <div class="muted">
+                <small>{{ op.person.fname }} {{ op.person.lname }}, {{ op.date }}</small>
+            </div>
+            <div class="optext">{{ op.text }}</div>
+        {% endfor %}
     </div>
 
     <div id="addItemModal" class="modal hide" tabindex="-1" role="dialog">

@@ -1,36 +1,17 @@
-#ba-form-r .controls {
-    padding-top: 5px;
-}
-
-#ba-form-r .control-group, .controls, .control-label {
-    margin: 0 10px 0 0 !important;
-    padding: 0 !important;
-
-}
-
 #ba-form-div {
     width: 100%;
 }
 
 #butsdiv {
     margin-left: 20px;
+    margin-top: 10px;
 }
 
 #itemsTalbeDiv {
     margin-right: 20px;
+
 }
 
-#ba-desc {
-    margin-left: 20px;
-}
-
-#ba-auth-cg {
-    width: 150px !important;
-}
-
-#ba-key-cg {
-    width: 140px !important;
-}
 
 #opinionTextArea {
     margin-top: 10px;
@@ -44,17 +25,26 @@
     overflow: auto;
 }
 
-#b-img{
+#b-img {
     height: 200px;
 }
-#image-div{
+
+#image-div {
     width: 170px;
     float: left;
 }
 
-.right-inputs{
-    width: 420px;
+.lTd {
+    width: 50px;
+    margin-top: 3px;
+    font-weight: bold;
+    text-align: right;
+    padding-right: 5px;
+    vertical-align: top;
 }
-#ba-form-r .controls{
-    padding-left: 80px !important;
+
+.rTd {
+}
+.hL {
+    font-weight: bold;
 }
