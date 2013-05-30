@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Max, Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response
-from django.template import Context
+from django.template import Context, RequestContext
 import operator
 from library.models import *
 from django.db import connection
@@ -25,6 +25,11 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 # pages
 #================================================
+def cleanTmp(person):
+    pis=PersonImage.objects.filter(person=person)
+    for pi in pis:
+        default_storage.delete(pi.image)
+        pi.delete()
 
 def isauth(request):
     context = Context()
@@ -35,18 +40,19 @@ def isauth(request):
 
 
 def index(request):
-
-
     context = isauth(request)
-    response = render_to_response('library/home.html', context)
-
-    response.set_cookie("cookie_name","test_value")
     if context.has_key('person'):
-        return render(request, 'library/home.html', context)
+        response = render_to_response('library/home.html', context,context_instance=RequestContext(request))
+        active=request.COOKIES.get('active')
+        if not active:
+            cleanTmp(context['person'])
+            response.set_cookie("active","true")
     else:
-        return render(request, 'library/index.html', context)
+        response = render_to_response('library/index.html', context,context_instance=RequestContext(request))
+    # return render(request, 'library/home.html', context)
+    return response
 
-    
+
 def error(request):
     context = isauth(request)
     context['type'] = 0
@@ -252,10 +258,10 @@ def checkBook(request):
 def uploadBI(request):
     if "file" not in request.FILES:
         return HttpResponse(json.dumps({"info": 2}))
-    if "prev_file" in request.POST:
-        prev_file = request.POST["prev_file"]
-        if (len(prev_file) > 0):
-            default_storage.delete(prev_file)
+    # if "prev_file" in request.POST:
+    #     prev_file = request.POST["prev_file"]
+    #     if (len(prev_file) > 0):
+    #         default_storage.delete(prev_file)
 
     data = request.FILES['file']
     try:
@@ -269,6 +275,11 @@ def uploadBI(request):
     file_name = default_storage.get_available_name('tmp/book.' + exp)
     path = str(default_storage.location) + '/' + file_name
     img.save(path)
+
+    person=Person.objects.get(pk=request.session["person_id"])
+    personImage=PersonImage(person=person,image=file_name)
+    personImage.save()
+
     return HttpResponse(json.dumps({"info": 1, "path": file_name}))
 
 
@@ -300,7 +311,6 @@ def addbajax(request):
             photo = default_storage.open(image)
             exp = photo.name.split('.')[-1]
             path = default_storage.save("book_image/" + isbn + "." + exp, ContentFile(photo.read()))
-            default_storage.delete(image)
     except BaseException:
         pass
 
@@ -351,8 +361,6 @@ def editbajax(request):
                 photo = default_storage.open(image)
                 exp = photo.name.split('.')[-1]
                 path = default_storage.save("book_image/" + isbn + "." + exp, ContentFile(photo.read()))
-                default_storage.delete(image)
-
                 default_storage.delete(book.image)
                 book.image = path
         except BaseException:

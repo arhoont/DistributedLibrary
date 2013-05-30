@@ -32,7 +32,9 @@ class Person(models.Model):
     def getPrintableName(self):
         return self.fname + " " + self.lname
 
-
+class PersonImage(models.Model):
+    person = models.ForeignKey(Person)
+    image=models.CharField(max_length=255)
 
 class Author(models.Model):
     lname = models.CharField(max_length=255)
