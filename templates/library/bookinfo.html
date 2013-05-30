@@ -36,7 +36,6 @@
             </a>
         </div>
 
-
         <div class="span7" id="MTDiv">
 
             <table style="overflow: hidden;">
@@ -83,7 +82,7 @@
 
         <div id="itemsTalbeDiv" class="span5">
             <caption class="caption"><strong>Экземпляры:</strong></caption>
-            <table class="table table-condensed" >
+            <table class="table table-condensed">
                 <thead>
                 <tr class="headRow">
                     <th onclick="">id</th>
@@ -96,13 +95,16 @@
                 </tbody>
             </table>
         </div>
-
-
     </div>
+
     <div id="butsdiv">
         <button type="button" class="btn btn-info" id="addOpinionB">Оставить отзыв</button>
         <button type="button" class="btn btn-info">Добавить ссылку</button>
         <button type="button" class="btn btn-info" id="addItemBut">Добавить экземпляр</button>
+        {% if edit %}
+            <a href="/book/edit/?isbn={{ book.isbn }}" class="btn" id="addItemBut">Редактировать</a>
+        {% endif %}
+
     </div>
 
     <div class="control-group" id="ba-desc-cg">
@@ -147,7 +149,7 @@
                 <button type="button" class="btn btn-info">3</button>
             </div>
             <a class="infoValuesButton" data-toggle="popover" data-placement="right" data-trigger="hover"
-               data-content="Ценность позволяет установить количество запросов...а аааааааааааааа"
+               data-content="Ценность позволяет установить количество запросов, необходимых для передачи книги"
                title="Ценность">
                 <i class="icon-question-sign icon-white"></i></a>
         </div>

@@ -4,34 +4,11 @@ function castPage() {
         $("#sticker").printElement();
     });
 
-    $("#ba-isbn").focusout(function () {
-        if ($("#ba-isbn").val().length > 0) {
-            $.ajax({
-                type: "POST",
-                url: "/checkBook",
-                data: JSON.stringify({'type': 1, "isbn": $.trim($("#ba-isbn").val())}),
-                dataType: "json",
-                success: function (data) {
-                    if (parseInt(data.info) == 1) {
-                        markBad("#ba-isbn-cg", "");
-                        isbnFail(data.book);
-                    }
-                    else {
-                        markGood("#ba-isbn-cg", "");
-                        $('#ba-isbn').popover('destroy');
-                    }
-                },
-                error: function () {
-                    $('#errBook').html('проблемы соединения с сервером');
-                }
-            });
-        }
-    });
-
     $('.aname').typeahead({source: authors});
     $('.kword').typeahead({source: keywords});
 
     $('.infoValuesButton').popover({html: 'true'});
+
     $("#ba-btn").click(function () {
         addButtonBook();
     });
@@ -51,12 +28,6 @@ function castPage() {
     $('#image-input').live('change', function () {
         $("#imageform").submit();
     });
-
-    $('#printModal').on('hidden', function () {
-        window.location = "/book/info/?isbn="+$('#ba-isbn').val();
-    });
-    addEAuthor();
-    addEKW();
 }
 
 function addEAuthor() {
@@ -98,7 +69,7 @@ function addButtonBook() {
     } else {
         $.ajax({
             type: "POST",
-            url: "/addbajax",
+            url: "/editbajax",
             data: JSON.stringify({'link': $.trim($('#ba-link').val()),
                 'isbn': $.trim($('#ba-isbn').val()),
                 'title': $.trim($('#ba-title').val()),
@@ -106,13 +77,11 @@ function addButtonBook() {
                 'lang': $.trim($('#ba-lang').val()),
                 'keywords': newKWList,
                 'desc': $.trim($('#ba-desc').val()),
-                'val': $.trim($("#ba-val .active").html()),
                 'image': $("#prev_file").val()}),
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
-                    $("#sticker .biid").html(data.biid);
-                    $("#printModal").modal('show');
+                    window.location = "/book/info/?isbn="+$('#ba-isbn').val();
                 } else if (parseInt(data.info) == 2) {
                     debug("Такая книга уже есть");
                 } else if (parseInt(data.info) == 3) {
@@ -124,22 +93,4 @@ function addButtonBook() {
             }
         });
     }
-}
-
-//function debug(text) {
-//    $(".alertSpan").html('    <div class="alert" id="bookAlert">' +
-//        '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
-//        '<span class="alertText">' + text + '</span>' +
-//        '</div>');
-//}
-
-function isbnFail(isbn) {
-    $('#ba-isbn').popover({
-        html: true,
-        title: '<strong>Ошибка</strong>',
-        content: '<div>Такая книга уже есть, добавьте экземпляр на странице информации <a class="btn btn-info" href="/book/info?isbn=' + isbn + '">Перейти к книге</a></div>',
-        trigger: 'manual'
-
-    });
-    $('#ba-isbn').popover('show');
 }

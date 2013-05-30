@@ -40,78 +40,9 @@ h3 span {
     width: 550px;
 }
 
-#ba-form-div {
-    width: 800px;
-}
-
-#ba-form-div .form-body {
-    display: inline-block;
-}
-
-#ba-form-div #ba-btn {
-    margin-left: 20px;
-}
-#ba-form-wrapper #image-div {
-    margin-left: 50px;
-}
-
-#ba-form-wrapper .right-inputs .control-label {
-    width: 70px;
-}
-
-#ba-form-wrapper .right-inputs .controls {
-    margin-left: 80px;
-}
-
-#ba-form-wrapper .right-inputs .control-group {
-    margin: 5px !important;
-}
-
-#ba-form-wrapper .right-inputs .control-group input {
-    width: 255px;
-}
-
-#ba-form-wrapper #ba-auth-cg {
-    margin-left: 50px;
-    width: 200px;
-
-}
-
-#authicontrol input {
-    width: 170px;
-}
-
-#ba-key-cg {
-    width: 150px;
-}
-
-#ba-key-cg input {
-    width: 120px;
-}
-
 .infoValuesButton {
     cursor: pointer;
     margin-left: 5px;
-}
-
-.popover-wrapper {
-    min-width: 400px;
-
-}
-
-#spanTFTable {
-    overflow: auto;
-    max-height: 200px;
-}
-
-.sim-books-table {
-    table-layout: fixed;
-}
-
-.sim-books-table td {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 
 .titleColum {
@@ -126,25 +57,4 @@ h3 span {
     width: 30%;
 }
 
-#infoValue {
-    padding-left: 20px;
-    border-left: 1px solid #e5e5e5;
-    margin-top: 50px;
-}
 
-#ba-desc {
-    margin-left: 20px;
-    resize: none;
-    width: 100%;
-}
-
-#b-img{
-    height: 200px;
-}
-#b-img-a{
-    cursor: pointer;
-}
-#image-div{
-    width: 170px;
-    float: left;
-}

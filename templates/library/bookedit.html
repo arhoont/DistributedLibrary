@@ -1,0 +1,132 @@
+{% extends "library/base.html" %}
+{% csrf_token %}
+{% load static %}
+
+{% block title %}Распределенная библиотека{% endblock %}
+{% block include %}
+
+    <link rel="stylesheet" href="{% static "css/formcss.css" %}">
+    <link rel="stylesheet" href="{% static "css/bookadd.css" %}">
+    <script type="text/javascript" charset="utf-8" src="{% static "js/jquery.printElement.js" %}"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static "js/jquery.form.js" %}"></script>
+
+    <script type="text/javascript" charset="utf-8" src="{% static "js/bookedit.js" %}"></script>
+{% endblock %}
+{% block content %}
+    <span class="alertSpan"></span>
+    <div class="form-header">
+        <h3>
+            <a href="/" class="btn pull-left" type="button" id="back-btn"><i
+                    class="icon-arrow-left icon-white"></i>
+            </a>
+            <span>Редактирование книги</span>
+
+            <div class="separator"></div>
+        </h3>
+    </div>
+    <div class="row ">
+        <div class="span4" id="image-div">
+            <a class="thumbnail" id="b-img-a">
+                {% if book.image %}
+                    <img src="{{ MEDIA_URL }}{{ book.image }}" alt="" id="b-img">
+                {% else %}
+                    <img src="{{ STATIC_URL }}img/add_img.png" alt="" id="b-img">
+                {% endif %}
+            </a>
+        </div>
+
+
+        <div class="span6" id="MTDiv">
+
+            <table style="overflow: hidden;">
+                <tbody>
+                <tr>
+                    <td class="lTd">Ссылка:</td>
+                    <td>
+                        <div class="input-append">
+                            <input value="{{ book.ozon }}" type="text" id="ba-link" name="ba-link" placeholder="Ссылка">
+                            <button type="button" class="btn" onclick=""><i
+                                    class="icon-download icon-white"></i></button>
+
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="lTd">ISBN:</td>
+                    <td class="rTd"><input readonly value="{{ book.isbn }}" type="text" id="ba-isbn" name="ba-isbn"
+                                           placeholder="ISBN" required></td>
+                </tr>
+
+                <tr>
+                    <td class="lTd">Название:</td>
+                    <td class="rTd"><input value="{{ book.title }}" type="text" id="ba-title" name="ba-title"
+                                           placeholder="Название"
+                                           required></td>
+                </tr>
+                <tr>
+                    <td class="lTd">Язык:</td>
+                    <td class="rTd">
+                        <select id="ba-lang" name="ba-lang">
+                            {% for lang in languages %}
+                                <option value="{{ lang.language }}"> {{ lang.language }} </option>
+                            {% endfor %}
+                            <option value="15">--добавить--</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="span3">
+                <span class="lSpan">Авторы</span>
+
+                <div id="authicontrol">
+                    {% for auth in bauthors %}
+                        <div class="author">
+                            <input type="text" value="{{ auth }}" class="aname" placeholder="Имя Фамилия">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="btn" onclick="addEAuthor()"><i
+                        class="icon-plus-sign icon-white"></i></button>
+            </div>
+
+            <div class="span3">
+                <span class="lSpan">Ключевые слова</span>
+
+                <div class="controls" id="keywordsf">
+                    {% for key in bkeywords %}
+                        <div class="author">
+                            <input type="text" value="{{ key }}" class="kword" placeholder="Слово">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="btn" onclick="addEKW()"><i
+                        class="icon-plus-sign icon-white"></i></button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <label><h4>Описание</h4></label>
+    <textarea rows=6 id="ba-desc" name="ba-desc" placeholder="Описание">{{ book.description }}</textarea>
+
+    <button type="button" class="btn btn-primary" id="ba-btn">Сохрнить</button>
+
+
+    <form id="imageform" method="post" action='/uploadBI' class="hide">
+        <input type="text" name="prev_file" id="prev_file" value="book.image"/>
+        <input type="file" name="file" id="image-input"/>
+    </form>
+
+    <script>
+        var authors = {{authors|safe}};
+        var keywords = {{keywords|safe}};
+    </script>
+{% endblock %}

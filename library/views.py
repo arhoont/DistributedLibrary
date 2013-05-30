@@ -10,7 +10,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 from django.db.models import Max, Q
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.template import Context
 import operator
 from library.models import *
@@ -35,13 +35,18 @@ def isauth(request):
 
 
 def index(request):
+
+
     context = isauth(request)
+    response = render_to_response('library/home.html', context)
+
+    response.set_cookie("cookie_name","test_value")
     if context.has_key('person'):
         return render(request, 'library/home.html', context)
     else:
         return render(request, 'library/index.html', context)
 
-
+    
 def error(request):
     context = isauth(request)
     context['type'] = 0
@@ -64,29 +69,48 @@ def bookinfo(request): # page
     context = isauth(request)
     isbn = request.GET['isbn']
     book = Book.objects.filter(isbn=isbn)
+
     if len(book) == 0:
         # book not found
         return HttpResponseRedirect(reverse('index'))
     book = book[0]
-
-    # p=Person.objects.
-    # if editable
-    # context["authors"] = authors
-    # context["keywords"] = keywords
-    # context["languages"] = languages
-    # context["owner"] = True
-    # return render(request, 'library/bookadd.html', context)
-    #==========================
-
-    bkeywords = [k.word for k in book.keywords.all()]
+    btest = Book.objects.filter(Q(isbn=isbn) & Q(bookitem__owner=1)).distinct()
 
     context["bauthors"] = [a.getPrintName() for a in book.authors.all()]
-    context["bkeywords"] = bkeywords
+    context["bkeywords"] = [k.word for k in book.keywords.all()]
     context["bitems"] = book.bookitem_set.all()
     context["bcount"] = book.bookitem_set.all().count()
     context["book"] = book
     context["opinions"] = book.opinion_set.all().order_by("date")
+    if btest:
+        context["edit"]="yes"
+
     return render(request, 'library/bookinfo.html', context)
+
+
+def bookedit(request):
+    person = Person.objects.get(pk=request.session["person_id"])
+    if not person: # not registred
+        return HttpResponseRedirect(reverse('index'))
+
+    isbn = request.GET['isbn']
+    book = Book.objects.filter(Q(isbn=isbn) & Q(bookitem__owner=1)).distinct()
+    if not book:
+        return HttpResponseRedirect(reverse('index'))
+    book = book[0]
+    context = isauth(request)
+    context["bauthors"] = [a.getPrintName() for a in book.authors.all()]
+    context["bkeywords"] = [k.word for k in book.keywords.all()]
+    context["book"] = book
+
+    authors = [a.getPrintName() for a in Author.objects.all()]
+    keywords = [k.word for k in Keyword.objects.all()]
+    languages = Language.objects.all()
+    context["authors"] = authors
+    context["keywords"] = keywords
+    context["languages"] = languages
+
+    return render(request, 'library/bookedit.html', context)
 
 
 def login(request):
@@ -216,14 +240,11 @@ def checkBook(request):
     query = json.loads(str(request.body.decode()))
     typeQ = query["type"]
     isbn = query["isbn"]
-    title = query["title"]
 
     if typeQ == 1:
-        booklist = Book.objects.filter(isbn=isbn)
-    if typeQ == 2:
-        booklist = Book.objects.filter(title__icontains=title)
-        # if booklist:
-    #     return HttpResponse(json.dumps({"info": 1, "books": [b.getValues() for b in booklist]}))
+        book = Book.objects.filter(isbn=isbn)
+        if book:
+            return HttpResponse(json.dumps({"info": 1, "book": book[0].isbn}))
 
     return HttpResponse(json.dumps({"info": 2, "books": ""}))
 
@@ -303,6 +324,61 @@ def addbajax(request):
     return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
 
 
+@transaction.commit_on_success
+def editbajax(request):
+    query = json.loads(str(request.body.decode()))
+    isbn = query["isbn"]
+
+    book = Book.objects.filter(isbn=isbn)[0]
+
+    link = query["link"]
+    title = query["title"]
+    lang = query["lang"]
+    desc = query["desc"]
+    image = query["image"]
+    authors = set(query["authors"])
+    keywords = set(query["keywords"])
+
+    person = Person.objects.get(pk=request.session["person_id"])
+    if not person: # not registr
+        return HttpResponse(json.dumps({"info": 4}))
+
+    language, created = Language.objects.get_or_create(language=lang)
+
+    if image != book.image:
+        try:
+            if len(image) > 0:
+                photo = default_storage.open(image)
+                exp = photo.name.split('.')[-1]
+                path = default_storage.save("book_image/" + isbn + "." + exp, ContentFile(photo.read()))
+                default_storage.delete(image)
+
+                default_storage.delete(book.image)
+                book.image = path
+        except BaseException:
+            pass
+
+    book.ozon = link
+    book.title = title
+    book.language = language
+    book.description = desc
+    book.authors = []
+    book.keywords = []
+    book.save()
+
+    book.save()
+
+    for auth in authors:
+        author = auth.split(" ", 1)
+        author, created = Author.objects.get_or_create(fname=author[0], lname=author[1])
+        book.authors.add(author)
+
+    for key in keywords:
+        keyw, created = Keyword.objects.get_or_create(word=key)
+        book.keywords.add(keyw)
+    return HttpResponse(json.dumps({"info": 1}))
+
+
 def getbooks(request):
     query = json.loads(str(request.body.decode()))
     pageS = int(query["page"]["size"])
@@ -312,18 +388,6 @@ def getbooks(request):
     person = Person.objects.get(pk=request.session["person_id"])
     if not person: # not registred
         return HttpResponse(json.dumps({"info": 3}))
-    bookslist = []
-    count = 0
-
-    # if (query["search"]["person"] == 1):
-    #     bookslist, count = person.getBooks("reader_id", query["search"]["word"], query["sort"]["type"],
-    #                                        query["sort"]["column"], start, pageS)
-    # elif (query["search"]["person"] == 2):
-    #     bookslist, count = person.getBooks("owner_id", query["search"]["word"], query["sort"]["type"],
-    #                                        query["sort"]["column"], start, pageS)
-    # elif (query["search"]["person"] == 0):
-    #     bookslist, count = Book.getAllFormated(query["search"]["word"], query["sort"]["type"], query["sort"]["column"],
-    #                                            start, pageS)
     sWord = query["search"]["word"]
     orderF = query["sort"]["column"]
 
@@ -335,18 +399,19 @@ def getbooks(request):
              Q(authors__lname__icontains=sWord),
              Q(keywords__word__icontains=sWord)]
 
-    addQuery={}
+    addQuery = {}
     if (query["search"]["person"] == 1):
         addQuery = {'bookitem__reader': person}
     elif (query["search"]["person"] == 2):
-        addQuery={'bookitem__owner': person}
+        addQuery = {'bookitem__owner': person}
 
-    bookslist = Book.objects.filter(reduce(operator.or_, qList),**addQuery).distinct().order_by(orderF)[start:start + pageS]
-    count = Book.objects.filter(reduce(operator.or_, qList),**addQuery).distinct().count()
+    bookslist = Book.objects.filter(reduce(operator.or_, qList), **addQuery).distinct().order_by(orderF)[
+                start:start + pageS]
+    count = Book.objects.filter(reduce(operator.or_, qList), **addQuery).distinct().count()
 
     bookslist = serializers.serialize("json", bookslist, use_natural_keys=True,
                                       fields=(
-                                      'ozon', 'title', 'language', 'authors', 'keywords', 'rating', 'item_count'))
+                                          'ozon', 'title', 'language', 'authors', 'keywords', 'rating', 'item_count'))
 
     return HttpResponse(json.dumps({"info": "yes", "count": count, "books": json.loads(bookslist)}))
 

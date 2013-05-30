@@ -1,0 +1,39 @@
+#ba-desc {
+    margin-left: 20px;
+    resize: none;
+    width: 100%;
+}
+
+#b-img{
+    height: 200px;
+}
+#b-img-a{
+    cursor: pointer;
+}
+#image-div{
+    width: 170px;
+    float: left;
+}
+
+.lTd {
+    width: 50px;
+    margin-top: 3px;
+    font-weight: bold;
+    text-align: right;
+    padding-right: 5px;
+    vertical-align: top;
+}
+
+table input{
+    width: 300px;
+}
+
+.lSpan{
+    font-weight: bold;
+}
+.kword{
+    width: 190px;
+}
+.aname{
+    width: 190px;
+}
