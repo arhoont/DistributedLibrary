@@ -336,7 +336,6 @@ def getbooks(request):
              Q(keywords__word__icontains=sWord)]
 
     addQuery={}
-
     if (query["search"]["person"] == 1):
         addQuery = {'bookitem__reader': person}
     elif (query["search"]["person"] == 2):
