@@ -75,12 +75,12 @@ def bookinfo(request): # page
     context = isauth(request)
     isbn = request.GET['isbn']
     book = Book.objects.filter(isbn=isbn)
-
+    person = Person.objects.get(pk=request.session["person_id"])
     if len(book) == 0:
         # book not found
         return HttpResponseRedirect(reverse('index'))
     book = book[0]
-    btest = Book.objects.filter(Q(isbn=isbn) & Q(bookitem__owner=1)).distinct()
+    btest = Book.objects.filter(Q(isbn=isbn) & Q(bookitem__owner=person)).distinct()
 
     context["bauthors"] = [a.getPrintName() for a in book.authors.all()]
     context["bkeywords"] = [k.word for k in book.keywords.all()]
@@ -90,7 +90,6 @@ def bookinfo(request): # page
     context["opinions"] = book.opinion_set.all().order_by("date")
     if btest:
         context["edit"]="yes"
-
     return render(request, 'library/bookinfo.html', context)
 
 
@@ -475,6 +474,33 @@ def takeReq(request):
 
     return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
 
+@transaction.commit_on_success
+def returnReq(request):
+    query = json.loads(str(request.body.decode()))
+
+    itemId = query["itemId"]
+
+    personFrom = Person.objects.get(pk=request.session["person_id"])
+
+    if not personFrom: # not registred
+        return HttpResponse(json.dumps({"info": 3}))
+
+    bi = BookItem.objects.get(pk=itemId)
+    (takeb, takep) = bi.checkTake()
+    if takeb != 0:
+        return HttpResponse(json.dumps({"info": 2}))
+    rm=ReturnMessage(personTo=bi.owner, personFrom=personFrom, date=timezone.now(), item=bi, isRead=0)
+    rm.save()
+
+    return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
+
+
+def getRetMessages(request):
+    person = Person.objects.get(pk=request.session["person_id"])
+    retMList=ReturnMessage.objects.filter(personTo=person)
+    retMList = serializers.serialize("json", retMList, use_natural_keys=True)
+
+    return HttpResponse(json.dumps({"info": 1, "messages": json.loads(retMList)}))
 
 def getMessages(request):
     query = json.loads(str(request.body.decode()))

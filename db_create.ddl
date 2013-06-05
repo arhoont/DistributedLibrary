@@ -1,89 +1,3 @@
-CREATE or replace FUNCTION take_authors(isbnIn varchar) RETURNS text AS $$
-DECLARE
-  authors text;
-  author text;
-BEGIN
-  authors='';
-  FOR author IN select fname || ' ' ||  lname from library_author where id in
-    (select author_id from library_book_authors where book_id=isbnIn) LOOP
-    authors:=authors ||', '|| author;
-  END LOOP;
-  return substr(authors,3);
-END;
-$$  LANGUAGE plpgsql;
-
-CREATE or replace FUNCTION take_keywords(isbnIn varchar) RETURNS text AS $$
-DECLARE
-  keywords text;
-  keyword text;
-BEGIN
-  keywords='';
-  FOR keyword IN select keyword_id from library_book_keywords where book_id=isbnIn LOOP
-    keywords:=keywords ||', '|| keyword;
-  END LOOP;
-  return substr(keywords,3);
-END;
-$$  LANGUAGE plpgsql;
-
-CREATE or replace FUNCTION take_keywords(isbnIn varchar) RETURNS text AS $$
-DECLARE
-  keywords text;
-  keyword text;
-  cur cursor for select * from library_book_keywords where book_id=isbnIn;
-BEGIN
-  keywords='';
-  FOR keyword IN cur LOOP
-    keywords:=keywords ||', '|| keyword.keyword_id;
-  END LOOP;
-  return substr(keywords,3);
-END;
-$$  LANGUAGE plpgsql;
-
-CREATE or replace FUNCTION getFormatedBooks(page int, count int) RETURNS table(
-  isbn varchar, title varchar , authors text , keywords text, language varchar , itemcount int ,rating float
-) AS $$
-declare
-  curtb cursor FOR select library_book.isbn, library_book.title, take_authors(library_book.isbn) as authors, take_keywords(library_book.isbn) as keywords,
-  language_id as language, cast((select count(*) from library_bookitem where library_bookitem.book_id=library_book.isbn) as int)as itemcount,
-  library_book.rating
-  from library_book
-  group by library_book.isbn;
-  frow int;
-  que text;
-BEGIN
-    frow = (page-1)*count;
-    OPEN curtb;
-    move FORWARD frow from curtb;
-    que='fetch '||count||' curtb;';
-    return query execute (que);
-    close curtb;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE or replace FUNCTION getPersonBooks(pid int, rot varchar) RETURNS table(
-  isbn varchar, title varchar,authors text,keywords text, language varchar, itemcount int, rating float)
-as $$
-declare
-  que text;
-BEGIN
-  que='select isbn,library_book.title, take_authors(isbn), take_keywords(isbn)
-              ,language_id as language, cast(count(*) as int), cast(rating as float)from library_bookitem join
-              library_book on book_id=isbn where '||rot||'='||pid||' group by isbn';
-  return query execute (que);
-END;
-$$  LANGUAGE plpgsql;
-
-
-create or replace function f_new_item() returns trigger
-  as $$
-  begin
-    insert into library_itemstatus (item_id, status, date) values (new.id,1,CURRENT_TIMESTAMP);
-    perform recount_items (new.book_id);
-    return null;
-  end;
-  $$
-LANGUAGE plpgsql;
-
 drop function recount_items (isbn varchar);
 create or replace function recount_items (in_isbn varchar) returns int
   as $$
@@ -91,6 +5,16 @@ create or replace function recount_items (in_isbn varchar) returns int
     update library_book set item_count=
       (select count(*) from library_bookitem where book_id=isbn)
     where isbn=in_isbn;
+    return null;
+  end;
+  $$
+LANGUAGE plpgsql;
+
+create or replace function f_new_item() returns trigger
+  as $$
+  begin
+    insert into library_itemstatus (item_id, status, date) values (new.id,1,CURRENT_TIMESTAMP);
+    perform recount_items (new.book_id);
     return null;
   end;
   $$
@@ -138,6 +62,22 @@ create trigger new_opinion
   for each row
   execute procedure f_new_opinion();
 
+create or replace function f_ch_return_item () returns trigger
+  as $$
+  declare
+    mr record;
+  begin
+    update library_bookitem set (reader_id,takedate) = (owner_id,CURRENT_TIMESTAMP) where id=new.item_id;
+    return null ;
+  end;
+  $$
+LANGUAGE plpgsql;
+
+create trigger creturn_item
+  after insert on library_returnmessage
+  for each row
+  execute procedure f_ch_return_item();
+
 create or replace function re_count_rating () returns int
   as $$
   begin
@@ -148,11 +88,9 @@ create or replace function re_count_rating () returns int
   $$
 LANGUAGE plpgsql;
 
-drop view allbooks;
-create or replace view allbooks as
-select isbn, title, take_authors(isbn) as authors, take_keywords(isbn) as keywords,
-  language_id as language, (select count(*) from library_bookitem where library_bookitem.book_id=isbn) as itemcount,
-  rating
-  from library_book
-  group by isbn;
+insert into library_syssetting values (1,1,10,'lib1');
 
+insert into library_domain values (' ');
+
+insert into library_language values ('Русский');
+insert into library_language values ('English');

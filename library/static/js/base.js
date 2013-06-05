@@ -22,6 +22,8 @@ $(document).ready(function () {
             getMessage("in", 0);
         } else if ($(this).attr("id") == "out") {
             getMessage("out", 0);
+        } else if ($(this).attr("id") == "ret") {
+            getRetMessages();
         }
     });
     castPage();
@@ -72,7 +74,22 @@ function markBad(cg, text) {
     $(cg).addClass("error");
     $(cg + " .help-inline").html(text);
 }
+function getRetMessages() {
+    $.ajax({
+        type: "POST",
+        url: "/getRetMessages",
+        data: JSON.stringify({
+            'info': 1}),
+        dataType: "json",
+        success: function (data) {
 
+            debug(data);
+        },
+        error: function () {
+            debug("ошибка сервера")
+        }
+    });
+}
 function getMessage(mType, isRead) {
     $.ajax({
         type: "POST",
@@ -149,7 +166,7 @@ function fomatMessage(mess, mtio) {
         } else {
             listed += yes_i;
         }
-        if ((mess[7] == mess [2]) || (mess[6]==2)) {
+        if ((mess[7] == mess [2]) || (mess[6] == 2)) {
             listed += '</td><td  class="r-btn-td">' + yes_b + '</td>';
         } else {
             listed += '</td><td  class="r-btn-td">' + ch_b + '</td>';
@@ -190,12 +207,12 @@ function replyMessage(mess_id, resp, mt) {
     });
 }
 
-function Book(json_book){
-    this.isbn=json_book[0];
-    this.title=json_book[0];
-    this.authors=json_book[0];
-    this.keywords=json_book[0];
-    this.language=json_book[0];
-    this.item_count=json_book[0];
-    this.rating=json_book[0];
+function Book(json_book) {
+    this.isbn = json_book[0];
+    this.title = json_book[0];
+    this.authors = json_book[0];
+    this.keywords = json_book[0];
+    this.language = json_book[0];
+    this.item_count = json_book[0];
+    this.rating = json_book[0];
 }

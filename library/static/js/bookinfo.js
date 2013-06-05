@@ -117,7 +117,44 @@ function takeItem(itemId, val) {
     });
 
 }
+function returnBook(itemId) {
+    $.ajax({
+        type: "POST",
+        url: "/testBIConv",
+        data: JSON.stringify({
+            'itemId': itemId}),
+        dataType: "json",
+        success: function (data) {
+            if (parseInt(data.info) == 1) {
+                $.ajax({
+                    type: "POST",
+                    url: "/returnReq",
+                    data: JSON.stringify({
+                        'itemId': itemId}),
+                    dataType: "json",
+                    success: function (data) {
+                        if (parseInt(data.info) == 1) {
+                            loadItems();
+                        } else if (parseInt(data.info) == 2) {
 
+                        } else if (parseInt(data.info) == 3) {
+                            debug("регистрация");
+                        }
+                    },
+                    error: function () {
+                        debug("проблемы соединения с сервером");
+                    }
+                });
+            } else if (parseInt(data.info) == 3) {
+                loadItems()
+            }
+        },
+        error: function () {
+            debug("проблемы соединения с сервером");
+        }
+    });
+
+}
 function loadItems() {
     $.ajax({
         type: "POST",
@@ -138,7 +175,22 @@ function loadItems() {
                     listed += '<td>' + bi[3] + '</td>';
                     listed += '<td>' + bi[4] + '</td>';
                     if (bi[7] == person_id) {
-                        listed += '<td>' + 'У вас' + '</td>';
+                        if (bi[5] == 1) {
+                            listed += '<td>' + 'Сообщение' + '</td>';
+                        } else if (bi[8] == person_id) {
+                            listed += '<td>' + 'У вас' + '</td>';
+                        } else {
+                            if (bi[5] == 2) {
+                                listed += '<td><button class="btn btn-primary btn-mini disabled">Вернуть</button> '
+                                    +parseInt(bi[6] / 60) + ':' + pad(parseInt(bi[6] % 60), 2) + '</td>';
+                            }
+                            else {
+                                listed += '<td><button class="btn btn-primary btn-mini" ' +
+                                    'onclick="returnBook(' + bi[1] + ')">Вернуть</button></td>';
+                            }
+
+                        }
+
                     } else if (bi[5] == 0) {
                         listed += '<td><button class="btn btn-primary btn-mini" ' +
                             'onclick="takeItem(' + bi[1] + ',' + bi[4] + ')">Взять</button></td>';

@@ -23,6 +23,9 @@ class Person(models.Model):
     adm = models.IntegerField(default=0)
     status = models.IntegerField(default=1)
 
+    def natural_key(self):
+        return self.fname + " " + self.lname
+
     class Meta:
         unique_together = ("domain", "login")
 
@@ -122,8 +125,8 @@ class BookItem(models.Model):
                 self.value,
                 takeb,
                 takep,
-                self.reader_id)
-
+                self.reader_id,
+                self.owner_id)
 
 class ItemStatus(models.Model):
     item = models.ForeignKey(BookItem)
@@ -161,6 +164,12 @@ class Message(models.Model):
     comment = models.TextField(null=True)
     isRead = models.IntegerField(null=True)
 
+class ReturnMessage(models.Model):
+    personFrom = models.ForeignKey(Person, related_name="returnfrom")
+    personTo = models.ForeignKey(Person, related_name="returnto")
+    item = models.ForeignKey(BookItem)
+    date = models.DateTimeField()
+    isRead = models.IntegerField(null=True)
 
 class SysSetting(models.Model):
     authType = models.IntegerField()
