@@ -81,7 +81,8 @@
         </div>
 
         <div id="itemsTalbeDiv" class="span5">
-            <caption class="caption"><strong>Экземпляры:</strong></caption>
+            <caption class="caption""><strong>Экземпляры:</strong> <button type="button" class="btn btn-mini pull-right" onclick="loadItems()"><i
+                    class="icon-refresh icon-white"></i></button></caption>
             <table class="table table-condensed">
                 <thead>
                 <tr class="headRow">
@@ -223,8 +224,8 @@
             <button class="btn btn-primary" id="printBtn"><i class="icon-print icon-white"></i> Печать</button>
         </div>
     </div>
-    <script>
-        var authors = {{authors|safe}};
-        var keywords = {{keywords|safe}};
-    </script>
+{#    <script>#}
+{#        var authors = {{authors|safe}};#}
+{#        var keywords = {{keywords|safe}};#}
+{#    </script>#}
 {% endblock %}

@@ -497,10 +497,12 @@ def returnReq(request):
 
 def getRetMessages(request):
     person = Person.objects.get(pk=request.session["person_id"])
-    retMList=ReturnMessage.objects.filter(personTo=person)
-    retMList = serializers.serialize("json", retMList, use_natural_keys=True)
+    if not person:
+        return HttpResponse(json.dumps({"info": 3}))
+    retMList=ReturnMessage.objects.filter(personTo=person, isRead=0)
+    mesF=[{"id":mess.id, "person": mess.personFrom.natural_key(), "date": mess.date, "item_id" : mess.item.id, "book":mess.item.book.title} for mess in retMList]
 
-    return HttpResponse(json.dumps({"info": 1, "messages": json.loads(retMList)}))
+    return HttpResponse(json.dumps({"info": 1, "messages": mesF}, cls=DjangoJSONEncoder))
 
 def getMessages(request):
     query = json.loads(str(request.body.decode()))
@@ -526,10 +528,13 @@ def getMessages(request):
     formatedMes = []
     for mess in messages:
         message = Message.objects.get(pk=mess[0])
+
         bi = BookItem.objects.get(pk=mess[2])
         p_new = Person.objects.get(pk=mess[3])
-        formatedMes.append((message.id, bi.id, bi.value, bi.book.title,
-                            p_new.getPrintableName(), message.date, message.resp, message.mtype))
+
+        formatedMes.append({"id":message.id, "person": p_new.natural_key(),
+                            "date": message.date, "item_id" : bi.id, "book":bi.book.title,
+                            "bi_val":bi.value, "resp":message.resp, "mtype":message.mtype})
 
     return HttpResponse(json.dumps({"info": 1, "messages": formatedMes}, cls=DjangoJSONEncoder))
 
@@ -560,7 +565,11 @@ def replyMessage(request):
 
     return HttpResponse(json.dumps({"info": 1}))
 
-
-
-
+def replyRetMessage(request):
+    query = json.loads(str(request.body.decode()))
+    mess_id = query["mess_id"]
+    mess=ReturnMessage.objects.get(pk=mess_id)
+    mess.isRead=1
+    mess.save()
+    return HttpResponse(json.dumps({"info": 1}))
 

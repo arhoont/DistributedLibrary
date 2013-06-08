@@ -110,7 +110,7 @@ class BookItem(models.Model):
                 takep = ss.transferCd - seconds
         if takeb==0 and conv_count > 0:
             conv = self.conversation_set.latest('id')
-            mess = conv.message_set.filter(isRead=0)
+            mess = conv.message_set.filter(isRead=0).exclude(mtype=self.id)
             if mess:
                 takeb = 1
                 takep = conv.personFrom.id

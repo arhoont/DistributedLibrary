@@ -82,14 +82,37 @@ function getRetMessages() {
             'info': 1}),
         dataType: "json",
         success: function (data) {
-
-            debug(data);
+            $("#table-msg .table-body").html("");
+            var k = data.messages.length;
+            for (i = 0; i < k; i++) {
+                $("#table-msg .table-body").prepend(fomatRetMessage(data.messages[i]));
+            }
         },
         error: function () {
             debug("ошибка сервера")
         }
     });
 }
+
+function fomatRetMessage(mess) {
+
+    yes_b = '<button class="btn btn-mini" onclick="replyRetMessage(' + mess.id + ')">' +
+        '<i class="icon-ok icon-white icon-large"></i></button>';
+
+    listed = '<tr id="mess' + mess.id + '">';
+    listed += '<td>' + mess.book + '</td>';
+    listed += '<td>' + mess.person + '</td>';
+    listed += '<td>' + mess.item_id + '</td>';
+    listed += '<td>' + (new Date(Date.parse(mess.date))).toLocaleString() + '</td>';
+
+    listed += '<td> Возврат </td>';
+
+    listed += '<td class="c-icon-td">';
+    listed += yes_b;
+    listed += '</td></tr>';
+    return listed;
+}
+
 function getMessage(mType, isRead) {
     $.ajax({
         type: "POST",
@@ -139,42 +162,42 @@ function fomatMessage(mess, mtio) {
     yes_i = '<i class="icon-ok-circle icon-white icon-large"></i>';
     no_i = '<i class="icon-ban-circle icon-white icon-large"></i>';
     que_i = '<i class="icon-time icon-white icon-large"></i>';
-    yes_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,0)">' +
+    yes_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess.id + ',1,0)">' +
         '<i class="icon-ok icon-white icon-large"></i></button>';
-    no_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,0)">' +
+    no_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess.id + ',2,0)">' +
         '<i class="icon-ban icon-white icon-large"></i></button>';
-    ch_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',1,1)">' +
+    ch_b = '<button class="btn btn-mini" onclick="replyMessage(' + mess.id + ',1,1)">' +
         '<i class="icon-ok-circle icon-white icon-large"></i></button>' +
-        '<button class="btn btn-mini" onclick="replyMessage(' + mess[0] + ',2,1)">' +
+        '<button class="btn btn-mini" onclick="replyMessage(' + mess.id + ',2,1)">' +
         '<i class="icon-ban-circle icon-white icon-large"></i></button>';
 
 
-    listed = '<tr id="mess' + mess[0] + '">';
-    listed += '<td>' + mess[3] + '</td>';
-    listed += '<td>' + mess[4] + '</td>';
-    listed += '<td>' + mess[1] + '</td>';
-    listed += '<td>' + (new Date(Date.parse(mess[5]))).toLocaleString() + '</td>';
+    listed = '<tr id="mess' + mess.id + '">';
+    listed += '<td>' + mess.book + '</td>';
+    listed += '<td>' + mess.person + '</td>';
+    listed += '<td>' + mess.item_id + '</td>';
+    listed += '<td>' + (new Date(Date.parse(mess.date))).toLocaleString() + '</td>';
 
-    listed += '<td>' + mess[7] + '</td>';
+    listed += '<td>Запрос</td>';
 
     listed += '<td class="c-icon-td">';
     if (mtio == "in") {
-        if (mess[6] == 2) {
+        if (mess.resp == 2) {
             listed += no_i;
-        } else if (mess[7] < mess[2]) {
+        } else if (mess.mtype < mess.bi_val) {
             listed += que_i;
         } else {
             listed += yes_i;
         }
-        if ((mess[7] == mess [2]) || (mess[6] == 2)) {
+        if ((mess.mtype == mess.bi_val) || (mess.resp == 2)) {
             listed += '</td><td  class="r-btn-td">' + yes_b + '</td>';
         } else {
             listed += '</td><td  class="r-btn-td">' + ch_b + '</td>';
         }
     } else if (mtio == "out") {
-        if (mess[6] == 2) {
+        if (mess.resp == 2) {
             listed += no_i;
-        } else if (mess[7] < mess[2]) {
+        } else if (mess.mtype < mess.bi_val) {
             listed += que_i;
         } else {
             listed += yes_i;
@@ -206,13 +229,21 @@ function replyMessage(mess_id, resp, mt) {
         }
     });
 }
-
-function Book(json_book) {
-    this.isbn = json_book[0];
-    this.title = json_book[0];
-    this.authors = json_book[0];
-    this.keywords = json_book[0];
-    this.language = json_book[0];
-    this.item_count = json_book[0];
-    this.rating = json_book[0];
+function replyRetMessage(mess_id) {
+    $.ajax({
+        type: "POST",
+        url: "/replyRetMessage",
+        data: JSON.stringify({'mess_id': mess_id}),
+        dataType: "json",
+        success: function (data) {
+            if (parseInt(data.info) == 1) {
+                $("#mess" + mess_id).remove();
+            } else if (parseInt(data.info) == 3) {
+                debug("ошибка");
+            }
+        },
+        error: function () {
+            debug("ошибка сервера replyRetMessage")
+        }
+    });
 }
