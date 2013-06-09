@@ -175,3 +175,4 @@ class SysSetting(models.Model):
     authType = models.IntegerField()
     transferCd = models.IntegerField()
     libname = models.CharField(max_length=255)
+    system_link = models.CharField(max_length=255)

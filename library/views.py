@@ -21,15 +21,17 @@ import json
 from library.models import Book
 from django.db import transaction
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.mail import send_mail, EmailMultiAlternatives
 
 
 # pages
 #================================================
 def cleanTmp(person):
-    pis=PersonImage.objects.filter(person=person)
+    pis = PersonImage.objects.filter(person=person)
     for pi in pis:
         default_storage.delete(pi.image)
         pi.delete()
+
 
 def isauth(request):
     context = Context()
@@ -42,14 +44,14 @@ def isauth(request):
 def index(request):
     context = isauth(request)
     if context.has_key('person'):
-        response = render_to_response('library/home.html', context,context_instance=RequestContext(request))
-        active=request.COOKIES.get('active')
+        response = render_to_response('library/home.html', context, context_instance=RequestContext(request))
+        active = request.COOKIES.get('active')
         if not active:
             cleanTmp(context['person'])
-            response.set_cookie("active","true")
+            response.set_cookie("active", "true")
     else:
-        response = render_to_response('library/index.html', context,context_instance=RequestContext(request))
-    # return render(request, 'library/home.html', context)
+        response = render_to_response('library/index.html', context, context_instance=RequestContext(request))
+        # return render(request, 'library/home.html', context)
     return response
 
 
@@ -89,7 +91,8 @@ def bookinfo(request): # page
     context["book"] = book
     context["opinions"] = book.opinion_set.all().order_by("date")
     if btest:
-        context["edit"]="yes"
+        context["edit"] = "yes"
+
     return render(request, 'library/bookinfo.html', context)
 
 
@@ -257,7 +260,7 @@ def checkBook(request):
 def uploadBI(request):
     if "file" not in request.FILES:
         return HttpResponse(json.dumps({"info": 2}))
-    # if "prev_file" in request.POST:
+        # if "prev_file" in request.POST:
     #     prev_file = request.POST["prev_file"]
     #     if (len(prev_file) > 0):
     #         default_storage.delete(prev_file)
@@ -275,8 +278,8 @@ def uploadBI(request):
     path = str(default_storage.location) + '/' + file_name
     img.save(path)
 
-    person=Person.objects.get(pk=request.session["person_id"])
-    personImage=PersonImage(person=person,image=file_name)
+    person = Person.objects.get(pk=request.session["person_id"])
+    personImage = PersonImage(person=person, image=file_name)
     personImage.save()
 
     return HttpResponse(json.dumps({"info": 1, "path": file_name}))
@@ -472,7 +475,31 @@ def takeReq(request):
     conv.save()
     conv.message_set.create(date=timezone.now(), mtype=1, isRead=0, resp=1)
 
+    try:
+        ss = SysSetting.objects.latest('id')
+
+        mail_title = 'Новый запрос'
+        if bi.value == 1:
+            text_content = 'У вас забрали книгу: '
+            html_content = 'У вас забрали книгу: '
+        else:
+            text_content = 'У вас хотят взять книгу: '
+            html_content = 'У вас хотят взять книгу: '
+
+        text_content += bi.book.title +'\n'+ss.system_link+'\n\nРаспределенная библиотека.'
+        html_content += '<strong>' + bi.book.title + '</strong>'+'<br>'+ss.system_link + \
+                        '<br><br>Распределенная библиотека.'
+
+        email = "DLibr <do_not_replay@dlibr.com>"
+        recipients = [personTo.email]
+        msg = EmailMultiAlternatives(mail_title, text_content, email, recipients)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+    except BaseException:
+        pass
+
     return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
+
 
 @transaction.commit_on_success
 def returnReq(request):
@@ -489,7 +516,7 @@ def returnReq(request):
     (takeb, takep) = bi.checkTake()
     if takeb != 0:
         return HttpResponse(json.dumps({"info": 2}))
-    rm=ReturnMessage(personTo=bi.owner, personFrom=personFrom, date=timezone.now(), item=bi, isRead=0)
+    rm = ReturnMessage(personTo=bi.owner, personFrom=personFrom, date=timezone.now(), item=bi, isRead=0)
     rm.save()
 
     return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
@@ -499,10 +526,12 @@ def getRetMessages(request):
     person = Person.objects.get(pk=request.session["person_id"])
     if not person:
         return HttpResponse(json.dumps({"info": 3}))
-    retMList=ReturnMessage.objects.filter(personTo=person, isRead=0)
-    mesF=[{"id":mess.id, "person": mess.personFrom.natural_key(), "date": mess.date, "item_id" : mess.item.id, "book":mess.item.book.title} for mess in retMList]
+    retMList = ReturnMessage.objects.filter(personTo=person, isRead=0)
+    mesF = [{"id": mess.id, "person": mess.personFrom.natural_key(), "date": mess.date, "item_id": mess.item.id,
+             "book": mess.item.book.title} for mess in retMList]
 
     return HttpResponse(json.dumps({"info": 1, "messages": mesF}, cls=DjangoJSONEncoder))
+
 
 def getMessages(request):
     query = json.loads(str(request.body.decode()))
@@ -532,9 +561,9 @@ def getMessages(request):
         bi = BookItem.objects.get(pk=mess[2])
         p_new = Person.objects.get(pk=mess[3])
 
-        formatedMes.append({"id":message.id, "person": p_new.natural_key(),
-                            "date": message.date, "item_id" : bi.id, "book":bi.book.title,
-                            "bi_val":bi.value, "resp":message.resp, "mtype":message.mtype})
+        formatedMes.append({"id": message.id, "person": p_new.natural_key(),
+                            "date": message.date, "item_id": bi.id, "book": bi.book.title,
+                            "bi_val": bi.value, "resp": message.resp, "mtype": message.mtype})
 
     return HttpResponse(json.dumps({"info": 1, "messages": formatedMes}, cls=DjangoJSONEncoder))
 
@@ -565,11 +594,12 @@ def replyMessage(request):
 
     return HttpResponse(json.dumps({"info": 1}))
 
+
 def replyRetMessage(request):
     query = json.loads(str(request.body.decode()))
     mess_id = query["mess_id"]
-    mess=ReturnMessage.objects.get(pk=mess_id)
-    mess.isRead=1
+    mess = ReturnMessage.objects.get(pk=mess_id)
+    mess.isRead = 1
     mess.save()
     return HttpResponse(json.dumps({"info": 1}))
 
