@@ -1,0 +1,98 @@
+{% extends "library/base.html" %}
+{% csrf_token %}
+{% load static %}
+
+{% block title %}Распределенная библиотека{% endblock %}
+{% block include %}
+    <link rel="stylesheet" href="{% static "css/formcss.css" %}">
+    <link rel="stylesheet" href="{% static "css/user_edit.css" %}">
+    <script type="text/javascript" charset="utf-8" src="{% static "js/user_edit.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="form-wrapper" id="reg-form-wrapper">
+        <div class="form-div" id="reg-form-div">
+
+            <div class="form-header">
+                <h3>
+                    <a href="/" class="btn pull-left" type="button" id="back-btn"><i
+                            class="icon-arrow-left icon-white"></i>
+                    </a>
+                    <span>Профиль</span>
+                </h3>
+            </div>
+            <div class="form-body" id="">
+                <table>
+                    <tr class="logintr">
+                        <td class="lcolumn">Логи</td>
+                        <td class="valcolumn">{{ person.login }}</td>
+                        <td class="rcolumn"></td>
+                    </tr>
+                    <tr class="emailtr">
+                        <td class="lcolumn">Email</td>
+                        <td class="valcolumn">{{ person.email }}</td>
+                        <td class="rcolumn">
+                            <a onclick="changeRow('email')">Редактировать
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="fnametr">
+                        <td class="lcolumn">Имя</td>
+                        <td class="valcolumn">{{ person.fname }}</td>
+                        <td class="rcolumn">
+                            <a onclick="changeRow('fname')">Редактировать
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="lnametr">
+                        <td class="lcolumn">Фамилия</td>
+                        <td class="valcolumn">{{ person.lname }}</td>
+                        <td class="rcolumn">
+                            <a onclick="changeRow('lname')">Редактировать
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+                <div>
+                    <a id="pwdA">Изменить пароль</a> <span id="pwdSpan"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var person = {
+            login: "{{ person.login }}",
+            email: "{{ person.email }}",
+            fname: "{{ person.fname }}",
+            lname: "{{ person.lname }}"
+        };
+    </script>
+
+    <div id="changePwdModal" class="modal hide" tabindex="-1" role="dialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3 id="myModalLabel">Изменить пароль</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" action="" method="post" id="reg-form">
+                <div class="control-group">
+                    <label class="control-label" for="reg-pwd">Пароль</label>
+                    <div class="controls">
+                        <input type="password" id="reg-pwd" name="reg-pwd" placeholder="Пароль" required>
+                    </div>
+                </div>
+                <div class="control-group" id="reg-pwdd-cg">
+                    <label class="control-label" for=reg-pwdd>Еще раз</label>
+                    <div class="controls">
+                        <input type="password" id="reg-pwdd" name="reg-pwdd" placeholder="Еще раз" required>
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn" data-dismiss="modal">Закрыть</button>
+            <button class="btn btn-primary" onclick="register()">Сохранить</button>
+        </div>
+    </div>
+{% endblock %}

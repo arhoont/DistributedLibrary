@@ -49,7 +49,7 @@
                         <a class="btn dropdown-toggle" data-toggle="dropdown"><span
                                 class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="/"><i class="icon-pencil"></i> Редактировать</a></li>
+                            <li><a href="/useredit"><i class="icon-pencil"></i> Редактировать</a></li>
                             <li><a href="/logout"><i class="icon-off"></i> Выйти</a></li>
                             {% if person.adm ==  1 %}
                                 <li class="divider"></li>
@@ -65,7 +65,8 @@
 </div>
 
 <div class="container" id="main-container">
-    <span id="main-alert" class="alert display-none"></span>
+
+    <span class="alert-place"></span>
     {% block content %}{% endblock %}
     <hr>
     <footer>

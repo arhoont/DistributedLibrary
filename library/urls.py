@@ -14,9 +14,11 @@ urlpatterns = patterns('',
     url(r'^book/info/$', v_pages.bookinfo, name='bookinfo'),
     url(r'^book/edit/$', v_pages.bookedit, name='bookedit'),
     url(r'^signin$', v_pages.signin, name='signin'),
+    url(r'^useredit/$', v_pages.user_edit, name='signin'),
 
     (r'^checkUser', v_users.checkUser), # check user existence (by login)
     (r'^regajax', v_users.regajax), # ajax registration method
+    (r'^editUserAjax', v_users.editUserAjax),
 
     (r'^getbooks', v_books.getbooks), # main page
     (r'^checkBook', v_books.checkBook), # check book existence (by isbn)

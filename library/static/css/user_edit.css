@@ -1,0 +1,36 @@
+.lcolumn {
+    font-weight: bold;
+    padding-right: 20px;
+}
+
+.rcolumn {
+    padding-left: 20px;
+}
+
+.valcolumn {
+    min-width: 200px;
+}
+
+tr {
+    height: 35px;
+}
+
+table input {
+    margin: 0 !important;
+}
+
+.form-body a {
+    cursor: pointer;
+}
+
+.saveA {
+    margin-right: 10px;
+}
+
+#pwdA {
+    margin: 5px;
+}
+
+.form-body {
+    margin-left: 20px;
+}

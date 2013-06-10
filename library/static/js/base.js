@@ -60,17 +60,17 @@ function sameOrigin(url) {
 }
 
 function displayAlert(text, alert_class) {
-    $("main-alert").removeClass("alert-danger alert-error alert-info alert-success display-none");
-    $("main-alert").addClass(alert_class);
-    $("main-alert").html(text);
+    $(".alert-place").html('<div id="main-alert" class="alert"></div>');
+    $("#main-alert").addClass(alert_class);
+    $("#main-alert").html('<button type="button" class="close" data-dismiss="alert">&times;</button>' + text);
 }
 
-function notSignIn(){
+function notSignIn() {
     displayAlert("Войдите в систему", "alert-danger")
 }
 
-function serverError(){
-   displayAlert("Проблемы соединения с сервером", "alert-danger")
+function serverError() {
+    displayAlert("Проблемы соединения с сервером", "alert-danger")
 }
 function markGood(cg, text) {
     $(cg).removeClass("error");

@@ -34,7 +34,7 @@ def bookadd(request): # page
     context["authors"] = authors
     context["keywords"] = keywords
     context["languages"] = languages
-    return render(request, 'library/bookadd.html', context)
+    return render(request, 'library/book_add.html', context)
 
 
 def bookinfo(request): # page
@@ -57,7 +57,7 @@ def bookinfo(request): # page
     if btest:
         context["edit"] = "yes"
 
-    return render(request, 'library/bookinfo.html', context)
+    return render(request, 'library/book_info.html', context)
 
 
 def bookedit(request):
@@ -82,7 +82,7 @@ def bookedit(request):
     context["keywords"] = keywords
     context["languages"] = languages
 
-    return render(request, 'library/bookedit.html', context)
+    return render(request, 'library/book_edit.html', context)
 
 
 def login(request):
@@ -126,3 +126,7 @@ def signin(request):
                 request.session.set_expiry(0)
             return HttpResponseRedirect(reverse('index'))
     return HttpResponseRedirect(reverse('error'))
+
+def user_edit(request):
+    context = isauth(request)
+    return render(request, 'library/user_edit.html', context)
