@@ -1,7 +1,3 @@
-//path = '/static/';
-function debug(smt) {
-    console.log(smt);
-}
 $(document).ready(function () {
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
@@ -63,7 +59,19 @@ function sameOrigin(url) {
         !(/^(\/\/|http:|https:).*/.test(url));
 }
 
+function displayAlert(text, alert_class) {
+    $("main-alert").removeClass("alert-danger alert-error alert-info alert-success display-none");
+    $("main-alert").addClass(alert_class);
+    $("main-alert").html(text);
+}
 
+function notSignIn(){
+    displayAlert("Войдите в систему", "alert-danger")
+}
+
+function serverError(){
+   displayAlert("Проблемы соединения с сервером", "alert-danger")
+}
 function markGood(cg, text) {
     $(cg).removeClass("error");
     $(cg).addClass("success");
@@ -89,7 +97,7 @@ function getRetMessages() {
             }
         },
         error: function () {
-            debug("ошибка сервера")
+            serverError();
         }
     });
 }
@@ -133,12 +141,12 @@ function getMessage(mType, isRead) {
                     default:
                         break;
                 }
-            } else if (parseInt(data.info) == 3) {
-                debug("ошибка");
+            } else if (parseInt(data.info) == 4) {
+                notSignIn();
             }
         },
         error: function () {
-            debug("ошибка сервера")
+            serverError();
         }
     });
 }
@@ -221,11 +229,11 @@ function replyMessage(mess_id, resp, mt) {
             if (parseInt(data.info) == 1) {
                 $("#mess" + mess_id).remove();
             } else if (parseInt(data.info) == 3) {
-                debug("ошибка");
+                notSignIn();
             }
         },
         error: function () {
-            debug("ошибка сервера")
+            serverError();
         }
     });
 }
@@ -239,11 +247,11 @@ function replyRetMessage(mess_id) {
             if (parseInt(data.info) == 1) {
                 $("#mess" + mess_id).remove();
             } else if (parseInt(data.info) == 3) {
-                debug("ошибка");
+                notSignIn();
             }
         },
         error: function () {
-            debug("ошибка сервера replyRetMessage")
+            serverError();
         }
     });
 }

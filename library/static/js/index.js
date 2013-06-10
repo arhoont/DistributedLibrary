@@ -7,6 +7,9 @@ function castPage(){
         success: function (data) {
             castMainTable(data);
         },
+        error: function () {
+            serverError();
+        },
         crossDomain: false
     });
     var d = new Date()

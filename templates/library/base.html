@@ -21,8 +21,8 @@
 
 <div class="navbar">
 
-        <div class="navbar-inner">
-    <div class="container" id="top-container">
+    <div class="navbar-inner">
+        <div class="container" id="top-container">
 
         <span id="brand-span">
             <a class="brand" href="/">{{ libname }}</a>
@@ -65,6 +65,7 @@
 </div>
 
 <div class="container" id="main-container">
+    <span id="main-alert" class="alert display-none"></span>
     {% block content %}{% endblock %}
     <hr>
     <footer>

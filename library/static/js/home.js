@@ -91,6 +91,9 @@ function tableReq() {
         success: function (data) {
             castMainTable(data);
         },
+        error: function () {
+            serverError();
+        },
         crossDomain: false
     });
 }
@@ -98,12 +101,12 @@ function castMainTable(data) {
     $("#rows").html("");
     var k = data.books.length;
     for (i = 0; i < k; i++) {
-        var book=data.books[i];
+        var book = data.books[i];
         listed = '<tr class="oneRow" id=' + book.pk + '>';
         listed += '<td class="isbnColum"><a href="/book/info?isbn=' + book.pk + '">' + book.pk + '</a></td>';
-        listed += '<td class="titleColum"><a title="' + book.fields.title + '" href="/book/info?isbn=' + book.pk + '">' +  book.fields.title + '</a></td>';
+        listed += '<td class="titleColum"><a title="' + book.fields.title + '" href="/book/info?isbn=' + book.pk + '">' + book.fields.title + '</a></td>';
         listed += '<td class="authColum" title="' + book.fields.authors + '">' + book.fields.authors + '&nbsp</td>';
-        listed += '<td class="keyColum" title="' + book.fields.keywords  + '">' + book.fields.keywords + '</td>';
+        listed += '<td class="keyColum" title="' + book.fields.keywords + '">' + book.fields.keywords + '</td>';
         listed += '<td class="langColum" >' + book.fields.language + '</td>';
         listed += '<td class="countColum">' + book.fields.item_count + '&nbsp</td>';
         listed += '<td class="ratingColum">';

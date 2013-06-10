@@ -21,11 +21,9 @@ import json
 from library.models import Book
 from django.db import transaction
 from django.core.serializers.json import DjangoJSONEncoder
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 
 
-# pages
-#================================================
 def cleanTmp(person):
     pis = PersonImage.objects.filter(person=person)
     for pi in pis:
@@ -51,7 +49,6 @@ def index(request):
             response.set_cookie("active", "true")
     else:
         response = render_to_response('library/index.html', context, context_instance=RequestContext(request))
-        # return render(request, 'library/home.html', context)
     return response
 
 
@@ -173,7 +170,6 @@ def regajax(request):
     d = Domain.objects.get(pk=" ")
     p = Person(domain=d, login=log, email=email, fname=fname, lname=lname, pwd=pwd_hash, salt=salt, adm=0, status=1)
     p.save()
-    # print(p.login)
     return HttpResponse(json.dumps({"info": 1, "domain": " "}))
 
 
@@ -463,7 +459,7 @@ def takeReq(request):
     personFrom = Person.objects.get(pk=request.session["person_id"])
 
     if not personFrom: # not registred
-        return HttpResponse(json.dumps({"info": 3}))
+        return HttpResponse(json.dumps({"info": 4}))
 
     bi = BookItem.objects.get(pk=itemId)
     (takeb, takep) = bi.checkTake()
@@ -475,28 +471,30 @@ def takeReq(request):
     conv.save()
     conv.message_set.create(date=timezone.now(), mtype=1, isRead=0, resp=1)
 
-    try:
-        ss = SysSetting.objects.latest('id')
 
-        mail_title = 'Новый запрос'
-        if bi.value == 1:
-            text_content = 'У вас забрали книгу: '
-            html_content = 'У вас забрали книгу: '
-        else:
-            text_content = 'У вас хотят взять книгу: '
-            html_content = 'У вас хотят взять книгу: '
-
-        text_content += bi.book.title +'\n'+ss.system_link+'\n\nРаспределенная библиотека.'
-        html_content += '<strong>' + bi.book.title + '</strong>'+'<br>'+ss.system_link + \
-                        '<br><br>Распределенная библиотека.'
-
-        email = "DLibr <do_not_replay@dlibr.com>"
-        recipients = [personTo.email]
-        msg = EmailMultiAlternatives(mail_title, text_content, email, recipients)
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
-    except BaseException:
-        pass
+    # ss = SysSetting.objects.latest('id')
+    # mail_title = 'Новый запрос'
+    # if bi.value == 1:
+    #     text_content = 'У вас забрали книгу: '
+    #     html_content = 'У вас забрали книгу: '
+    # else:
+    #     text_content = 'У вас хотят взять книгу: '
+    #     html_content = 'У вас хотят взять книгу: '
+    #
+    # text_content += bi.book.title +'\n'+'id экземпляра: '+ str(bi.id)+'\n'+ss.system_address+'\n\nРаспределенная библиотека.'
+    #
+    # html_content += '<strong>' + bi.book.title + '</strong><br>' \
+    #                 'id экземпляра: '+ str(bi.id) +'<br>'+ss.system_address + \
+    #                 '<br><br>Распределенная библиотека.'
+    #
+    # email = "DLibr <do_not_replay@dlibr.com>"
+    # recipients = [personTo.email]
+    # msg = EmailMultiAlternatives(mail_title, text_content, email, recipients)
+    # msg.attach_alternative(html_content, "text/html")
+    # try:
+    #     msg.send()
+    # except BaseException:
+    #     pass
 
     return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
 
@@ -510,7 +508,7 @@ def returnReq(request):
     personFrom = Person.objects.get(pk=request.session["person_id"])
 
     if not personFrom: # not registred
-        return HttpResponse(json.dumps({"info": 3}))
+        return HttpResponse(json.dumps({"info": 4}))
 
     bi = BookItem.objects.get(pk=itemId)
     (takeb, takep) = bi.checkTake()
@@ -539,7 +537,7 @@ def getMessages(request):
     isRead = query["isRead"]
     person = Person.objects.get(pk=request.session["person_id"])
     if not person:
-        return HttpResponse(json.dumps({"info": 3}))
+        return HttpResponse(json.dumps({"info": 4}))
 
     cursor = connection.cursor()
     queryStr = ""
@@ -577,7 +575,7 @@ def replyMessage(request):
     person = Person.objects.get(pk=request.session["person_id"])
 
     if not person:
-        return HttpResponse(json.dumps({"info": 3}))
+        return HttpResponse(json.dumps({"info": 4}))
 
     mess = Message.objects.get(pk=mess_id)
     conv = mess.conversation

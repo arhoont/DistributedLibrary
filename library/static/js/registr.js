@@ -20,7 +20,7 @@
                     }
                 },
                 error: function () {
-                    $('#regError').html('проблемы соединения с сервером');
+                    serverError();
                 },
                 crossDomain: false
             });
@@ -42,11 +42,10 @@ function pwdTest() {
 }
 function register() {
     if (!pwdTest()) {
-        $('#regError').html('пароли не совпадают');
+        displayAlert('Пароли несовпадают',"alert-danger");
     } else if ($("#reg-logF").hasClass("badField")) {
-        $('#regError').html('такой логин уже есть');
+        displayAlert('такой логин уже есть',"alert-danger");
     } else {
-//        $('#reg-form').html('');
         $.ajax({
             type: "POST",
             url: "/regajax",
@@ -57,20 +56,12 @@ function register() {
             success: function (data) {
                 if (parseInt(data.info) == 1) {
                     window.location = "/login";
-                }
-
-                else if (parseInt(data.info) == 2) {
-                    $('#regError').html('такой логин уже есть');
-                }
-                else if (parseInt(data.info) == 3) {
-                    $('#regError').html('что-то не работает');
-                }
-                else if (parseInt(data.info) == 4) {
-                    $('#regError').html('войдите или зарегистрируетесь');
+                } else if (parseInt(data.info) == 2) {
+                    displayAlert('такой логин уже есть',"alert-danger");
                 }
             },
             error: function () {
-                $('#regError').html('проблемы соединения с сервером');
+                serverError();
             }
         });
     }

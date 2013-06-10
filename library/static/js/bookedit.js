@@ -82,14 +82,12 @@ function addButtonBook() {
             success: function (data) {
                 if (parseInt(data.info) == 1) {
                     window.location = "/book/info/?isbn="+$('#ba-isbn').val();
-                } else if (parseInt(data.info) == 2) {
-                    debug("Такая книга уже есть");
-                } else if (parseInt(data.info) == 3) {
-                    debug("что-то не работает");
+                } else if (parseInt(data.info) == 4) {
+                    notSignIn();
                 }
             },
             error: function () {
-                debug("проблемы соединения с сервером");
+                serverError();
             }
         });
     }

@@ -19,14 +19,12 @@ function castPage() {
                     loadItems();
                     $("#sticker .biid").html(data.biid);
                     $("#printModal").modal('show');
-                } else if (parseInt(data.info) == 2) {
-
-                } else if (parseInt(data.info) == 3) {
-                    debug("регистрация");
+                } else if (parseInt(data.info) == 4) {
+                    notSignIn()
                 }
             },
             error: function () {
-                debug("проблемы соединения с сервером");
+                serverError();
             }
         });
     });
@@ -48,14 +46,12 @@ function castPage() {
             success: function (data) {
                 if (parseInt(data.info) == 1) {
                     location.reload();
-                } else if (parseInt(data.info) == 2) {
-
-                } else if (parseInt(data.info) == 3) {
-                    debug("регистрация");
+                } else if (parseInt(data.info) == 4) {
+                    notSignIn();
                 }
             },
             error: function () {
-                debug("проблемы соединения с сервером");
+                serverError();
             }
         });
     });
@@ -97,13 +93,13 @@ function takeItem(itemId, val) {
                             if (parseInt(data.info) == 1) {
                                 loadItems();
                             } else if (parseInt(data.info) == 2) {
-
-                            } else if (parseInt(data.info) == 3) {
-                                debug("регистрация");
+                                loadItems();
+                            } else if (parseInt(data.info) == 4) {
+                                notSignIn();
                             }
                         },
                         error: function () {
-                            debug("проблемы соединения с сервером");
+                            serverError();
                         }
                     });
                 });
@@ -112,7 +108,7 @@ function takeItem(itemId, val) {
             }
         },
         error: function () {
-            debug("проблемы соединения с сервером");
+            serverError();
         }
     });
 
@@ -136,13 +132,13 @@ function returnBook(itemId) {
                         if (parseInt(data.info) == 1) {
                             loadItems();
                         } else if (parseInt(data.info) == 2) {
-
-                        } else if (parseInt(data.info) == 3) {
-                            debug("регистрация");
+                            loadItems();
+                        } else if (parseInt(data.info) == 4) {
+                            notSignIn();
                         }
                     },
                     error: function () {
-                        debug("проблемы соединения с сервером");
+                        serverError();
                     }
                 });
             } else if (parseInt(data.info) == 3) {
@@ -150,7 +146,7 @@ function returnBook(itemId) {
             }
         },
         error: function () {
-            debug("проблемы соединения с сервером");
+            serverError();
         }
     });
 
@@ -169,35 +165,36 @@ function loadItems() {
                 for (i = 0; i < k; i++) {
                     bi = data.bilist[i];
 
-                    listed = '<tr id="bi' + bi[1] + '">';
-                    listed += '<td>' + bi[1] + '</td>';
-                    listed += '<td>' + bi[2] + '</td>';
-                    listed += '<td>' + bi[3] + '</td>';
-                    listed += '<td>' + bi[4] + '</td>';
-                    if (bi[7] == person_id) {
-                        if (bi[5] == 1) {
+                    listed = '<tr id="bi' + bi.id + '">';
+                    listed += '<td>' + bi.id + '</td>';
+                    listed += '<td>' + bi.owner.name + '</td>';
+                    listed += '<td>' + bi.reader.name + '</td>';
+                    listed += '<td>' + bi.value + '</td>';
+
+                    if (bi.reader.id == person_id) {
+                        if (bi.take.type == 1) {
                             listed += '<td>' + 'Сообщение' + '</td>';
-                        } else if (bi[8] == person_id) {
+                        } else if (bi.owner.id == person_id) {
                             listed += '<td>' + 'У вас' + '</td>';
                         } else {
-                            if (bi[5] == 2) {
+                            if (bi.take.type == 2) {
                                 listed += '<td><button class="btn btn-primary btn-mini disabled">Вернуть</button> '
-                                    +parseInt(bi[6] / 60) + ':' + pad(parseInt(bi[6] % 60), 2) + '</td>';
+                                    +getTimeLeft(bi.take.info) + '</td>';
                             }
                             else {
                                 listed += '<td><button class="btn btn-primary btn-mini" ' +
-                                    'onclick="returnBook(' + bi[1] + ')">Вернуть</button></td>';
+                                    'onclick="returnBook(' + bi.id + ')">Вернуть</button></td>';
                             }
 
                         }
 
-                    } else if (bi[5] == 0) {
+                    } else if (bi.take.type == 0) {
                         listed += '<td><button class="btn btn-primary btn-mini" ' +
-                            'onclick="takeItem(' + bi[1] + ',' + bi[4] + ')">Взять</button></td>';
-                    } else if (bi[5] == 2) {
-                        listed += '<td>Занята ' + parseInt(bi[6] / 60) + ':' + pad(parseInt(bi[6] % 60), 2) + '</td>';
-                    } else if (bi[5] == 1) {
-                        if (bi[6] == person_id) {
+                            'onclick="takeItem(' + bi.id + ',' + bi.value + ')">Взять</button></td>';
+                    } else if (bi.take.type == 2) {
+                        listed += '<td>Занята ' + getTimeLeft(bi.take.info) + '</td>';
+                    } else if (bi.take.type == 1) {
+                        if (bi.take.info == person_id) {
                             listed += '<td>' + 'Запрошено' + '</td>';
                         } else {
                             listed += '<td>' + 'Занята' + '</td>';
@@ -209,16 +206,16 @@ function loadItems() {
                     listed += '</tr>';
                     $("#itemsTalbeDiv #rows").append(listed);
                 }
-            } else if (parseInt(data.info) == 2) {
-
-            } else if (parseInt(data.info) == 3) {
-                debug("регистрация");
             }
         },
         error: function () {
-            debug("проблемы соединения с сервером");
+            serverError();
         }
     });
+}
+
+function getTimeLeft(t){
+    return parseInt(t / 60) + ':' + pad(parseInt(t % 60), 2);
 }
 
 function pad(number, length) {
