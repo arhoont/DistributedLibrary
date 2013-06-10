@@ -1,10 +1,11 @@
 import json
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db import transaction
+from django.db import transaction, connection
 from django.http import HttpResponse
 
 from library.f_lib import *
 from library.models import *
+
 
 @transaction.commit_on_success
 def takeReq(request):
@@ -108,6 +109,7 @@ def getMessages(request):
 
     cursor.execute(queryStr, (isRead, person.id, person.id))
     messages = cursor.fetchall()
+    cursor.close()
     formatedMes = []
     for mess in messages:
         message = Message.objects.get(pk=mess[0])
@@ -157,3 +159,16 @@ def replyRetMessage(request):
     mess.save()
     return HttpResponse(json.dumps({"info": 1}))
 
+
+def countInMessage(request):
+    person = Person.objects.get(pk=request.session["person_id"])
+    if not person:
+        return HttpResponse(json.dumps({"info": 4}))
+    cursor = connection.cursor()
+    queryStr = 'select mess.id, conversation_id, item_id, "personFrom_id" from library_message mess join library_conversation conv ' \
+               'on mess.conversation_id=conv.id  where  "isRead" = %s and ' \
+               '(("personTo_id"=%s and mType %% 2=1) or ("personFrom_id"=%s and mType %% 2=0))'
+    cursor.execute(queryStr, (0, person.id, person.id))
+    mess_count_in = cursor.rowcount
+    cursor.close()
+    return HttpResponse(json.dumps({"info": 1,"count":mess_count_in}))

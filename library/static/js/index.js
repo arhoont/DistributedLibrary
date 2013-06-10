@@ -12,22 +12,20 @@ function castPage(){
         },
         crossDomain: false
     });
-    var d = new Date()
+    var d = new Date();
     var n = d.getTimezoneOffset();
     if (n==-240){
         $("#django_timezone").val("Europe/Moscow");
     }
     console.log(n);
 }
-function castMainTable(objForm) {
+function castMainTable(data) {
     $("#rows").html("");
-    var k = objForm.books.length;
-    for (i = 0; i < k; i++) {
-        var isbn = objForm.books[i][0];
-        listed = '<tr class="oneRow" id=' + isbn + '>';
-        listed += '<td class="titleColum">' + objForm.books[i][1] + '&nbsp</td>';
-        listed += '<td class="authColum">' + objForm.books[i][2] + '</td>';
-        listed += '<td class="langColum">' + objForm.books[i][3] + '</td>';
+    for (i = 0; i < data.length; i++) {
+        listed = '<tr class="oneRow" id=' + data[i].pk + '>';
+        listed += '<td class="titleColum" title="' + data[i].fields.title + '">' + data[i].fields.title + '&nbsp</td>';
+        listed += '<td class="authColum" title="' + data[i].fields.authors + '">' + data[i].fields.authors + '</td>';
+        listed += '<td class="langColum"  title="' + data[i].fields.language + '">' + data[i].fields.language + '</td>';
         listed += '</tr>';
         $("#rows").append(listed);
     }

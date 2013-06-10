@@ -37,5 +37,6 @@ urlpatterns = patterns('',
     (r'^getRetMessages', v_messages.getRetMessages), # get user's book-return notification
     (r'^replyMessage', v_messages.replyMessage), # reply on some message (yes/no/read)
     (r'^replyRetMessage', v_messages.replyRetMessage), #reply on return-book notification (read)
+    (r'^countInMessage', v_messages.countInMessage), #reply on return-book notification (read)
 
 )

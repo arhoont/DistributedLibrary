@@ -1,5 +1,5 @@
-from django.db import models, connection
-from django.db.models import Avg, Max, Q
+from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 
@@ -81,7 +81,7 @@ class Book(models.Model):
     image = models.CharField(max_length=255, null=True)
     rating = models.IntegerField(null=True)
     item_count = models.IntegerField(null=True)
-
+    date=models.DateTimeField()
     def __str__(self):
         return self.isbn + " " + self.title
 
@@ -93,6 +93,7 @@ class BookItem(models.Model):
     value = models.IntegerField(default=1)
     rdate = models.DateTimeField(null=True)
     takedate = models.DateTimeField(null=True)
+    status = models.IntegerField()
 
     def checkTake(self):
         ss = SysSetting.objects.latest('id')
@@ -120,7 +121,8 @@ class BookItem(models.Model):
                 "value": self.value,
                 "owner":self.owner.getBigNaturalKey(),
                 "reader":self.reader.getBigNaturalKey(),
-                "take":{"type":takeb,"info":takep}}
+                "take":{"type":takeb,"info":takep},
+                "status":self.status}
 
 class ItemStatus(models.Model):
     item = models.ForeignKey(BookItem)
@@ -146,8 +148,8 @@ class Link(models.Model):
 
 class Conversation(models.Model):
     item = models.ForeignKey(BookItem)
-    personFrom = models.ForeignKey(Person, related_name="requestfrom")
-    personTo = models.ForeignKey(Person, related_name="requestto")
+    personFrom = models.ForeignKey(Person, related_name="requestfrom_set")
+    personTo = models.ForeignKey(Person, related_name="requestto_set")
 
 
 class Message(models.Model):
@@ -160,8 +162,8 @@ class Message(models.Model):
 
 
 class ReturnMessage(models.Model):
-    personFrom = models.ForeignKey(Person, related_name="returnfrom")
-    personTo = models.ForeignKey(Person, related_name="returnto")
+    personFrom = models.ForeignKey(Person, related_name="returnfrom_set")
+    personTo = models.ForeignKey(Person, related_name="returnto_set")
     item = models.ForeignKey(BookItem)
     date = models.DateTimeField()
     isRead = models.IntegerField(null=True)

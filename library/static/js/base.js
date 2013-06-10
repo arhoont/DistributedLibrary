@@ -22,8 +22,35 @@ $(document).ready(function () {
             getRetMessages();
         }
     });
+    $('#messageButton').popover({
+        html: true,
+        placement: 'bottom',
+        content: '<div>Новые запросы</div>',
+        trigger: 'manual'
+
+    });
+    messCountTest();
+    $('#messageModal').on('hidden', function () {
+        $('#messageButton').popover('hide');
+        messCountTest();
+    });
     castPage();
 });
+function messCountTest() {
+    $.ajax({
+        type: "POST",
+        url: "/countInMessage",
+        dataType: "json",
+        success: function (data) {
+            if (data.count > 0) {
+                $('#messageButton').popover('show');
+            }
+        },
+        error: function () {
+            serverError();
+        }
+    });
+}
 
 function getCookie(name) {
     var cookieValue = null;

@@ -4,6 +4,7 @@ import string
 from django.core.files.storage import default_storage
 from library.models import PersonImage, Person, SysSetting
 from django.template import Context
+from django.db import connection
 
 def cleanTmp(person):
     pis = PersonImage.objects.filter(person=person)
@@ -15,7 +16,8 @@ def cleanTmp(person):
 def isauth(request):
     context = Context()
     if request.session.get('person_id', False):
-        context['person'] = Person.objects.get(pk=request.session["person_id"])
+        person=Person.objects.get(pk=request.session["person_id"])
+        context['person'] = person
     context['libname'] = SysSetting.objects.latest('id').libname
     return context
 

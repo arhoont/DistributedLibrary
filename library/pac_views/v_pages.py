@@ -112,7 +112,7 @@ def signin(request):
     domain = request.POST.get("domain")
     remember = request.POST.get("remember")
     django_timezone = request.POST.get("django_timezone")
-    p = Person.objects.filter(login=username, domain=domain)
+    p = Person.objects.filter(login=username, domain=domain, status=1)
     if p:
         salt = p[0].salt
         passHash = strHash(strHash(password) + salt)

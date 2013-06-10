@@ -88,7 +88,7 @@ create or replace function re_count_rating () returns int
   $$
 LANGUAGE plpgsql;
 
-insert into library_syssetting values (1,1,10,'lib1');
+insert into library_syssetting values (1,1,10,'lib1','addr.test.com');
 
 insert into library_domain values (' ');
 
