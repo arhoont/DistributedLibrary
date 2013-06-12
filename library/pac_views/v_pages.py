@@ -93,7 +93,7 @@ def login(request):
 
 def registr(request):
     context = isauth(request)
-    return render(request, 'library/registr.html', context)
+    return render(request, 'library/registration.html', context)
 
 
 def error(request):

@@ -47,7 +47,7 @@ function messCountTest() {
             }
         },
         error: function () {
-            serverError();
+//            serverError();
         }
     });
 }

@@ -6,6 +6,9 @@ from library.models import *
 
 
 def regajax(request):
+    """
+    Registration method
+    """
     query = json.loads(str(request.body.decode()))
     login = query["login"]
     email = query["email"]
@@ -27,7 +30,6 @@ def regajax(request):
 
 def editUserAjax(request):
     query = json.loads(str(request.body.decode()))
-    print(query)
     field = query["field"]
     param = query["param"]
     person = Person.objects.get(pk=request.session["person_id"])
@@ -36,11 +38,16 @@ def editUserAjax(request):
         person.__dict__[field] = param
         person.save()
     else:
-        salt = randstring(10)
-        pwd_hash = strHash(strHash(param) + salt)
-        person.pwd = pwd_hash
-        person.salt = salt
-        person.save()
+        pwd = query["old-pwd"]
+        passHash = strHash(strHash(pwd) + person.salt)
+        if passHash == person.pwd:
+            salt = randstring(10)
+            pwd_hash = strHash(strHash(param) + salt)
+            person.pwd = pwd_hash
+            person.salt = salt
+            person.save()
+        else:
+            return HttpResponse(json.dumps({"info": 2, "val": param}))
     return HttpResponse(json.dumps({"info": 1, "val": param}))
 
 

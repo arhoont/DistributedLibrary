@@ -1,9 +1,9 @@
-function castPage(){
+function castPage() {
     $.ajax({
         url: "/getlastbooks",
         type: "post",
         dataType: "json",
-        data: JSON.stringify({"count":6}),
+        data: JSON.stringify({"count": 6}),
         success: function (data) {
             castMainTable(data);
         },
@@ -12,12 +12,15 @@ function castPage(){
         },
         crossDomain: false
     });
+
     var d = new Date();
     var n = d.getTimezoneOffset();
-    if (n==-240){
+    if (n == -240) {
         $("#django_timezone").val("Europe/Moscow");
     }
+
     console.log(n);
+
 }
 function castMainTable(data) {
     $("#rows").html("");

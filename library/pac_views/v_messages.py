@@ -1,4 +1,5 @@
 import json
+from django.core.mail import EmailMultiAlternatives
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction, connection
 from django.http import HttpResponse
@@ -15,7 +16,7 @@ def takeReq(request):
 
     personFrom = Person.objects.get(pk=request.session["person_id"])
 
-    if not personFrom: # not registred
+    if not personFrom:
         return HttpResponse(json.dumps({"info": 4}))
 
     bi = BookItem.objects.get(pk=itemId)
@@ -29,29 +30,29 @@ def takeReq(request):
     conv.message_set.create(date=timezone.now(), mtype=1, isRead=0, resp=1)
 
 
-    # ss = SysSetting.objects.latest('id')
-    # mail_title = 'Новый запрос'
-    # if bi.value == 1:
-    #     text_content = 'У вас забрали книгу: '
-    #     html_content = 'У вас забрали книгу: '
-    # else:
-    #     text_content = 'У вас хотят взять книгу: '
-    #     html_content = 'У вас хотят взять книгу: '
-    #
-    # text_content += bi.book.title +'\n'+'id экземпляра: '+ str(bi.id)+'\n'+ss.system_address+'\n\nРаспределенная библиотека.'
-    #
-    # html_content += '<strong>' + bi.book.title + '</strong><br>' \
-    #                 'id экземпляра: '+ str(bi.id) +'<br>'+ss.system_address + \
-    #                 '<br><br>Распределенная библиотека.'
-    #
-    # email = "DLibr <do_not_replay@dlibr.com>"
-    # recipients = [personTo.email]
-    # msg = EmailMultiAlternatives(mail_title, text_content, email, recipients)
-    # msg.attach_alternative(html_content, "text/html")
-    # try:
-    #     msg.send()
-    # except BaseException:
-    #     pass
+    ss = SysSetting.objects.latest('id')
+    mail_title = 'Новый запрос'
+    if bi.value == 1:
+        text_content = 'У вас забрали книгу: '
+        html_content = 'У вас забрали книгу: '
+    else:
+        text_content = 'У вас хотят взять книгу: '
+        html_content = 'У вас хотят взять книгу: '
+
+    text_content += bi.book.title +'\n'+'id экземпляра: '+ str(bi.id)+'\n'+ss.system_address+'\n\nРаспределенная библиотека.'
+
+    html_content += '<strong>' + bi.book.title + '</strong><br>' \
+                    'id экземпляра: '+ str(bi.id) +'<br>'+ss.system_address + \
+                    '<br><br>Распределенная библиотека.'
+
+    email = "DLibr <do_not_replay@dlibr.com>"
+    recipients = [personTo.email]
+    msg = EmailMultiAlternatives(mail_title, text_content, email, recipients)
+    msg.attach_alternative(html_content, "text/html")
+    try:
+        msg.send()
+    except BaseException:
+        pass
 
     return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
 

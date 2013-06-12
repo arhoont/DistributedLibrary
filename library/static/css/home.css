@@ -37,7 +37,7 @@
     text-overflow: ellipsis;
 }
 
-#mtable th:hover {
+#mtable .sortC:hover {
     cursor: pointer;
     background-color: #f7f7f7;
 }

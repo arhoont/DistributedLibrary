@@ -5,6 +5,8 @@ from library.pac_views import v_messages
 from library.pac_views import v_users
 
 urlpatterns = patterns('',
+
+    # pages [v_pages view file]
     url(r'^$', v_pages.index, name='index'),
     url(r'^login/$', v_pages.login, name='login'),
     url(r'^logout/$', v_pages.logout, name='logout'),
@@ -15,11 +17,15 @@ urlpatterns = patterns('',
     url(r'^book/edit/$', v_pages.bookedit, name='bookedit'),
     url(r'^signin$', v_pages.signin, name='signin'),
     url(r'^useredit/$', v_pages.user_edit, name='signin'),
+    #==================================================
 
+    # user [v_users view file]
     (r'^checkUser', v_users.checkUser), # check user existence (by login)
     (r'^regajax', v_users.regajax), # ajax registration method
     (r'^editUserAjax', v_users.editUserAjax),
+    #==================================================
 
+    # book [v_books view file]
     (r'^getbooks', v_books.getbooks), # main page
     (r'^checkBook', v_books.checkBook), # check book existence (by isbn)
     (r'^addbajax', v_books.addbajax), # ajax add book (save information)
@@ -29,8 +35,10 @@ urlpatterns = patterns('',
     (r'^addOpinion', v_books.addOpinion),
     (r'^testBIConv', v_books.testBIConv),
     (r'^loadItems', v_books.loadItems), # for bookinfo page
-    (r'^uploadBI', v_books.uploadBI), # upload book image preview on server
+    (r'^uploadBI', v_books.uploadBI), # upload book image preview
+    #==================================================
 
+    # message [v_messages view file]
     (r'^takeReq', v_messages.takeReq), # new take-book message
     (r'^returnReq', v_messages.returnReq), # new return-book message
     (r'^getMessages', v_messages.getMessages), # get user's messages (in/out)
@@ -38,5 +46,6 @@ urlpatterns = patterns('',
     (r'^replyMessage', v_messages.replyMessage), # reply on some message (yes/no/read)
     (r'^replyRetMessage', v_messages.replyRetMessage), #reply on return-book notification (read)
     (r'^countInMessage', v_messages.countInMessage), #reply on return-book notification (read)
+    #==================================================
 
 )
