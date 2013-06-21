@@ -61,19 +61,15 @@ def bookinfo(request): # page
 
 
 def bookedit(request):
-    print('1')
 
     person = Person.objects.get(pk=request.session["person_id"])
     if not person: # not registred
         return HttpResponseRedirect(reverse('index'))
-    print('2')
 
     isbn = request.GET['isbn']
-    print(isbn)
     book = Book.objects.filter(Q(isbn=isbn) & Q(bookitem__owner=person.id)).distinct()
     if not book:
         return HttpResponseRedirect(reverse('index'))
-    print('3')
 
     book = book[0]
     context = isauth(request)
