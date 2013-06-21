@@ -39,10 +39,13 @@ def takeReq(request):
         text_content = 'У вас хотят взять книгу: '
         html_content = 'У вас хотят взять книгу: '
 
-    text_content += bi.book.title +'\n'+'id экземпляра: '+ str(bi.id)+'\n'+ss.system_address+'\n\nРаспределенная библиотека.'
+    text_content += bi.book.title +'\n'+'id экземпляра: '+ str(bi.id)+'\n'+ss.system_address+\
+                    'Ответьте на запрос\n' + \
+                    '\n\nРаспределенная библиотека.'
 
     html_content += '<strong>' + bi.book.title + '</strong><br>' \
                     'id экземпляра: '+ str(bi.id) +'<br>'+ss.system_address + \
+                    '<br>Ответьте на запрос' + \
                     '<br><br>Распределенная библиотека.'
 
     email = "DLibr <do_not_replay@dlibr.com>"
