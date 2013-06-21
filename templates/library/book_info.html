@@ -101,9 +101,8 @@
 {#        <button type="button" class="btn btn-info">Добавить ссылку</button>#}
         <button type="button" class="btn btn-info" id="addItemBut">Добавить экземпляр</button>
         {% if edit %}
-            <a href="/book/edit/?isbn={{ book.isbn }}" class="btn" id="addItemBut">Редактировать</a>
+            <a href="/book/edit/?isbn={{ book.isbn }}" class="btn btn-info" id="addItemBut">Редактировать</a>
         {% endif %}
-
     </div>
 
     <div class="control-group" id="ba-desc-cg">
@@ -195,7 +194,7 @@
 
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal">Отмена</button>
-            <button class="btn btn-info">Справка</button>
+            <button class="btn disabled" title="В разработке">Справка</button>
             <button class="btn btn-primary" id="takeButtonModal">Послать запрос</button>
         </div>
     </div>

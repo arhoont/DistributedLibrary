@@ -48,3 +48,10 @@
 .hL {
     font-weight: bold;
 }
+
+.thumbnail{
+    cursor: default !important;
+}
+.thumbnail:hover{
+    border-color: #ddd !important;
+}

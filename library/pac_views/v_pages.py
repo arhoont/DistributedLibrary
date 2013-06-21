@@ -61,14 +61,20 @@ def bookinfo(request): # page
 
 
 def bookedit(request):
+    print('1')
+
     person = Person.objects.get(pk=request.session["person_id"])
     if not person: # not registred
         return HttpResponseRedirect(reverse('index'))
+    print('2')
 
     isbn = request.GET['isbn']
-    book = Book.objects.filter(Q(isbn=isbn) & Q(bookitem__owner=1)).distinct()
+    print(isbn)
+    book = Book.objects.filter(Q(isbn=isbn) & Q(bookitem__owner=person.id)).distinct()
     if not book:
         return HttpResponseRedirect(reverse('index'))
+    print('3')
+
     book = book[0]
     context = isauth(request)
     context["bauthors"] = [a.getPrintName() for a in book.authors.all()]
@@ -81,7 +87,6 @@ def bookedit(request):
     context["authors"] = authors
     context["keywords"] = keywords
     context["languages"] = languages
-
     return render(request, 'library/book_edit.html', context)
 
 

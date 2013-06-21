@@ -4,13 +4,15 @@
     width: 100%;
 }
 
-#b-img{
+#b-img {
     height: 200px;
 }
-#b-img-a{
+
+#b-img-a {
     cursor: pointer;
 }
-#image-div{
+
+#image-div {
     width: 170px;
     float: left;
 }
@@ -24,16 +26,24 @@
     vertical-align: top;
 }
 
-table input{
+table input {
     width: 300px;
 }
 
-.lSpan{
+.lSpan {
     font-weight: bold;
 }
-.kword{
+
+.kword {
     width: 190px;
 }
-.aname{
+
+.aname {
     width: 190px;
+}
+
+.typeahead {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }

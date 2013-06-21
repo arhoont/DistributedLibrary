@@ -73,11 +73,11 @@ function takeItem(itemId, val) {
         success: function (data) {
             if (parseInt(data.info) == 1) {
                 if (val == 1) {
-                    $("#takeModal .modal-body").html("Не ценная книга ");
+                    $("#takeModal .modal-body").html("Не ценная книга, сразу станет вашей");
                 } else if (val == 2) {
-                    $("#takeModal .modal-body").html("Ценная книга");
+                    $("#takeModal .modal-body").html("Ценная книга, нужно послать запрос");
                 } else if (val == 3) {
-                    $("#takeModal .modal-body").html("Очень ценная книга");
+                    $("#takeModal .modal-body").html("Очень ценная книга, нужно послать запрос");
                 }
                 $("#takeModal").modal('show');
                 $('#takeButtonModal').unbind('click');

@@ -39,15 +39,13 @@
                         </button>
                     </div>
                     <div class="pull-right input-append btn-group">
-                        <a type="button" class="btn" href="/"><i class="icon-home icon-white "></i></a>
+                        <a type="button" class="btn" href="/"><i class="icon-home icon-white "></i> Домой</a>
                         <a type="button" class="btn" id="messageButton"><i class="icon-envelope icon-white"></i>
                             Сообщения</a>
 
                         <a type="button" class="btn" href="/book/add"><i class="icon-plus-sign icon-white"></i> Добавить
                             книгу</a>
-                        <a class="btn"><i class="icon-user icon-white"></i> {{ person.login }}</a>
-                        <a class="btn dropdown-toggle" data-toggle="dropdown"><span
-                                class="caret"></span></a>
+                        <a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> {{ person.login }} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="/useredit"><i class="icon-pencil"></i> Редактировать</a></li>
                             <li><a href="/logout"><i class="icon-off"></i> Выйти</a></li>
