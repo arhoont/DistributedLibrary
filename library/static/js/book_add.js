@@ -53,10 +53,11 @@ function castPage() {
     });
 
     $('#printModal').on('hidden', function () {
-        window.location = "/book/info/?isbn="+$('#ba-isbn').val();
+        window.location = "/book/info/?isbn=" + $('#ba-isbn').val();
     });
     addEAuthor();
     addEKW();
+
 }
 
 function addEAuthor() {
@@ -65,7 +66,6 @@ function addEAuthor() {
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
     $('.aname').typeahead({source: authors});
-
 }
 
 function addEKW() {
@@ -73,7 +73,10 @@ function addEKW() {
         '<input type="text" value="" class="kword" placeholder="Слово">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
-    $('.kword').typeahead({source: keywords});
+    $('.kword').typeahead({minLength:0, source: keywords, items:9999});
+    $(".kword").focus(function() {
+            $(this).trigger("keyup");
+        });
 }
 
 function addButtonBook() {
@@ -114,7 +117,7 @@ function addButtonBook() {
                     $("#sticker .biid").html(data.biid);
                     $("#printModal").modal('show');
                 } else if (parseInt(data.info) == 2) {
-                    displayAlert("Такая книга уже есть","alert-danger")
+                    displayAlert("Такая книга уже есть", "alert-danger")
                 } else if (parseInt(data.info) == 4) {
                     notSignIn();
                 }
