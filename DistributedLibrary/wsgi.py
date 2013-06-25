@@ -20,9 +20,9 @@ import sys
 # if running multiple sites in the same mod_wsgi process. To fix this, use
 # mod_wsgi daemon mode with each site in its own daemon process, or use
 # os.environ["DJANGO_SETTINGS_MODULE"] = "dl_django.settings"
-path = '/home/arhont/sites/DistributedLibrary'
+path = '/home/muser/sites/DistributedLibrary'
 if path not in sys.path:
-    sys.path.insert(0, '/home/arhont/sites/DistributedLibrary')
+    sys.path.insert(0, '/home/muser/sites/DistributedLibrary')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DistributedLibrary.settings")
 

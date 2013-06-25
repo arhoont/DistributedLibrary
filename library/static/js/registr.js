@@ -42,7 +42,7 @@ function pwdTest() {
 }
 function register() {
     if (!pwdTest()) {
-        displayAlert('Пароли несовпадают',"alert-danger");
+        displayAlert('Пароли не совпадают',"alert-danger");
     } else if ($("#reg-logF").hasClass("badField")) {
         displayAlert('такой логин уже есть',"alert-danger");
     } else {
