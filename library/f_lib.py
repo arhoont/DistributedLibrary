@@ -2,6 +2,7 @@ import hashlib
 import random
 import string
 from django.core.files.storage import default_storage
+from django.core.mail import EmailMultiAlternatives
 from library.models import PersonImage, Person, SysSetting
 from django.template import Context
 
@@ -36,3 +37,19 @@ def strHash(string):
     hash = hashlib.md5()
     hash.update(string.encode())
     return hash.hexdigest()
+
+def sendEmail(title, text, text_css, recipients):
+    mail_title = title
+
+    text_content = text
+
+    html_content = text_css
+    email = "DLibr <do_not_replay@dlibr.com>"
+    msg = EmailMultiAlternatives(mail_title, text_content, email, recipients)
+    msg.attach_alternative(html_content, "text/html")
+
+    try:
+        msg.send()
+        return True
+    except BaseException:
+        return False

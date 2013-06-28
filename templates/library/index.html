@@ -59,50 +59,57 @@
         </div>
 
 
-        <div style="display: inline-block;" id="login-wrapper">
-            <p>
+        <div id="login-wrapper" class="span3">
             <div class="form-div" id="login-div">
                 <div class="form-header"><h3>Вход</h3></div>
                 <div class="form-body">
                     <form id='login' action='/signin' method='post' id="login-form">
                         {% csrf_token %}
-                        <div class="control-group f-log-set">
-                            <label class="control-label" for="username">Логин</label>
+                        <label for="username"><span class="label-bold">Логин</span></label>
+                        <input type='text' name='username' id='username' maxlength="50" placeholder="Логин" required/>
 
-                            <div class="controls">
-                                <input type='text' name='username' id='username' maxlength="50" placeholder="Логин"
-                                       required/>
-                                <span class="help-inline"></span>
-                            </div>
-                        </div>
-                        <div class="control-group f-log-set">
-                            <label class="control-label aaaa" for="password">Пароль</label>
+                        <label for="password"><span class="label-bold">Пароль</span>
+                            <a href="#" id='forgot-pwd' class="pull-right forgot-pwd">Забыли пароль?</a>
+                        </label>
+                        <input type='password' name='password' id='password' maxlength="50" placeholder="Пароль"
+                               required/>
+                        <br>
+                        <input type="checkbox" id="remember" name="remember" checked/> Запомнить
+                        <a href="/registr" class="pull-right">Регистрация</a>
+                        <br>
+                        <br>
+                        <input type='submit' name='Submit' value='Войти' class="btn btn-success btn-large"
+                               id="login-submit"/>
 
-                            <div class="controls">
-                                <input type='password' name='password' id='password' maxlength="50" placeholder="Пароль"
-                                       required/>
-                                <span class="help-inline"></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                                <label class="checkbox pull-left">
-                                    <input type="checkbox" id="remember" name="remember" checked/> Запомнить
-                                </label>
-                                <input type='submit' name='Submit' value='Войти' class="btn btn-primary"/>
-                            </div>
-                        </div>
                         <input type="hidden" id="django_timezone" name="django_timezone" value="Europe/Moscow"/>
                         <input type="hidden" name="domain" value=" "/>
                     </form>
                 </div>
             </div>
-            <div class="reg-but-div">
-                <a href="/registr" class="btn btn-large btn-block btn-success">Регистрация</a>
+        </div>
+    </div>
+
+    <div id="pwd-recovery-modal" class="modal hide" tabindex="-1" role="dialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3 id="myModalLabel">Восстановление пароля</h3>
+        </div>
+
+        <div class="modal-body">
+            <div class="control-group" id="pwd-recovery-cg">
+                <label class="control-label label-bold" for="pwd-recovery">Введите Email:</label>
+                <div class="controls">
+                    <input type="text" id="pwd-recovery" name="pwd-recovery" placeholder="Email" required>
+                    <span class="help-inline"></span>
+                </div>
             </div>
         </div>
-        </p>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">Закрыть</button>
+            <button class="btn btn-primary" id="pwd-recovery-btn">Восстановить</button>
+        </div>
     </div>
+
 {% endblock %}
 
 

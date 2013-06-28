@@ -109,6 +109,11 @@ function markBad(cg, text) {
     $(cg).addClass("error");
     $(cg + " .help-inline").html(text);
 }
+function removeMark(cg){
+    $(cg).removeClass("success");
+    $(cg).removeClass("error");
+    $(cg + " .help-inline").html('');
+}
 function getRetMessages() {
     $.ajax({
         type: "POST",

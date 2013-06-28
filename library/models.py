@@ -15,7 +15,7 @@ class Domain(models.Model):
 class Person(models.Model):
     domain = models.ForeignKey(Domain)
     login = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
+    email = models.CharField(max_length=255, unique=True)
     fname = models.CharField(max_length=255)
     lname = models.CharField(max_length=255)
     pwd = models.CharField(max_length=255)

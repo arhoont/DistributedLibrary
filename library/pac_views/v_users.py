@@ -16,9 +16,12 @@ def regajax(request):
     lname = query["lname"]
     pwd = query["pwd"]
 
-    p = Person.objects.filter(login=login, domain=" ")
+    p = Person.objects.filter(email=email, domain=" ")
     if p:
         return HttpResponse(json.dumps({"info": 2}))
+    p = Person.objects.filter(login=login, domain=" ")
+    if p:
+        return HttpResponse(json.dumps({"info": 3}))
 
     salt = randstring(10)
     pwd_hash = strHash(strHash(pwd) + salt)
@@ -27,6 +30,27 @@ def regajax(request):
     p.save()
     return HttpResponse(json.dumps({"info": 1, "domain": " "}))
 
+def editPassword(person,newPwd):
+    salt = randstring(10)
+    pwd_hash = strHash(strHash(newPwd) + salt)
+    person.pwd = pwd_hash
+    person.salt = salt
+    person.save()
+
+def passwordRecovery(request):
+    query = json.loads(str(request.body.decode()))
+    email = query["email"]
+    person = Person.objects.filter(email=email)
+    if not person:
+        return HttpResponse(json.dumps({"info": 2}))
+    person=person[0]
+    newPwd=randstring(7)
+    editPassword(person,newPwd)
+    sendEmail("Восстановление пароля",
+              'Логин: '+person.login+'\nНовый пароль: '+newPwd,
+              'Логин: <strong>'+person.login+'</strong><br>Новый пароль: <strong>'+newPwd +'</strong>',
+              [email])
+    return HttpResponse(json.dumps({"info": 1}))
 
 def editUserAjax(request):
     query = json.loads(str(request.body.decode()))
@@ -41,11 +65,7 @@ def editUserAjax(request):
         pwd = query["old-pwd"]
         passHash = strHash(strHash(pwd) + person.salt)
         if passHash == person.pwd:
-            salt = randstring(10)
-            pwd_hash = strHash(strHash(param) + salt)
-            person.pwd = pwd_hash
-            person.salt = salt
-            person.save()
+            editPassword(person,param)
         else:
             return HttpResponse(json.dumps({"info": 2, "val": param}))
     return HttpResponse(json.dumps({"info": 1, "val": param}))
@@ -53,11 +73,16 @@ def editUserAjax(request):
 
 def checkUser(request):
     query = json.loads(str(request.body.decode()))
-    login = query["login"]
-    p = Person.objects.filter(domain=" ", login=login)
+    qtype = query["qtype"]
+    info = query["info"]
+    if qtype == "login":
+        p = Person.objects.filter(domain=" ", login=info)
+    elif qtype == "email":
+        p = Person.objects.filter(domain=" ", email=info)
 
     if p:
         return HttpResponse(json.dumps({"info": 1}))
+
     return HttpResponse(json.dumps({"info": 2}))
 
 

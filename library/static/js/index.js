@@ -20,7 +20,33 @@ function castPage() {
     }
 
     console.log(n);
+    $("#forgot-pwd").click(function () {
+        $("#pwd-recovery-modal").modal('show');
+    });
+    $("#pwd-recovery-btn").click(function () {
+        $.ajax({
+            url: "/passwordRecovery",
+            type: "post",
+            dataType: "json",
+            data: JSON.stringify({"email": $("#pwd-recovery").val()}),
+            success: function (data) {
+                if (parseInt(data.info) == 1) {
+                    displayAlert("Новый пароль отправлен на указанный email");
+                    $("#pwd-recovery-modal").modal('hide');
 
+                } else if (parseInt(data.info) == 2) {
+                    markBad('#pwd-recovery-cg','Такого email нет в системе');
+                }
+            },
+            error: function () {
+                serverError();
+            },
+            crossDomain: false
+        });
+    });
+    $("#pwd-recovery").focus(function(){
+        removeMark('#pwd-recovery-cg');
+    });
 }
 function castMainTable(data) {
     $("#rows").html("");

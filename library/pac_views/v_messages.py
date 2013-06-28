@@ -48,14 +48,7 @@ def takeReq(request):
                     '<br>Ответьте на запрос' + \
                     '<br><br>Распределенная библиотека.'
 
-    email = "DLibr <do_not_replay@dlibr.com>"
-    recipients = [personTo.email]
-    msg = EmailMultiAlternatives(mail_title, text_content, email, recipients)
-    msg.attach_alternative(html_content, "text/html")
-    try:
-        msg.send()
-    except BaseException:
-        pass
+    sendEmail(mail_title,text_content,html_content,[personTo.email])
 
     return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
 

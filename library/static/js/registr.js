@@ -1,4 +1,4 @@
- function castPage() {
+function castPage() {
 
     $('#reg-form').submit(function (e) {
         e.preventDefault();
@@ -9,14 +9,14 @@
             $.ajax({
                 type: "POST",
                 url: "/checkUser",
-                data: JSON.stringify({'type': 1, 'login': $("#reg-login").val()}),
+                data: JSON.stringify({'qtype': 'login', 'info': $("#reg-login").val()}),
                 dataType: "json",
                 success: function (data) {
                     if (parseInt(data.info) == 1) {
-                        markBad("#reg-login-cg","Такой уже есть");
+                        markBad("#reg-login-cg", "Такой уже есть");
                     }
                     else {
-                        markGood("#reg-login-cg","");
+                        markGood("#reg-login-cg", "");
                     }
                 },
                 error: function () {
@@ -26,25 +26,56 @@
             });
         }
     });
+    $("#reg-email").focusout(function () {
+        if ($("#reg-email").val().length > 0) {
+            filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (filter.test($("#reg-email").val())) {
+                $.ajax({
+                    type: "POST",
+                    url: "/checkUser",
+                    data: JSON.stringify({'qtype': 'email', 'info': $("#reg-email").val()}),
+                    dataType: "json",
+                    success: function (data) {
+                        if (parseInt(data.info) == 1) {
+                            markBad("#reg-email-cg", "Такой уже есть");
+                        }
+                        else {
+                            markGood("#reg-email-cg", "");
+                        }
+                    },
+                    error: function () {
+                        serverError();
+                    },
+                    crossDomain: false
+                });
+            }
+            else {
+                markBad("#reg-email-cg", "Введите правильный");
+            }
+
+        }
+    });
     $("#reg-pwdd").focusout(function () {
         pwdTest();
     });
 }
 function pwdTest() {
     isconc = $('#reg-pwd').val() == $('#reg-pwdd').val();
-    if (isconc){
-        markGood("#reg-pwdd-cg","");
+    if (isconc) {
+        markGood("#reg-pwdd-cg", "");
     } else {
-        markBad("#reg-pwdd-cg","Должны совпадать");
+        markBad("#reg-pwdd-cg", "Должны совпадать");
 
     }
     return isconc;
 }
 function register() {
     if (!pwdTest()) {
-        displayAlert('Пароли не совпадают',"alert-danger");
-    } else if ($("#reg-logF").hasClass("badField")) {
-        displayAlert('такой логин уже есть',"alert-danger");
+        displayAlert('Пароли не совпадают', "alert-danger");
+    } else if ($("#reg-login-cg").hasClass("error")) {
+        displayAlert('Такой логин уже существует', "alert-danger");
+    } else if ($("#reg-email-cg").hasClass("error")) {
+        displayAlert('Аккаунт с таким email уже существует', "alert-danger");
     } else {
         $.ajax({
             type: "POST",
@@ -57,7 +88,9 @@ function register() {
                 if (parseInt(data.info) == 1) {
                     window.location = "/login";
                 } else if (parseInt(data.info) == 2) {
-                    displayAlert('такой логин уже есть',"alert-danger");
+                    displayAlert('Такой логин уже существует', "alert-danger");
+                } else if (parseInt(data.info) == 2) {
+                    displayAlert('Аккаунт с таким email уже существует', "alert-danger");
                 }
             },
             error: function () {

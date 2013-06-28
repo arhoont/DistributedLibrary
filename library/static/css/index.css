@@ -4,16 +4,18 @@
 #login-div h3{
     padding-left: 20px;
 }
-#login-div .btn{
-    margin-left: 60px;
-}
-.reg-but-div{
+#login-submit{
     width: 220px;
-    padding: 10px 20px;
 }
 
 #login-wrapper{
     margin-left: 40px;
+}
+.label-bold{
+    font-weight: bold;
+}
+.forgot-pwd{
+    font-size: 12px;
 }
 #index-table {
     table-layout: fixed;
