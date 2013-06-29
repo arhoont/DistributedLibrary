@@ -14,10 +14,10 @@ def takeReq(request):
 
     itemId = query["itemId"]
 
-    personFrom = Person.objects.get(pk=request.session["person_id"])
-
-    if not personFrom:
+    context = isauth(request)
+    if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
+    personFrom = context["person"]
 
     bi = BookItem.objects.get(pk=itemId)
     (takeb, takep) = bi.checkTake()
@@ -59,10 +59,10 @@ def returnReq(request):
 
     itemId = query["itemId"]
 
-    personFrom = Person.objects.get(pk=request.session["person_id"])
-
-    if not personFrom: # not registred
+    context = isauth(request)
+    if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
+    personFrom = context["person"]
 
     bi = BookItem.objects.get(pk=itemId)
     (takeb, takep) = bi.checkTake()
@@ -75,9 +75,12 @@ def returnReq(request):
 
 
 def getRetMessages(request):
-    person = Person.objects.get(pk=request.session["person_id"])
-    if not person:
-        return HttpResponse(json.dumps({"info": 3}))
+
+    context = isauth(request)
+    if registrRevers(context):
+        return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
+
     retMList = ReturnMessage.objects.filter(personTo=person, isRead=0)
     mesF = [{"id": mess.id, "person": mess.personFrom.natural_key(), "date": mess.date, "item_id": mess.item.id,
              "book": mess.item.book.title} for mess in retMList]
@@ -89,9 +92,11 @@ def getMessages(request):
     query = json.loads(str(request.body.decode()))
     mType = query["mType"]
     isRead = query["isRead"]
-    person = Person.objects.get(pk=request.session["person_id"])
-    if not person:
+
+    context = isauth(request)
+    if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
 
     cursor = connection.cursor()
     queryStr = ""
@@ -127,10 +132,10 @@ def replyMessage(request):
     mess_id = query["mess_id"]
     resp = query["resp"]
 
-    person = Person.objects.get(pk=request.session["person_id"])
-
-    if not person:
+    context = isauth(request)
+    if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
 
     mess = Message.objects.get(pk=mess_id)
     conv = mess.conversation
@@ -158,9 +163,11 @@ def replyRetMessage(request):
 
 
 def countInMessage(request):
-    person = Person.objects.get(pk=request.session["person_id"])
-    if not person:
+    context = isauth(request)
+    if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
+    
     cursor = connection.cursor()
     queryStr = 'select mess.id, conversation_id, item_id, "personFrom_id" from library_message mess join library_conversation conv ' \
                'on mess.conversation_id=conv.id  where  "isRead" = %s and ' \

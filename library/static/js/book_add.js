@@ -108,7 +108,7 @@ function addButtonBook() {
                 'authors': newAuthList,
                 'lang': $.trim($('#ba-lang').val()),
                 'keywords': newKWList,
-                'desc': $.trim($('#ba-desc').val()),
+                'desc': $('#ba-desc').val(),
                 'val': $.trim($("#ba-val .active").html()),
                 'image': $("#prev_file").val()}),
             dataType: "json",

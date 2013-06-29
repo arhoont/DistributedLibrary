@@ -16,9 +16,11 @@ def addItem(request):
     isbn = query["isbn"]
     val = query["val"]
 
-    person = Person.objects.get(pk=request.session["person_id"])
-    if not person: # not registred
+    context = isauth(request)
+    if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
+
     book = Book.objects.get(pk=isbn)
 
     bi = BookItem(book=book, owner=person, reader=person, value=val, status=1)
@@ -33,9 +35,11 @@ def addOpinion(request):
     opiniontext = query["opiniontext"]
     rating = query["rating"]
 
-    person = Person.objects.get(pk=request.session["person_id"])
-    if not person: # not registred
+    context = isauth(request)
+    if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
+
 
     book = Book.objects.get(pk=isbn)
 
@@ -99,9 +103,12 @@ def addbajax(request):
     image = query["image"]
     authors = set(query["authors"])
     keywords = set(query["keywords"])
-    person = Person.objects.get(pk=request.session["person_id"])
-    if not person: # not registr
+
+    context = isauth(request)
+    if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
+
 
     language, created = Language.objects.get_or_create(language=lang)
     path = None
@@ -148,9 +155,11 @@ def editbajax(request):
     authors = set(query["authors"])
     keywords = set(query["keywords"])
 
-    person = Person.objects.get(pk=request.session["person_id"])
-    if not person: # not registr
+    context = isauth(request)
+    if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
+
     language, created = Language.objects.get_or_create(language=lang)
 
     if image != book.image:
@@ -191,9 +200,12 @@ def getbooks(request):
     pageN = int(query["page"]["num"])
     start = (pageN - 1) * pageS
 
-    person = Person.objects.get(pk=request.session["person_id"])
-    if not person: # not registred
-        return HttpResponse(json.dumps({"info": 3}))
+    context = isauth(request)
+    if registrRevers(context):
+        return HttpResponse(json.dumps({"info": 4}))
+
+    person = context["person"]
+
     sWord = query["search"]["word"]
     orderF = query["sort"]["column"]
 

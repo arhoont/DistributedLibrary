@@ -56,7 +56,11 @@ def editUserAjax(request):
     query = json.loads(str(request.body.decode()))
     field = query["field"]
     param = query["param"]
-    person = Person.objects.get(pk=request.session["person_id"])
+
+    context = isauth(request)
+    if registrRevers(context):
+        return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
 
     if field != 'pwd':
         person.__dict__[field] = param

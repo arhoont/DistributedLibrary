@@ -28,6 +28,12 @@ def isauth(request):
     context['libname'] = SysSetting.objects.latest('id').libname
     return context
 
+def registrRevers(context):
+    if not context.has_key('person'):
+        context["not_registred"]="yes"
+        return True
+    else:
+        return False
 
 def randstring(n):
     a = string.ascii_letters + string.digits

@@ -61,17 +61,13 @@
                 <tr>
                     <td class="lTd">Авторы:</td>
                     <td class="rTd">
-                        {% for auth in bauthors %}
-                            <span style="display: inline-block">{{ auth }}</span>,
-                        {% endfor %}
+                        <span style="display: inline-block">{{ bauthors|join:", " }}</span>
                     </td>
                 </tr>
                 <tr>
                     <td class="lTd">Ключевые <span>слова:</span></td>
                     <td class="rTd">
-                        {% for key in bkeywords %}
-                            <span style="display: inline-block">{{ key }}</span>,
-                        {% endfor %}
+                        <span style="display: inline-block">{{ bkeywords|join:", " }}</span>
                     </td>
                 </tr>
                 </tbody>
@@ -79,8 +75,11 @@
         </div>
 
         <div id="itemsTalbeDiv" class="span5">
-            <caption class="caption""><strong>Экземпляры:</strong> <button type="button" class="btn btn-mini pull-right" onclick="loadItems()"><i
-                    class="icon-refresh icon-white"></i></button></caption>
+            <caption class="caption"
+            "><strong>Экземпляры:</strong>
+            <button type="button" class="btn btn-mini pull-right" onclick="loadItems()"><i
+                    class="icon-refresh icon-white"></i></button>
+            </caption>
             <table class="table table-condensed">
                 <thead>
                 <tr class="headRow">
@@ -98,7 +97,7 @@
 
     <div id="butsdiv">
         <button type="button" class="btn btn-info" id="addOpinionB">Оставить отзыв</button>
-{#        <button type="button" class="btn btn-info">Добавить ссылку</button>#}
+        {#        <button type="button" class="btn btn-info">Добавить ссылку</button>#}
         <button type="button" class="btn btn-info" id="addItemBut">Добавить экземпляр</button>
         {% if edit %}
             <a href="/book/edit/?isbn={{ book.isbn }}" class="btn btn-info" id="addItemBut">Редактировать</a>
@@ -221,8 +220,8 @@
             <button class="btn btn-primary" id="printBtn"><i class="icon-print icon-white"></i> Печать</button>
         </div>
     </div>
-{#    <script>#}
-{#        var authors = {{authors|safe}};#}
-{#        var keywords = {{keywords|safe}};#}
-{#    </script>#}
+    {#    <script>#}
+    {#        var authors = {{authors|safe}};#}
+    {#        var keywords = {{keywords|safe}};#}
+    {#    </script>#}
 {% endblock %}

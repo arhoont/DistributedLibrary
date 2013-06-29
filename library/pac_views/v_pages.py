@@ -6,6 +6,7 @@ from django.template import RequestContext
 from library.f_lib import *
 from library.models import *
 
+
 def index(request):
     context = isauth(request)
     if context.has_key('person'):
@@ -27,6 +28,10 @@ def error(request):
 
 def bookadd(request): # page
     context = isauth(request)
+    if registrRevers(context):
+        response = render_to_response('library/index.html', context, context_instance=RequestContext(request))
+        return response
+
     authors = [a.getPrintName() for a in Author.objects.all()]
     keywords = [k.word for k in Keyword.objects.all()]
     languages = Language.objects.all()
@@ -39,9 +44,15 @@ def bookadd(request): # page
 
 def bookinfo(request): # page
     context = isauth(request)
+    if registrRevers(context):
+        response = render_to_response('library/index.html', context, context_instance=RequestContext(request))
+        return response
+
+    person = context["person"]
+
     isbn = request.GET['isbn']
     book = Book.objects.filter(isbn=isbn)
-    person = Person.objects.get(pk=request.session["person_id"])
+
     if len(book) == 0:
         # book not found
         return HttpResponseRedirect(reverse('index'))
@@ -61,18 +72,21 @@ def bookinfo(request): # page
 
 
 def bookedit(request):
+    context = isauth(request)
+    if registrRevers(context):
+        response = render_to_response('library/index.html', context, context_instance=RequestContext(request))
+        return response
 
-    person = Person.objects.get(pk=request.session["person_id"])
-    if not person: # not registred
-        return HttpResponseRedirect(reverse('index'))
+    person = context["person"]
 
     isbn = request.GET['isbn']
+
     book = Book.objects.filter(Q(isbn=isbn) & Q(bookitem__owner=person.id)).distinct()
     if not book:
         return HttpResponseRedirect(reverse('index'))
 
     book = book[0]
-    context = isauth(request)
+
     context["bauthors"] = [a.getPrintName() for a in book.authors.all()]
     context["bkeywords"] = [k.word for k in book.keywords.all()]
     context["book"] = book
@@ -107,6 +121,7 @@ def logout(request):
     request.session.flush()
     return HttpResponseRedirect(reverse('index'))
 
+
 def signin(request):
     username = request.POST.get("username")
     password = request.POST.get("password")
@@ -128,6 +143,11 @@ def signin(request):
             return HttpResponseRedirect(reverse('index'))
     return HttpResponseRedirect(reverse('error'))
 
+
 def user_edit(request):
     context = isauth(request)
+    if registrRevers(context):
+        response = render_to_response('library/index.html', context, context_instance=RequestContext(request))
+        return response
+
     return render(request, 'library/user_edit.html', context)
