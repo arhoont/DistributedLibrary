@@ -108,7 +108,11 @@
         <label class="control-label" for=ba-desc><h4>Описание:</h4></label>
 
         <div class="controls">
-            <div id="ba-desc">{{ book.description }}</div>
+            <div id="ba-desc"></div>
+            {# it's bad but I haven't idea how to resolve it other way#}
+            <script>
+                $("#ba-desc").html('{{ description }}'.replace(/&lt;br\s*\/&gt;/g,'<br/>'));
+            </script>
         </div>
     </div>
 

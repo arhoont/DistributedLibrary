@@ -1,5 +1,4 @@
 function castPage() {
-
     $('#printBtn').click(function () {
         $("#sticker").printElement();
     });

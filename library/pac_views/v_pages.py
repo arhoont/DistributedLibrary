@@ -1,4 +1,6 @@
+import cgi
 from datetime import timedelta
+import html
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, render
@@ -54,7 +56,7 @@ def bookinfo(request): # page
     book = Book.objects.filter(isbn=isbn)
 
     if len(book) == 0:
-        # book not found
+        #\u003cbr /\u003e book not found
         return HttpResponseRedirect(reverse('index'))
     book = book[0]
     btest = Book.objects.filter(Q(isbn=isbn) & Q(bookitem__owner=person)).distinct()
@@ -65,9 +67,10 @@ def bookinfo(request): # page
     context["bcount"] = book.bookitem_set.all().count()
     context["book"] = book
     context["opinions"] = book.opinion_set.all().order_by("date")
+    # it's bad but I haven't idea how to resolve it other way
+    context["description"]=book.description.replace('\n','<br/>').replace(' ',u'\xa0')
     if btest:
         context["edit"] = "yes"
-
     return render(request, 'library/book_info.html', context)
 
 

@@ -64,23 +64,23 @@
                             {% for lang in languages %}
                                 <option value="{{ lang.language }}"> {{ lang.language }} </option>
                             {% endfor %}
-{#                            <option value="15">--добавить--</option>#}
+                            {#                            <option value="15">--добавить--</option>#}
                         </select>
                     </td>
                 </tr>
                 <tr>
                     <td class="lTd">Ценность:</td>
                     <td class="rTd">
-                        <div class="btn-group" id="ba-val" data-toggle="buttons-radio">
-                            <button type="button" class="btn btn-info">1</button>
-                            <button type="button" class="btn btn-info active">2</button>
-                            <button type="button" class="btn btn-info">3</button>
-                        </div>
 
                         <a class="infoValuesButton" data-toggle="popover" data-placement="right"
                            data-trigger="hover"
-                           data-content="Ценность позволяет установить количество запросов, необходимых для передачи книги"
+                           data-content='2 стандартный вариант. Более полную информацию вы сможете найти в HELP.'
                            title="Ценность">
+                            <div class="btn-group" id="ba-val" data-toggle="buttons-radio">
+                                <button type="button" class="btn btn-info">1</button>
+                                <button type="button" class="btn btn-info active">2</button>
+                                <button type="button" class="btn btn-info">3</button>
+                            </div>
                             <i class="icon-question-sign icon-white"></i></a>
                     </td>
                 </tr>
@@ -88,9 +88,10 @@
             </table>
         </div>
 
-        <div class="row" >
-            <div class="span3" >
+        <div class="row">
+            <div class="span3">
                 <span class="lSpan">Авторы</span>
+
                 <div id="authicontrol"></div>
                 <button class="btn" onclick="addEAuthor()"><i
                         class="icon-plus-sign icon-white"></i></button>
@@ -98,6 +99,7 @@
 
             <div class="span3">
                 <span class="lSpan">Ключевые слова</span>
+
                 <div class="controls" id="keywordsf"></div>
                 <button class="btn" onclick="addEKW()"><i
                         class="icon-plus-sign icon-white"></i></button>
