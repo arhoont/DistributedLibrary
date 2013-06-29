@@ -56,7 +56,16 @@ function castPage() {
     });
     addEAuthor();
     addEKW();
-
+    $("#ba-lang").click(function(){
+        if ($('#ba-lang').val()=="add-language"){
+            val=prompt("Введите язык");
+            if (val && val.length>0){
+                $("#ba-lang").append('<option value="'+val+'" selected>'+val+'</option>');
+            } else {
+                $("#ba-lang :first").prop('selected', true);
+            }
+        }
+    });
 }
 
 function addEAuthor() {

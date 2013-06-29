@@ -28,6 +28,17 @@ function castPage() {
     $('#image-input').live('change', function () {
         $("#imageform").submit();
     });
+    
+    $("#ba-lang").click(function () {
+        if ($('#ba-lang').val() == "add-language") {
+            val = prompt("Введите язык");
+            if (val && val.length > 0) {
+                $("#ba-lang").append('<option value="' + val + '" selected>' + val + '</option>');
+            } else {
+                $("#ba-lang :first").prop('selected', true);
+            }
+        }
+    });
 }
 
 function addEAuthor() {
@@ -81,7 +92,7 @@ function addButtonBook() {
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
-                    window.location = "/book/info/?isbn="+$('#ba-isbn').val();
+                    window.location = "/book/info/?isbn=" + $('#ba-isbn').val();
                 } else if (parseInt(data.info) == 4) {
                     notSignIn();
                 }

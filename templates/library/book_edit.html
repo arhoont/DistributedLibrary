@@ -68,10 +68,13 @@
                     <td class="rTd">
                         <select id="ba-lang" name="ba-lang">
                             {% for lang in languages %}
-                                <option value="{{ lang.language }}"> {{ lang.language }} </option>
+                                <option value="{{ lang.language }}"
+                                        {% if lang.language == book.language.language %}
+                                        selected
+                                        {% endif %}
+                                        > {{ lang.language }} </option>
                             {% endfor %}
-{#                            <option value="15">--добавить--</option>#}
-                        </select>
+                        <option value="add-language" id="add-language-opt">--добавить--</option>                        </select>
                     </td>
                 </tr>
                 </tbody>
