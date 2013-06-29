@@ -11,6 +11,7 @@ import operator
 from library.f_lib import *
 from library.models import *
 
+
 def addItem(request):
     query = json.loads(str(request.body.decode()))
     isbn = query["isbn"]
@@ -39,7 +40,6 @@ def addOpinion(request):
     if registrRevers(context):
         return HttpResponse(json.dumps({"info": 4}))
     person = context["person"]
-
 
     book = Book.objects.get(pk=isbn)
 
@@ -109,7 +109,6 @@ def addbajax(request):
         return HttpResponse(json.dumps({"info": 4}))
     person = context["person"]
 
-
     language, created = Language.objects.get_or_create(language=lang)
     path = None
     try:
@@ -134,7 +133,7 @@ def addbajax(request):
         keyw, created = Keyword.objects.get_or_create(word=key)
         book.keywords.add(keyw)
 
-    bi = BookItem(book=book, owner=person, reader=person, value=val,status=1)
+    bi = BookItem(book=book, owner=person, reader=person, value=val, status=1)
     bi.save()
 
     return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
@@ -211,16 +210,17 @@ def getbooks(request):
 
     if query["sort"]["type"] == 1:
         orderF = "-" + orderF
-    qList = [Q(title__icontains=sWord),
+    qList = [Q(isbn__icontains=sWord),
+             Q(title__icontains=sWord),
              Q(language__language__icontains=sWord),
              Q(authors__fname__icontains=sWord),
              Q(authors__lname__icontains=sWord),
              Q(keywords__word__icontains=sWord)]
 
     addQuery = {}
-    if (query["search"]["person"] == 1):
+    if (query["search"]["person"] == 'reading'):
         addQuery = {'bookitem__reader': person}
-    elif (query["search"]["person"] == 2):
+    elif (query["search"]["person"] == 'owning'):
         addQuery = {'bookitem__owner': person}
 
     bookslist = Book.objects.filter(reduce(operator.or_, qList), **addQuery).distinct().order_by(orderF)[
@@ -240,7 +240,7 @@ def getlastbooks(request):
     bookslist = Book.objects.order_by("-date")[:count]
 
     bookslist = serializers.serialize("json", bookslist, use_natural_keys=True,
-                                      fields=('isbn','title', 'language', 'authors'))
+                                      fields=('isbn', 'title', 'language', 'authors'))
     return HttpResponse(bookslist)
 
 

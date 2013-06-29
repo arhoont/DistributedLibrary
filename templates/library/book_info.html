@@ -10,18 +10,10 @@
     <script type="text/javascript" charset="utf-8" src="{% static "js/book_info.js" %}"></script>
 {% endblock %}
 {% block content %}
-    {#    <div class="sticker" style="display: inline-block;border: 1px solid #e5e5e5;border-radius: 4px;padding: 5px;">#}
-    {#        <div style="font-weight: bold; text-align: center">{{ libname }}</div>#}
-    {#        <div><span>№ экземпляра: </span><span style="font-weight: bold;" class="biid"></span></div>#}
-    {#        <span>Владелец: </span>#}
-    {##}
-    {#        <div class="username" style="margin-left: 10px;"></div>#}
-    {#    </div>#}
-
     <div class="form-header">
         <h3>
-            <a href="/" class="btn pull-left" type="button" id="back-btn"><i
-                    class="icon-arrow-left icon-white"></i>
+            <a class="btn pull-left back-btn" type="button"><i
+                    class="icon-arrow-left icon-white "></i>
             </a>
             <span>{{ book.title }}</span>
 

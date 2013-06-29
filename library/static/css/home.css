@@ -53,3 +53,7 @@
 #tabletabs {
     margin-bottom: 0;
 }
+
+#fmtable li{
+    cursor: pointer;
+}

@@ -1,10 +1,10 @@
 var page = {
-    size: 20,
+    size: 5,
     num: 1
 };
 var search = {
     word: "",
-    person: 1
+    person: "reading"
 };
 
 var sort = {
@@ -12,7 +12,6 @@ var sort = {
     field: "isbn"
 };
 function castPage() {
-    tableReq();
     $("#prevButP").click(function (e) {
         if ((page.num > 1) && (!$("#prevBut").hasClass('disabled'))) {
             page.num--;
@@ -42,23 +41,47 @@ function castPage() {
             $('#searchButton').click();
         }
     });
-
     $('#tabletabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
     });
-    $("#readingBooks").click(function () {
-        search.person = 1;
+
+    recoverState();
+
+    $("#readingB").click(function () {
+        search.person = "reading";
+        page.num = 1;
         tableReq();
     });
-    $("#allBooks").click(function () {
-        search.person = 0;
+    $("#allB").click(function () {
+        search.person = "all";
+        page.num = 1;
         tableReq();
     });
-    $("#myBooks").click(function () {
-        search.person = 2;
+    $("#owningB").click(function () {
+        search.person = "owning";
+        page.num = 1;
         tableReq();
     });
+    tableReq();
+}
+function insertParam() {
+    parent.location.hash = "?" + $.param({'sew': search.word, 'sep': search.person,
+        'sot': sort.type, 'sof': sort.field, 'pan': page.num.toString()});
+}
+
+function recoverState() {
+    var url_params = getUrlParams();
+    if (!url_params) {
+        $("#readingB").click();
+        return;
+    }
+    search.word = url_params.sew;
+    search.person = url_params.sep;
+    sort.type = parseInt(url_params.sot);
+    sort.field = url_params.sof;
+    page.num = url_params.pan;
+    $("#" + search.person + "B").click();
 }
 
 function clearSearch() {
@@ -81,6 +104,7 @@ function changeSort(field) {
     tableReq();
 }
 function tableReq() {
+    insertParam();
     $.ajax({
         url: "/getbooks",
         type: "post",

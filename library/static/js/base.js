@@ -34,8 +34,12 @@ $(document).ready(function () {
         $('#messageButton').popover('hide');
         messCountTest();
     });
+    $('.back-btn').click(function () {
+        window.history.back();
+    });
     castPage();
 });
+
 function messCountTest() {
     $.ajax({
         type: "POST",
@@ -109,7 +113,7 @@ function markBad(cg, text) {
     $(cg).addClass("error");
     $(cg + " .help-inline").html(text);
 }
-function removeMark(cg){
+function removeMark(cg) {
     $(cg).removeClass("success");
     $(cg).removeClass("error");
     $(cg + " .help-inline").html('');
@@ -298,4 +302,21 @@ function popup_print(data) {
     w.print();
     w.close();
     return true;
+}
+
+
+
+function getUrlParams() {
+
+
+    var url=document.URL.split('?')[1];
+    if (!url){
+        return null;
+    }
+    var url_params = {};
+    params = url.split('&');
+    for (var param in params) {
+        url_params[params[param].split('=')[0]]=params[param].split('=')[1];
+    }
+    return url_params;
 }
