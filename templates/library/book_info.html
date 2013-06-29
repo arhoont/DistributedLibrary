@@ -8,9 +8,16 @@
     <link rel="stylesheet" href="{% static "css/formcss.css" %}">
     <link rel="stylesheet" href="{% static "css/book_info.css" %}">
     <script type="text/javascript" charset="utf-8" src="{% static "js/book_info.js" %}"></script>
-    <script type="text/javascript" charset="utf-8" src="{% static "js/jquery.printElement.js" %}"></script>
 {% endblock %}
 {% block content %}
+    {#    <div class="sticker" style="display: inline-block;border: 1px solid #e5e5e5;border-radius: 4px;padding: 5px;">#}
+    {#        <div style="font-weight: bold; text-align: center">{{ libname }}</div>#}
+    {#        <div><span>№ экземпляра: </span><span style="font-weight: bold;" class="biid"></span></div>#}
+    {#        <span>Владелец: </span>#}
+    {##}
+    {#        <div class="username" style="margin-left: 10px;"></div>#}
+    {#    </div>#}
+
     <div class="form-header">
         <h3>
             <a href="/" class="btn pull-left" type="button" id="back-btn"><i
@@ -61,13 +68,13 @@
                 <tr>
                     <td class="lTd">Авторы:</td>
                     <td class="rTd">
-                        <span style="display: inline-block">{{ bauthors|join:", " }}</span>
+                        <span style="display: inline-block">{{ bauthors|join:'</span>, <span style="display: inline-block"> ' }}</span>
                     </td>
                 </tr>
                 <tr>
                     <td class="lTd">Ключевые <span>слова:</span></td>
                     <td class="rTd">
-                        <span style="display: inline-block">{{ bkeywords|join:", " }}</span>
+                        <span style="display: inline-block">{{ bkeywords|join:'</span>, <span style="display: inline-block"> ' }}</span>
                     </td>
                 </tr>
                 </tbody>
@@ -75,10 +82,9 @@
         </div>
 
         <div id="itemsTalbeDiv" class="span5">
-            <caption class="caption"
-            "><strong>Экземпляры:</strong>
-            <button type="button" class="btn btn-mini pull-right" onclick="loadItems()"><i
-                    class="icon-refresh icon-white"></i></button>
+            <caption class="caption"><strong>Экземпляры:</strong>
+                <button type="button" class="btn btn-mini pull-right" onclick="loadItems()"><i
+                        class="icon-refresh icon-white"></i></button>
             </caption>
             <table class="table table-condensed">
                 <thead>
@@ -111,7 +117,7 @@
             <div id="ba-desc"></div>
             {# it's bad but I haven't idea how to resolve it other way#}
             <script>
-                $("#ba-desc").html('{{ description }}'.replace(/&lt;br\s*\/&gt;/g,'<br/>'));
+                $("#ba-desc").html('{{ description }}'.replace(/&lt;br\s*\/&gt;/g, '<br/>'));
             </script>
         </div>
     </div>
@@ -205,27 +211,22 @@
     <div id="printModal" class="modal hide" tabindex="-1" role="dialog">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">×</button>
-            <h3 id="myModalLabel">Экземпляр добавлен</h3>
+            <h3 id="myModalLabel">Печать стикера</h3>
         </div>
 
         <div class="modal-body">
-            <h5 class="text-center"> Распечатайте стикер и наклейте его на книгу</h5>
-
-            <div id="sticker" style="display: inline-block;border: 1px solid #e5e5e5;border-radius: 4px;padding: 5px;">
-                <div style="font-weight: bold; text-align: center">{{ libname }}</div>
-                <div><span>№ экземпляра: </span><span style="font-weight: bold;" class="biid">1</span></div>
+            <div class="sticker"
+                 style="font-family:sans-serif;display: inline-block;border:1px solid #e5e5e5;border-radius: 4px;padding: 5px;">
+                <div class="libname" style="font-weight: bold;text-align: center;">{{ libname }}</div>
+                <div><span>№ экземпляра: </span><span class="biid" style="font-weight: bold;"></span></div>
                 <span>Владелец: </span>
-
-                <div class="username" style="margin-left: 10px;">{{ person.fname }} {{ person.lname }}</div>
+                <div class="username"  style="margin-left: 10px;font-weight: bold;"></div>
             </div>
+
         </div>
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal">Закрыть</button>
             <button class="btn btn-primary" id="printBtn"><i class="icon-print icon-white"></i> Печать</button>
         </div>
     </div>
-    {#    <script>#}
-    {#        var authors = {{authors|safe}};#}
-    {#        var keywords = {{keywords|safe}};#}
-    {#    </script>#}
 {% endblock %}

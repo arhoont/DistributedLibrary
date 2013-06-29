@@ -1912,7 +1912,6 @@
       }
 
       items = $.isFunction(this.source) ? this.source(this.query, $.proxy(this.process, this)) : this.source
-
       return items ? this.process(items) : this
     }
 
@@ -2095,7 +2094,7 @@
       e.stopPropagation()
       e.preventDefault()
       this.select()
-      this.$element.focus()
+//      this.$element.focus()
     }
 
   , mouseenter: function (e) {

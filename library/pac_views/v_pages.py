@@ -68,7 +68,7 @@ def bookinfo(request): # page
     context["book"] = book
     context["opinions"] = book.opinion_set.all().order_by("date")
     # it's bad but I haven't idea how to resolve it other way
-    context["description"]=book.description.replace('\n','<br/>').replace(' ',u'\xa0')
+    context["description"]=book.description.replace('\n','<br/>')
     if btest:
         context["edit"] = "yes"
     return render(request, 'library/book_info.html', context)

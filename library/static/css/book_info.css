@@ -12,7 +12,9 @@
 
 }
 
-
+#ba-desc{
+    text-align: justify;
+}
 #opinionTextArea {
     margin-top: 10px;
     width: 97%;

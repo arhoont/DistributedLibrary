@@ -1,6 +1,6 @@
 function castPage() {
     $('#printBtn').click(function () {
-        $("#sticker").printElement();
+        popup_print($('<div/>').append($(".sticker").clone()).html());
     });
 
     $("#ba-isbn").focusout(function () {
@@ -56,11 +56,11 @@ function castPage() {
     });
     addEAuthor();
     addEKW();
-    $("#ba-lang").click(function(){
-        if ($('#ba-lang').val()=="add-language"){
-            val=prompt("Введите язык");
-            if (val && val.length>0){
-                $("#ba-lang").append('<option value="'+val+'" selected>'+val+'</option>');
+    $("#ba-lang").click(function () {
+        if ($('#ba-lang').val() == "add-language") {
+            val = prompt("Введите язык");
+            if (val && val.length > 0) {
+                $("#ba-lang").append('<option value="' + val + '" selected>' + val + '</option>');
             } else {
                 $("#ba-lang :first").prop('selected', true);
             }
@@ -81,12 +81,11 @@ function addEKW() {
         '<input type="text" value="" class="kword" placeholder="Слово">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
-    $('.kword').typeahead({minLength:0, source: keywords, items:9999});
-    $(".kword").focus(function() {
-            $(this).trigger("keyup");
-        });
+    $('.kword').typeahead({minLength: 0, source: keywords, items:9999});
+    $(".kword").focus(function () {
+        $(this).trigger("keyup");
+    });
 }
-
 function addButtonBook() {
     newKWList = [];
     $(".kword").each(function (key, value) {

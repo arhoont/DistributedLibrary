@@ -3,7 +3,7 @@ function castPage() {
         $("#addItemModal").modal('show');
     });
     $('#printBtn').click(function () {
-        $("#sticker").printElement();
+        popup_print($('<div/>').append($(".sticker").clone()).html());
     });
     $("#addItemB").click(function () {
         $("#addItemModal").modal('hide');
@@ -63,6 +63,8 @@ function castPage() {
         loadItems();
     });
 }
+
+
 function takeItem(itemId, val) {
     $.ajax({
         type: "POST",
@@ -179,7 +181,7 @@ function loadItems() {
                         } else {
                             if (bi.take.type == 2) {
                                 listed += '<td><button class="btn btn-primary btn-mini disabled">Вернуть</button> '
-                                    +getTimeLeft(bi.take.info) + '</td>';
+                                    + getTimeLeft(bi.take.info) + '</td>';
                             }
                             else {
                                 listed += '<td><button class="btn btn-primary btn-mini" ' +
@@ -187,7 +189,6 @@ function loadItems() {
                             }
 
                         }
-
                     } else if (bi.take.type == 0) {
                         listed += '<td><button class="btn btn-primary btn-mini" ' +
                             'onclick="takeItem(' + bi.id + ',' + bi.value + ')">Взять</button></td>';
@@ -203,6 +204,8 @@ function loadItems() {
 //                    else if (bi[5] == 3) {
 //                        listed += '<td>'+'Есть сообщение'+'</td>';
 //                    }
+                    listed += '<td><button class="btn btn-primary btn-mini" onclick="printSticker(\'' + bi.id + '\',\'' + bi.owner.name + '\')"><i class="icon-print icon-white"></i></button></td>';
+//                    listed += '<td><button class="btn btn-primary btn-mini" onclick="printSticker('+bi.id+')"><i class="icon-print icon-white"></i></button></td>';
                     listed += '</tr>';
                     $("#itemsTalbeDiv #rows").append(listed);
                 }
@@ -214,7 +217,7 @@ function loadItems() {
     });
 }
 
-function getTimeLeft(t){
+function getTimeLeft(t) {
     return parseInt(t / 60) + ':' + pad(parseInt(t % 60), 2);
 }
 
@@ -227,4 +230,10 @@ function pad(number, length) {
 
     return str;
 
+}
+
+function printSticker(biid, owner) {
+    $(".sticker .biid").html(biid);
+    $(".sticker .username").html(owner);
+    $("#printModal").modal('show');
 }

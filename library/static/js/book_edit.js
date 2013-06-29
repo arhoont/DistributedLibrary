@@ -1,9 +1,5 @@
 function castPage() {
 
-    $('#printBtn').click(function () {
-        $("#sticker").printElement();
-    });
-
     $('.aname').typeahead({source: authors});
     $('.kword').typeahead({source: keywords});
 
@@ -28,7 +24,7 @@ function castPage() {
     $('#image-input').live('change', function () {
         $("#imageform").submit();
     });
-    
+
     $("#ba-lang").click(function () {
         if ($('#ba-lang').val() == "add-language") {
             val = prompt("Введите язык");
@@ -55,7 +51,10 @@ function addEKW() {
         '<input type="text" value="" class="kword" placeholder="Слово">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
-    $('.kword').typeahead({source: keywords});
+    $('.kword').typeahead({minLength: 0, source: keywords, items:9999});
+    $(".kword").focus(function () {
+        $(this).trigger("keyup");
+    });
 }
 
 function addButtonBook() {

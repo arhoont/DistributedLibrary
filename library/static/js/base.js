@@ -287,3 +287,15 @@ function replyRetMessage(mess_id) {
         }
     });
 }
+
+function popup_print(data) {
+    var w = window.open();
+    w.document.write('<html><head>');
+//    w.document.write('<link rel="stylesheet" href="' + static_path + 'css/base.css" type="text/css" />');
+    w.document.write('</head><body >');
+    w.document.write(data);
+    w.document.write('</body></html>');
+    w.print();
+    w.close();
+    return true;
+}
