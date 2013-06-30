@@ -23,14 +23,15 @@
         </h3>
     </div>
     <div class="row ">
-        <div class="span4" id="image-div">
-            <a class="thumbnail" id="b-img-a">
+        <div class="span4" id="image-div" style="text-align: center;">
+            <a class="thumbnail" id="b-img-a" >
                 {% if book.image %}
                     <img src="{{ MEDIA_URL }}{{ book.image }}" alt="" id="b-img">
                 {% else %}
                     <img src="{{ STATIC_URL }}img/add_img.png" alt="" id="b-img">
                 {% endif %}
             </a>
+            <a id="link-img-load">Ссылкой</a>
         </div>
 
 
@@ -41,12 +42,12 @@
                 <tr>
                     <td class="lTd">Ссылка:</td>
                     <td>
-                        <div class="input-append">
-                            <input value="{{ book.ozon }}" type="text" id="ba-link" name="ba-link" placeholder="Ссылка">
-                            <button type="button" class="btn disabled" onclick=""><i
-                                    class="icon-download icon-white"></i></button>
+                        {#                        <div class="input-append">#}
+                        <input value="{{ book.ozon }}" type="text" id="ba-link" name="ba-link" placeholder="Ссылка">
+                        {#                            <button type="button" class="btn disabled" onclick=""><i#}
+                        {#                                    class="icon-download icon-white"></i></button>#}
 
-                        </div>
+                        {#                        </div>#}
                     </td>
                 </tr>
 
@@ -73,7 +74,8 @@
                                         {% endif %}
                                         > {{ lang.language }} </option>
                             {% endfor %}
-                        <option value="add-language" id="add-language-opt">--добавить--</option>                        </select>
+                            <option value="add-language" id="add-language-opt">--добавить--</option>
+                        </select>
                     </td>
                 </tr>
                 </tbody>

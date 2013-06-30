@@ -12,8 +12,7 @@ function castPage() {
     $("#imageform").ajaxForm(function (data) {
         data = JSON.parse(data);
         if (data.info == 1) {
-            $("#prev_file").val(data.path);
-            $("#b-img-a").html('<img id="b-img" src="' + media_path + data.path + '" alt="Uploading...." />');
+            addImage(data.path);
         } else {
             alert("неправильный формат файла")
         }
@@ -35,8 +34,37 @@ function castPage() {
             }
         }
     });
+    $("#link-img-load").click(function () {
+        img_link = prompt("Введите ссылку на картинку");
+        if (img_link == null || img_link.length == 0) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/loadImgByLink",
+            data: JSON.stringify({"link": img_link}),
+            dataType: "json",
+            success: function (data) {
+                if (parseInt(data.info) == 1) {
+                    addImage(data.path);
+                } else {
+                    alert("Что-то тут не так...");
+                }
+                $("#link-load-b").html('<i class="icon-download icon-white"></i>');
+            },
+            error: function () {
+                $("#link-load-b").html('<i class="icon-download icon-white"></i>');
+                serverError();
+            }
+        });
+    });
 }
 
+function addImage(path) {
+    $("#prev_file").val(path);
+    $("#b-img-a").html('<img id="b-img" src="' + media_path + path + '" alt="Uploading...." />');
+
+}
 function addEAuthor() {
     $("#authicontrol").append('<div class="author">' +
         '<input type="text" value="" class="aname" placeholder="Имя Фамилия">' +
@@ -51,7 +79,7 @@ function addEKW() {
         '<input type="text" value="" class="kword" placeholder="Слово">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
-    $('.kword').typeahead({minLength: 0, source: keywords, items:9999});
+    $('.kword').typeahead({minLength: 0, source: keywords, items: 9999});
     $(".kword").focus(function () {
         $(this).trigger("keyup");
     });

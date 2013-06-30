@@ -1,5 +1,5 @@
 from functools import reduce
-from html.parser import HTMLParser
+import urllib
 import json
 import urllib.request
 import lxml.html
@@ -10,6 +10,9 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.db.models import Q
 import operator
+from urllib.request import urlopen
+
+from io import BytesIO
 
 from library.f_lib import *
 from library.models import *
@@ -65,6 +68,18 @@ def checkBook(request):
     return HttpResponse(json.dumps({"info": 2, "books": ""}))
 
 
+def upldBI(img, exp, person):
+    img.thumbnail((200, 300), Image.ANTIALIAS)
+
+    file_name = default_storage.get_available_name('tmp/book.' + exp)
+    path = str(default_storage.location) + '/' + file_name
+    img.save(path)
+    personImage = PersonImage(person=person, image=file_name)
+    personImage.save()
+
+    return file_name
+
+
 def uploadBI(request):
     if "file" not in request.FILES:
         return HttpResponse(json.dumps({"info": 2}))
@@ -74,18 +89,34 @@ def uploadBI(request):
         img = Image.open(data)
     except BaseException:
         return HttpResponse(json.dumps({"info": 2}))
-
-    img.thumbnail((200, 300), Image.ANTIALIAS)
-
     exp = data.name.split('.')[-1]
-    file_name = default_storage.get_available_name('tmp/book.' + exp)
-    path = str(default_storage.location) + '/' + file_name
-    img.save(path)
-
     person = Person.objects.get(pk=request.session["person_id"])
-    personImage = PersonImage(person=person, image=file_name)
-    personImage.save()
+    file_name = upldBI(img, exp, person)
 
+    return HttpResponse(json.dumps({"info": 1, "path": file_name}))
+
+
+def uplBLLinkPerson(link, person):
+    try:
+        data = urlopen(link).read()
+        stream = BytesIO(data)
+        img = Image.open(stream)
+    except BaseException:
+        return None
+    exp = link.split('.')[-1]
+
+    file_name = upldBI(img, exp, person)
+
+    return file_name
+
+
+def loadImgByLink(request):
+    query = json.loads(str(request.body.decode()))
+    link = query["link"]
+    person = Person.objects.get(pk=request.session["person_id"])
+    file_name = uplBLLinkPerson(link, person)
+    if not file_name:
+        return HttpResponse(json.dumps({"info": 2}))
     return HttpResponse(json.dumps({"info": 1, "path": file_name}))
 
 
@@ -265,24 +296,6 @@ def testBIConv(request):
     else:
         return HttpResponse(json.dumps({"info": 3}))
 
-class MyHTMLParser(HTMLParser):
-    def handle_starttag(self, tag, attrs):
-        # if tag == 'tr':
-        for itemprop in attrs:
-            if itemprop == 'name':
-                print ('Found class', tag)
-    # def handle_endtag(self, tag):
-    #     print("Encountered an end tag :", tag)
-    def handle_data(self, data):
-        if 'ISBN' in data:
-            print(data)
-        if 'Автор:' in data:
-            print(data)
-    #
-    # def handle_comment(self, data):
-    #     print("Encountered some coomment  :", data)
-
-
 
 def loadFromOzon(request):
     query = json.loads(str(request.body.decode()))
@@ -293,22 +306,27 @@ def loadFromOzon(request):
     except BaseException:
         return HttpResponse(json.dumps({"info": 2}))
 
-    text=response.read().decode('windows-1251')
+    person = Person.objects.get(pk=request.session["person_id"])
+
+    text = response.read().decode('windows-1251')
     page = lxml.html.fromstring(text)
     try:
-        content=page.xpath('//div[@class="l l-content"]')[0]
-        title=content.xpath('div/div/h1/text()')[0]
-        product_detail=content.xpath('div[@class="product-detail"]')[0]
-        authors=[auth.strip() for auth in page.xpath('//p[contains(text(),"Автор")]/a/text()')[0].split(',')]
-        language=page.xpath('//p[contains(text(),"Язык")]/text()')[0].split(':')[1][1:]
-        isbn_year=page.xpath('//p[contains(text(),"ISBN")]/text()')[0].split(',')
-        isbn=isbn_year[0][5:]
-        year=isbn_year[-1][-7:-3]
-        description='\n'.join([desc.replace('\r','').replace('\t','').strip() for desc in page.xpath('//div[@itemprop="description"]/table/tr/td[1]/text()')[2:]])
-        kwords=page.xpath('//div/ul[contains(li/text(),"Метки:")]/li/a/text()')
+        content = page.xpath('//div[@class="l l-content"]')[0]
+        title = content.xpath('div/div/h1/text()')[0]
+        product_detail = content.xpath('div[@class="product-detail"]')[0]
+        authors = [auth.strip() for auth in page.xpath('//p[contains(text(),"Автор")]/a/text()')[0].split(',')]
+        language = page.xpath('//p[contains(text(),"Язык")]/text()')[0].split(':')[1][1:]
+        isbn_year = page.xpath('//p[contains(text(),"ISBN")]/text()')[0].split(',')
+        isbn = isbn_year[0][5:]
+        year = isbn_year[-1][-7:-3]
+        description = '\n'.join([desc.replace('\r', '').replace('\t', '').strip() for desc in
+                                 page.xpath('//div[@itemprop="description"]/table/tr/td[1]/text()')[2:]])
+        kwords = page.xpath('//div/ul[contains(li/text(),"Метки:")]/li/a/text()')
+        img_link = "http://"+page.xpath('//img[@id="js_article_picture"]/@src')[0][2:]
+        img = uplBLLinkPerson(img_link, person)
     except BaseException:
         return HttpResponse(json.dumps({"info": 2}))
-    #
+        #
     # print(title)
     # print(authors)
     # print(language)
@@ -316,11 +334,13 @@ def loadFromOzon(request):
     # print(year)
     # print(kwords)
 
-    return HttpResponse(json.dumps({"info": 1, 'book':{
-        'link':link,
-        'isbn':isbn,
-        'title':title,
-        'language':language,
-        'authors':authors,
-        'kwords':kwords,
-        'description':description}}))
+    return HttpResponse(json.dumps({"info": 1, 'book': {
+        'link': link,
+        'isbn': isbn,
+        'title': title,
+        'language': language,
+        'authors': authors,
+        'kwords': kwords,
+        'description': description,
+        'img':img}}))
+
