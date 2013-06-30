@@ -38,6 +38,7 @@ urlpatterns = patterns('',
     (r'^loadItems', v_books.loadItems), # for bookinfo page
     (r'^uploadBI', v_books.uploadBI), # upload book image preview
     (r'^loadFromOzon', v_books.loadFromOzon), # upload book image preview
+    (r'^loadImgByLink', v_books.loadImgByLink), # upload book image preview
     #==================================================
 
     # message [v_messages view file]

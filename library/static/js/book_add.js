@@ -38,8 +38,7 @@ function castPage() {
     $("#imageform").ajaxForm(function (data) {
         data = JSON.parse(data);
         if (data.info == 1) {
-            $("#prev_file").val(data.path);
-            $("#b-img-a").html('<img id="b-img" src="' + media_path + data.path + '" alt="Uploading...." />');
+            addImage(data.path);
         } else {
             alert("неправильный формат файла")
         }
@@ -77,7 +76,6 @@ function castPage() {
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
-                    console.log(data);
                 }
             },
             error: function () {
@@ -89,6 +87,7 @@ function castPage() {
         if ($.trim($("#ba-link").val()) == 0) {
             return;
         }
+        $("#link-load-b").html('<i class="icon-spinner icon-white"></i>');
         $.ajax({
             type: "POST",
             url: "/loadFromOzon",
@@ -98,15 +97,48 @@ function castPage() {
                 if (parseInt(data.info) == 1) {
                     fillFields(data.book);
                 }
+                $("#link-load-b").html('<i class="icon-download icon-white"></i>');
             },
             error: function () {
+                $("#link-load-b").html('<i class="icon-download icon-white"></i>');
+                serverError();
+            }
+        });
+    });
+    $("#link-img-load").click(function () {
+        img_link = prompt("Введите ссылку на картинку");
+        if (img_link == null || img_link.length == 0) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/loadImgByLink",
+            data: JSON.stringify({"link": img_link}),
+            dataType: "json",
+            success: function (data) {
+                if (parseInt(data.info) == 1) {
+                    addImage(data.path);
+                } else {
+                    alert("Что-то тут не так...");
+                }
+                $("#link-load-b").html('<i class="icon-download icon-white"></i>');
+            },
+            error: function () {
+                $("#link-load-b").html('<i class="icon-download icon-white"></i>');
                 serverError();
             }
         });
     });
 }
 
+function addImage(path) {
+    $("#prev_file").val(path);
+    $("#b-img-a").html('<img id="b-img" src="' + media_path + path + '" alt="Uploading...." />');
+
+}
+
 function fillFields(book) {
+
     $("#ba-link").val(book.link);
     $("#ba-isbn").val(book.isbn);
     $("#ba-title").val(book.title);
@@ -125,11 +157,12 @@ function fillFields(book) {
     for (key in book.kwords) {
         addEKW(book.kwords[key]);
     }
+    addImage(book.img);
 }
 function addEAuthor(text) {
     text = text || "";
     $("#authicontrol").append('<div class="author">' +
-        '<input type="text" value="'+text+'" class="aname" placeholder="Имя Фамилия">' +
+        '<input type="text" value="' + text + '" class="aname" placeholder="Имя Фамилия">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
     $('.aname').typeahead({source: authors});
@@ -138,7 +171,7 @@ function addEAuthor(text) {
 function addEKW(text) {
     text = text || "";
     $("#keywordsf").append('<div class="author">' +
-        '<input type="text" value="'+text+'" class="kword" placeholder="Слово">' +
+        '<input type="text" value="' + text + '" class="kword" placeholder="Слово">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
     $('.kword').typeahead({minLength: 0, source: keywords, items: 9999});
