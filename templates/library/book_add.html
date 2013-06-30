@@ -38,8 +38,8 @@
                     <td class="lTd">Ссылка:</td>
                     <td>
                         <div class="input-append">
-                            <input type="text" id="ba-link" name="ba-link" placeholder="Ссылка">
-                            <button type="button" class="btn disabled" onclick=""><i
+                            <input type="text" id="ba-link" name="ba-link" placeholder="Ссылка" value="">
+                            <button type="button" class="btn" id="link-load-b" onclick=""><i
                                     class="icon-download icon-white"></i></button>
 
                         </div>
@@ -47,10 +47,16 @@
                 </tr>
 
                 <tr>
-                    <td class="lTd">ISBN:</td>
-                    <td class="rTd"><input type="text" id="ba-isbn" name="ba-isbn" placeholder="ISBN" required></td>
-                </tr>
 
+                    <td class="lTd">ISBN:</td>
+                    <td class="rTd">
+                        <div class="input-append">
+                            <input type="text" id="ba-isbn" name="ba-isbn" placeholder="ISBN" required>
+                            <button type="button" class="btn disabled" id="isbn-load-b"><i
+                                    class="icon-download icon-white"></i></button>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <td class="lTd">Название:</td>
                     <td class="rTd"><input type="text" id="ba-title" name="ba-title" placeholder="Название"
@@ -126,7 +132,9 @@
                 <div class="libname" style="font-weight: bold;text-align: center;">{{ libname }}</div>
                 <div><span>№ экземпляра: </span><span class="biid" style="font-weight: bold;"></span></div>
                 <span>Владелец: </span>
-                <div class="username"  style="margin-left: 10px;font-weight: bold;">{{ person.fname }} {{ person.lname }}</div>
+
+                <div class="username"
+                     style="margin-left: 10px;font-weight: bold;">{{ person.fname }} {{ person.lname }}</div>
             </div>
 
         </div>

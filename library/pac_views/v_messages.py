@@ -1,4 +1,5 @@
 import json
+import urllib
 from django.core.mail import EmailMultiAlternatives
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction, connection

@@ -1,5 +1,8 @@
 from functools import reduce
+from html.parser import HTMLParser
 import json
+import urllib.request
+import lxml.html
 from PIL import Image
 from django.core import serializers
 from django.core.files.base import ContentFile
@@ -261,3 +264,63 @@ def testBIConv(request):
         return HttpResponse(json.dumps({"info": 1}))
     else:
         return HttpResponse(json.dumps({"info": 3}))
+
+class MyHTMLParser(HTMLParser):
+    def handle_starttag(self, tag, attrs):
+        # if tag == 'tr':
+        for itemprop in attrs:
+            if itemprop == 'name':
+                print ('Found class', tag)
+    # def handle_endtag(self, tag):
+    #     print("Encountered an end tag :", tag)
+    def handle_data(self, data):
+        if 'ISBN' in data:
+            print(data)
+        if 'Автор:' in data:
+            print(data)
+    #
+    # def handle_comment(self, data):
+    #     print("Encountered some coomment  :", data)
+
+
+
+def loadFromOzon(request):
+    query = json.loads(str(request.body.decode()))
+    link = query["link"]
+
+    try:
+        response = urllib.request.urlopen(link)
+    except BaseException:
+        return HttpResponse(json.dumps({"info": 2}))
+
+    text=response.read().decode('windows-1251')
+    page = lxml.html.fromstring(text)
+    try:
+        content=page.xpath('//div[@class="l l-content"]')[0]
+        title=content.xpath('div/div/h1/text()')[0]
+        product_detail=content.xpath('div[@class="product-detail"]')[0]
+        authors=[auth.strip() for auth in page.xpath('//p[contains(text(),"Автор")]/a/text()')[0].split(',')]
+        language=page.xpath('//p[contains(text(),"Язык")]/text()')[0].split(':')[1][1:]
+        isbn_year=page.xpath('//p[contains(text(),"ISBN")]/text()')[0].split(',')
+        isbn=isbn_year[0][5:]
+        year=isbn_year[-1][-7:-3]
+        description='\n'.join([desc.replace('\r','').replace('\t','').strip() for desc in page.xpath('//div[@itemprop="description"]/table/tr/td[1]/text()')[2:]])
+        kwords=page.xpath('//div/ul[contains(li/text(),"Метки:")]/li/a/text()')
+    except BaseException:
+        return HttpResponse(json.dumps({"info": 2}))
+    #
+    # print(title)
+    # print(authors)
+    # print(language)
+    # print(isbn)
+    # print(year)
+    # print(kwords)
+
+    return HttpResponse(json.dumps({"info": 1, 'book':{
+        'link':link,
+        'isbn':isbn,
+        'title':title,
+        'language':language,
+        'authors':authors,
+        'kwords':kwords,
+        'description':description}}))

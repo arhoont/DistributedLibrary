@@ -66,23 +66,82 @@ function castPage() {
             }
         }
     });
-
+    $("#isbn-load-b").click(function () {
+        if ($.trim($("#ba-isbn").val()) == 0) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/loadFromOzon",
+            data: JSON.stringify({'type': 'isbn', "isbn": $.trim($("#ba-isbn").val())}),
+            dataType: "json",
+            success: function (data) {
+                if (parseInt(data.info) == 1) {
+                    console.log(data);
+                }
+            },
+            error: function () {
+                serverError();
+            }
+        });
+    });
+    $("#link-load-b").click(function () {
+        if ($.trim($("#ba-link").val()) == 0) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/loadFromOzon",
+            data: JSON.stringify({'type': 'link', "link": $.trim($("#ba-link").val())}),
+            dataType: "json",
+            success: function (data) {
+                if (parseInt(data.info) == 1) {
+                    fillFields(data.book);
+                }
+            },
+            error: function () {
+                serverError();
+            }
+        });
+    });
 }
 
-function addEAuthor() {
+function fillFields(book) {
+    $("#ba-link").val(book.link);
+    $("#ba-isbn").val(book.isbn);
+    $("#ba-title").val(book.title);
+    $("#ba-desc").val(book.description);
+    option = $("#ba-lang option[value='" + book.language + "']");
+    if (option.val()) {
+        option.attr('selected', 'selected')
+    } else {
+        $("#ba-lang").append('<option value="' + book.language + '" selected>' + book.language + '</option>');
+    }
+    $("#authicontrol").html("");
+    for (auth in book.authors) {
+        addEAuthor(book.authors[auth]);
+    }
+    $("#keywordsf").html("");
+    for (key in book.kwords) {
+        addEKW(book.kwords[key]);
+    }
+}
+function addEAuthor(text) {
+    text = text || "";
     $("#authicontrol").append('<div class="author">' +
-        '<input type="text" value="" class="aname" placeholder="Имя Фамилия">' +
+        '<input type="text" value="'+text+'" class="aname" placeholder="Имя Фамилия">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
     $('.aname').typeahead({source: authors});
 }
 
-function addEKW() {
+function addEKW(text) {
+    text = text || "";
     $("#keywordsf").append('<div class="author">' +
-        '<input type="text" value="" class="kword" placeholder="Слово">' +
+        '<input type="text" value="'+text+'" class="kword" placeholder="Слово">' +
         '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
         '</div>');
-    $('.kword').typeahead({minLength: 0, source: keywords, items:9999});
+    $('.kword').typeahead({minLength: 0, source: keywords, items: 9999});
     $(".kword").focus(function () {
         $(this).trigger("keyup");
     });

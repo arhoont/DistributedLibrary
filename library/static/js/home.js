@@ -1,5 +1,5 @@
 var page = {
-    size: 5,
+    size: 20,
     num: 1
 };
 var search = {
@@ -65,6 +65,7 @@ function castPage() {
     });
     tableReq();
 }
+
 function insertParam() {
     parent.location.hash = "?" + $.param({'sew': search.word, 'sep': search.person,
         'sot': sort.type, 'sof': sort.field, 'pan': page.num.toString()});
