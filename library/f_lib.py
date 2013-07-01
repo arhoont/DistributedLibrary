@@ -50,12 +50,16 @@ def sendEmail(title, text, text_css, recipients):
     text_content = text
 
     html_content = text_css
-    email = "DLibr <do_not_replay@dlibr.com>"
+   
+    email = "DLibr <do_not_replay@emc.com>"
     msg = EmailMultiAlternatives(mail_title, text_content, email, recipients)
     msg.attach_alternative(html_content, "text/html")
 
     try:
         msg.send()
         return True
-    except BaseException:
+    except BaseException as err:
+        f=open('/home/muser/sites/log.txt','a')
+        f.write(str(err)+'\n')
+        f.close()
         return False
