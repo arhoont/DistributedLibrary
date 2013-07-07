@@ -67,6 +67,11 @@ def checkBook(request):
 
     return HttpResponse(json.dumps({"info": 2, "books": ""}))
 
+def getExp(name):
+    exp = name.split('.')[-1]
+    if exp not in ["png","jpg","gif"]:
+        exp="jpg"
+    return exp
 
 def upldBI(img, exp, person):
     img.thumbnail((200, 300), Image.ANTIALIAS)
@@ -89,7 +94,7 @@ def uploadBI(request):
         img = Image.open(data)
     except BaseException:
         return HttpResponse(json.dumps({"info": 2}))
-    exp = data.name.split('.')[-1]
+    exp = getExp(data.name)
     person = Person.objects.get(pk=request.session["person_id"])
     file_name = upldBI(img, exp, person)
 
@@ -103,7 +108,7 @@ def uplBLLinkPerson(link, person):
         img = Image.open(stream)
     except BaseException:
         return None
-    exp = link.split('.')[-1]
+    exp = getExp(link)
 
     file_name = upldBI(img, exp, person)
 
@@ -148,7 +153,7 @@ def addbajax(request):
     try:
         if len(image) > 0:
             photo = default_storage.open(image)
-            exp = photo.name.split('.')[-1]
+            exp = getExp(photo.name)
             file_name = default_storage.get_available_name('book_image/book.' + exp)
             path = default_storage.save(file_name, ContentFile(photo.read()))
     except BaseException:
@@ -198,11 +203,15 @@ def editbajax(request):
 
     if image != book.image:
         try:
+            default_storage.delete(book.image)
+        except BaseException:
+            pass
+        try:
             if len(image) > 0:
                 photo = default_storage.open(image)
-                exp = photo.name.split('.')[-1]
-                path = default_storage.save("book_image/" + isbn + "." + exp, ContentFile(photo.read()))
-                default_storage.delete(book.image)
+                exp = getExp(photo.name)
+                file_name = default_storage.get_available_name('book_image/book.' + exp)
+                path = default_storage.save(file_name, ContentFile(photo.read()))
                 book.image = path
         except BaseException:
             pass
