@@ -64,6 +64,9 @@ function castPage() {
         tableReq();
     });
     tableReq();
+    $('#messageModal').on('hidden', function () {
+        tableReq();
+    });
 }
 
 function insertParam() {

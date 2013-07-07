@@ -214,7 +214,9 @@ function addButtonBook() {
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
-                    $("#sticker .biid").html(data.biid);
+                    console.log(data);
+                    console.log(data.biid);
+                    $(".sticker .biid").html(data.biid);
                     $("#printModal").modal('show');
                 } else if (parseInt(data.info) == 2) {
                     displayAlert("Такая книга уже есть", "alert-danger")

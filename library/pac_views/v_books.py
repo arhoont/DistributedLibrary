@@ -33,7 +33,7 @@ def addItem(request):
     bi = BookItem(book=book, owner=person, reader=person, value=val, status=1)
     bi.save()
 
-    return HttpResponse(json.dumps({"info": 1, "biid": bi.id}))
+    return HttpResponse(json.dumps({"info": 1, "biid": bi.id,"owner":person.natural_key()}))
 
 
 def addOpinion(request):
@@ -149,7 +149,8 @@ def addbajax(request):
         if len(image) > 0:
             photo = default_storage.open(image)
             exp = photo.name.split('.')[-1]
-            path = default_storage.save("book_image/" + isbn + "." + exp, ContentFile(photo.read()))
+            file_name = default_storage.get_available_name('book_image/book.' + exp)
+            path = default_storage.save(file_name, ContentFile(photo.read()))
     except BaseException:
         pass
 
@@ -316,8 +317,9 @@ def loadFromOzon(request):
         product_detail = content.xpath('div[@class="product-detail"]')[0]
         authors = [auth.strip() for auth in page.xpath('//p[contains(text(),"Автор")]/a/text()')[0].split(',')]
         language = page.xpath('//p[contains(text(),"Язык")]/text()')[0].split(':')[1][1:]
+        language = page.xpath('//p[contains(text(),"Язык")]/text()')[0].split(':')[1][1:]
         isbn_year = page.xpath('//p[contains(text(),"ISBN")]/text()')[0].split(',')
-        isbn = isbn_year[0][5:]
+        isbn = isbn_year[0].split(';')[0][5:]
         year = isbn_year[-1][-7:-3]
         description = '\n'.join([desc.replace('\r', '').replace('\t', '').strip() for desc in
                                  page.xpath('//div[@itemprop="description"]/table/tr/td[1]/text()')[2:]])
@@ -326,7 +328,6 @@ def loadFromOzon(request):
         img = uplBLLinkPerson(img_link, person)
     except BaseException:
         return HttpResponse(json.dumps({"info": 2}))
-        #
     # print(title)
     # print(authors)
     # print(language)

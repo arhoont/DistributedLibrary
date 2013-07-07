@@ -17,7 +17,8 @@ function castPage() {
             success: function (data) {
                 if (parseInt(data.info) == 1) {
                     loadItems();
-                    $("#sticker .biid").html(data.biid);
+                    $(".sticker .biid").html(data.biid);
+                    $(".sticker .username").html(data.owner);
                     $("#printModal").modal('show');
                 } else if (parseInt(data.info) == 4) {
                     notSignIn()
