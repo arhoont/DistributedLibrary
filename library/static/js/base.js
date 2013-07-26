@@ -38,6 +38,23 @@ $(document).ready(function () {
         window.history.back();
     });
     castPage();
+
+    $("#load_book_list").click(function () {
+    $.ajax({
+        type: "POST",
+        url: "/loadTextFormatBooks",
+        dataType: "json",
+        success: function (data) {
+           $("#text_format_books").html(data.book);
+	   $("#booksFormText").modal('show');
+         },
+        error: function () {
+            serverError();
+        }
+    });
+
+    });
+
 });
 
 function messCountTest() {
