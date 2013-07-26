@@ -131,13 +131,11 @@
 
         <div class="modal-body">
             <div class="sticker"
-                 style="font-family:sans-serif;display: inline-block;border:1px solid #e5e5e5;border-radius: 4px;padding: 5px;">
-                <div class="libname" style="font-weight: bold;text-align: center;">{{ libname }}</div>
-                <div><span>№ экземпляра: </span><span class="biid" style="font-weight: bold;"></span></div>
-                <span>Владелец: </span>
-
-                <div class="username"
-                     style="margin-left: 10px;font-weight: bold;">{{ person.fname }} {{ person.lname }}</div>
+                 style="font-family:sans-serif;display: inline-block;border:2px solid #aaaaaa;border-radius: 4px;padding: 5px; width:200px;">
+                <div class="libname" style="font-weight: bold;text-align: center; font-style: italic;">{{ libname }}</div>
+                <div style="font-size: 12px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis;" class="book_name_div"></div>
+                <div><span>id:&nbsp;&nbsp;</span><span class="biid" style="font-weight: bold; font-size: 19px"></span></div>
+                <div class="username">{{ person.fname }} {{ person.lname }}</div>
             </div>
 
         </div>

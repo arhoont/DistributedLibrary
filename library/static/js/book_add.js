@@ -231,6 +231,7 @@ function addButtonBook() {
             success: function (data) {
                 if (parseInt(data.info) == 1) {
                     $(".sticker .biid").html(data.biid);
+                    $(".sticker .book_name_div").html($.trim($('#ba-title').val()));
                     $("#printModal").modal('show');
                 } else if (parseInt(data.info) == 2) {
                     displayAlert("Такая книга уже есть", "alert-danger")
