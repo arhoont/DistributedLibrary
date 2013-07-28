@@ -154,3 +154,8 @@ def user_edit(request):
         return response
 
     return render(request, 'library/user_edit.html', context)
+
+
+def help_page(request):
+    context = isauth(request)
+    return render(request, 'library/help_page.html', context)

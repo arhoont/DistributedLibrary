@@ -1,0 +1,37 @@
+{% extends "library/base.html" %}
+{% csrf_token %}
+{% load static %}
+
+{% block title %}{{ libname }}{% endblock %}
+{% block include %}
+    <link rel="stylesheet" href="{% static "css/help_page.css" %}">
+    <script type="text/javascript" charset="utf-8" src="{% static "js/help_page.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="section-container">
+        <div class="section-header">1. Magic</div>
+        <div class="section-info"></div>
+    </div>
+    <div class="section-container">
+        <div class="section-header"></div>
+        <div class="section-info"></div>
+    </div>
+    <div class="section-container">
+        <div class="section-header"></div>
+        <div class="section-info"></div>
+    </div>
+    <div class="section-container">
+        <div class="section-header"></div>
+        <div class="section-info"></div>
+    </div>
+    <div class="section-container">
+        <div class="section-header"></div>
+        <div class="section-info"></div>
+    </div>
+
+{% endblock %}
+
+
+
+

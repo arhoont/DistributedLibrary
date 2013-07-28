@@ -16,7 +16,8 @@ urlpatterns = patterns('',
     url(r'^book/info/$', v_pages.bookinfo, name='bookinfo'),
     url(r'^book/edit/$', v_pages.bookedit, name='bookedit'),
     url(r'^signin$', v_pages.signin, name='signin'),
-    url(r'^useredit/$', v_pages.user_edit, name='signin'),
+    url(r'^useredit/$', v_pages.user_edit, name='user_edit'),
+    url(r'^help_page/$', v_pages.help_page, name='help_page'),
     #==================================================
 
     # user [v_users view file]
