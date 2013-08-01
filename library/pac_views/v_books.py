@@ -307,14 +307,13 @@ def testBIConv(request):
         return HttpResponse(json.dumps({"info": 3}))
 
 def loadTextFormatBooks(request):
-#    query = json.loads(str(request.body.decode()))
     person = Person.objects.get(pk=request.session["person_id"])
-#    person = Person.objects.get(pk=2)
 
     ss = SysSetting.objects.latest('id')
     booklist = BookItem.objects.filter(owner=person)
-    blUpdate='\n'.join([str(ss.libname)+'\t'+str(bi.book.title)+'\t'+str(bi.id)+'\t'+bi.owner.natural_key() for bi in booklist])
-    return HttpResponse(json.dumps({"info": 1, "book": blUpdate}))
+    blUpdate=[{'libname':str(ss.libname), 'book_title':str(bi.book.title),
+               'biid':str(bi.id), 'owner':bi.owner.natural_key()} for bi in booklist]
+    return HttpResponse(json.dumps({"info": 1, "books": blUpdate}))
 
 def loadFromOzon(request):
     query = json.loads(str(request.body.decode()))
@@ -347,7 +346,7 @@ def loadFromOzon(request):
     except BaseException:
         return HttpResponse(json.dumps({"info": 2}))
     # print(title)
-    # print(authors)
+    # sprint(authors)
     # print(language)
     # print(isbn)
     # print(year)

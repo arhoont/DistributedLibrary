@@ -1,7 +1,7 @@
 isbn_status=false;
 function castPage() {
     $('#printBtn').click(function () {
-        popup_print($('<div/>').append($(".sticker").clone()).html());
+        popup_print($('<div/>').append($("#printModal .printable-div").clone()).html());
     });
 
     $("#ba-isbn").focusout(function () {
@@ -230,9 +230,7 @@ function addButtonBook() {
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
-                    $(".sticker .biid").html(data.biid);
-                    $(".sticker .book_name_div").html($.trim($('#ba-title').val()));
-                    $("#printModal").modal('show');
+                    printSticker(data.biid, $('#ba-title').val());
                 } else if (parseInt(data.info) == 2) {
                     displayAlert("Такая книга уже есть", "alert-danger")
                 } else if (parseInt(data.info) == 4) {
@@ -266,4 +264,12 @@ function isbnFailFormat() {
 
     });
     $('#ba-isbn').popover('show');
+}
+
+function printSticker(bi_id, book_title) {
+    $(".slider").click();
+    var sticker=new Sticker(lib_name,book_title,bi_id, person);
+    $("#printModal .printable-div").html(sticker.getHTML());
+    updateSliders();
+    $("#printModal").modal('show');
 }

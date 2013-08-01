@@ -40,21 +40,32 @@ $(document).ready(function () {
     castPage();
 
     $("#load_book_list").click(function () {
-    $.ajax({
-        type: "POST",
-        url: "/loadTextFormatBooks",
-        dataType: "json",
-        success: function (data) {
-           $("#text_format_books").html(data.book);
-	   $("#booksFormText").modal('show');
-         },
-        error: function () {
-            serverError();
-        }
-    });
+        $.ajax({
+            type: "POST",
+            url: "/loadTextFormatBooks",
+            dataType: "json",
+            success: function (data) {
+//                $("#text_format_books").html(data.books);
+                printStickers(data.books);
+            },
+            error: function () {
+                serverError();
+            }
+        });
 
     });
 
+    $("#printStickers").click(function () {
+        popup_print($('<div/>').append($("#booksFormText .printable-div").clone()).html());
+
+    });
+
+    $(".slider").change(function () {
+        $(".sticker").css(this.name, this.value + "px");
+    });
+    $(".slider-page").change(function () {
+        $(".printable-div").css(this.name, this.value + "px");
+    });
 });
 
 function messCountTest() {
@@ -322,18 +333,68 @@ function popup_print(data) {
 }
 
 
-
 function getUrlParams() {
-
-
-    var url=document.URL.split('?')[1];
-    if (!url){
+    var url = document.URL.split('?')[1];
+    if (!url) {
         return null;
     }
     var url_params = {};
     params = url.split('&');
     for (var param in params) {
-        url_params[params[param].split('=')[0]]=params[param].split('=')[1];
+        url_params[params[param].split('=')[0]] = params[param].split('=')[1];
     }
     return url_params;
+}
+
+
+function Sticker(lib_name, book_title, bi_id, person) {
+    Sticker.width=200;
+    Sticker.height=100;
+    Sticker.margin_right=0;
+    Sticker.margin_bottom=0;
+
+    this.lib_name = lib_name;
+    this.book_title = book_title;
+    this.bi_id = bi_id;
+    this.person = person;
+
+    this.getHTML = function () {
+        html_sticker = '<div class="sticker" style="font-family:sans-serif;display: inline-block;border:2px ' +
+            'solid #aaaaaa;border-radius: 4px;padding: 5px;">';
+        html_sticker += '<div class="libname" style="font-weight: bold;text-align:' +
+            ' center; font-style: italic;">' + this.lib_name + '</div>';
+        html_sticker += '<div style="font-size: 12px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis;">' + this.book_title + '</div>';
+        html_sticker += '<div><span>id:&nbsp;&nbsp;</span><span class="biid" style="font-weight: bold; font-size: 19px">' + this.bi_id + '</span></div>';
+        html_sticker += '<div class="username">' + this.person + '</div>';
+        html_sticker += '</div>';
+        return html_sticker;
+    }
+}
+
+function printStickers(books) {
+    text_area = 'library\tid\tbook\towner\n';
+    $(".printable-div").html('');
+    for (var i in books) {
+        var sticker = new Sticker(books[i].libname, books[i].book_title,
+            books[i].biid, books[i].owner);
+        $("#booksFormText .printable-div").append(sticker.getHTML());
+        text_area += books[i].libname + '\t' + books[i].book_title + '\t' +
+            books[i].biid + '\t' + books[i].owner + '\n';
+    }
+    updateSliders();
+    $("#text_format_books").html(text_area);
+    $("#booksFormText").modal('show');
+}
+
+function updateSliders() {
+    $('.slider[name="height"]').attr('value',Sticker.height);
+    $('.slider[name="width"]').attr('value',Sticker.width);
+    $('.slider[name="margin-right"]').attr('value',Sticker.margin_right);
+    $('.slider[name="margin-bottom"]').attr('value',Sticker.margin_bottom);
+
+    $('.slider-page[name="margin-top"]').attr('value','0');
+    $('.slider-page[name="margin-left"]').attr('value','0');
+
+    $(".slider").change();
+    $(".slider-page").change();
 }

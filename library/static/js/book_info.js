@@ -3,7 +3,7 @@ function castPage() {
         $("#addItemModal").modal('show');
     });
     $('#printBtn').click(function () {
-        popup_print($('<div/>').append($(".sticker").clone()).html());
+        popup_print($('<div/>').append($("#printModal .printable-div").clone()).html());
     });
     $("#addItemB").click(function () {
         $("#addItemModal").modal('hide');
@@ -17,9 +17,8 @@ function castPage() {
             success: function (data) {
                 if (parseInt(data.info) == 1) {
                     loadItems();
-                    $(".sticker .biid").html(data.biid);
-                    $(".sticker .username").html(data.owner);
-                    $("#printModal").modal('show');
+                    printSticker(data.biid,data.owner);
+
                 } else if (parseInt(data.info) == 4) {
                     notSignIn()
                 }
@@ -63,6 +62,7 @@ function castPage() {
     $('#takeModal').on('hidden', function () {
         loadItems();
     });
+
 }
 
 
@@ -233,8 +233,9 @@ function pad(number, length) {
 
 }
 
-function printSticker(biid, owner) {
-    $(".sticker .biid").html(biid);
-    $(".sticker .username").html(owner);
+function printSticker(bi_id, owner) {
+    var sticker=new Sticker(lib_name,book_title,bi_id, owner);
+    $(".printable-div").html(sticker.getHTML());
+    updateSliders();
     $("#printModal").modal('show');
 }

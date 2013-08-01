@@ -12,7 +12,10 @@
     <script type="text/javascript" charset="utf-8" src="{% static "js/book_add.js" %}"></script>
     <script type="text/javascript" charset="utf-8" src="{% static "js/isbn.js" %}"></script>
     <script type="text/javascript" charset="utf-8" src="{% static "js/isbn-groups.js" %}"></script>
-
+    <script>
+        var authors = {{authors|safe}};
+        var keywords = {{keywords|safe}};
+    </script>
 {% endblock %}
 {% block content %}
     <div class="form-header">
@@ -130,26 +133,37 @@
         </div>
 
         <div class="modal-body">
-            <div class="sticker"
-                 style="font-family:sans-serif;display: inline-block;border:2px solid #aaaaaa;border-radius: 4px;padding: 5px; width:200px;">
-                <div class="libname" style="font-weight: bold;text-align: center; font-style: italic;">{{ libname }}</div>
-                <div style="font-size: 12px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis;" class="book_name_div"></div>
-                <div><span>id:&nbsp;&nbsp;</span><span class="biid" style="font-weight: bold; font-size: 19px"></span></div>
-                <div class="username">{{ person.fname }} {{ person.lname }}</div>
-            </div>
-
+            <table>
+                <tr>
+                    <td><label class='slider-label' for="">Верхняя граница</label></td>
+                    <td><input class="slider-page" name="margin-top" type="range" min="0" max="30" value="0"/></td>
+                    <td><label class='slider-label' for="">Левая граница</label></td>
+                    <td><input class="slider-page" name="margin-left" type="range" min="0" max="30" value="0"/></td>
+                </tr>
+                <tr>
+                    <td><label class='slider-label' for="">Высота</label></td>
+                    <td><input class="slider" name="height" type="range" min="75" max="150" value="100"/></td>
+                    <td><label class='slider-label' for="">Боковой интервал</label></td>
+                    <td><input class="slider" name="margin-right" type="range" min="0" max="25" value="0"/></td>
+                </tr>
+                <tr>
+                    <td><label class='slider-label' for="">Ширина</label></td>
+                    <td><input class="slider" name="width" type="range" min="100" max="300" value="200"/></td>
+                    <td><label class='slider-label' for="">Отступ</label></td>
+                    <td><input class="slider" name="margin-bottom" type="range" min="0" max="25" value="0"/></td>
+                </tr>
+            </table>
+            <div class="printable-div" style="max-width: 700px;"></div>
         </div>
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal">Закрыть</button>
             <button class="btn btn-primary" id="printBtn"><i class="icon-print icon-white"></i> Печать</button>
         </div>
     </div>
+
     <form id="imageform" method="post" action='/uploadBI' class="hide">
         <input type="text" name="prev_file" id="prev_file"/>
         <input type="file" name="file" id="image-input"/>
     </form>
-    <script>
-        var authors = {{authors|safe}};
-        var keywords = {{keywords|safe}};
-    </script>
+
 {% endblock %}
