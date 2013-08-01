@@ -85,9 +85,15 @@ class Book(models.Model):
     rating = models.IntegerField(null=True)
     item_count = models.IntegerField(null=True)
     date=models.DateTimeField()
+
+    def _owners(self):
+        owners=[bi.owner.natural_key() for bi in self.bookitem_set.all()]
+        return owners
+
+    owners = property(_owners)
+
     def __str__(self):
         return self.isbn + " " + self.title
-
 
 class BookItem(models.Model):
     book = models.ForeignKey(Book)

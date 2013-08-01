@@ -33,7 +33,7 @@ def addItem(request):
     bi = BookItem(book=book, owner=person, reader=person, value=val, status=1)
     bi.save()
 
-    return HttpResponse(json.dumps({"info": 1, "biid": bi.id,"owner":person.natural_key()}))
+    return HttpResponse(json.dumps({"info": 1, "biid": bi.id, "owner": person.natural_key()}))
 
 
 def addOpinion(request):
@@ -67,11 +67,13 @@ def checkBook(request):
 
     return HttpResponse(json.dumps({"info": 2, "books": ""}))
 
+
 def getExp(name):
     exp = name.split('.')[-1]
-    if exp not in ["png","jpg","gif"]:
-        exp="jpg"
+    if exp not in ["png", "jpg", "gif"]:
+        exp = "jpg"
     return exp
+
 
 def upldBI(img, exp, person):
     img.thumbnail((200, 300), Image.ANTIALIAS)
@@ -271,11 +273,18 @@ def getbooks(request):
                 start:start + pageS]
     count = Book.objects.filter(reduce(operator.or_, qList), **addQuery).distinct().count()
 
-    bookslist = serializers.serialize("json", bookslist, use_natural_keys=True,
-                                      fields=(
-                                          'ozon', 'title', 'language', 'authors', 'keywords', 'rating', 'item_count'))
-
-    return HttpResponse(json.dumps({"info": "yes", "count": count, "books": json.loads(bookslist)}))
+    bookslist = [{'pk':book.isbn,'fields':
+        {'ozon':book.ozon,
+         'isbn':book.isbn,
+         'title':book.title,
+         'language':book.language.language,
+         'rating':book.rating,
+         'owners':book.owners,
+         'item_count':book.item_count,
+         'authors':[author.natural_key() for author in book.authors.all()],
+         'keywords':[kw.word for kw in book.keywords.all()],
+         }} for book in bookslist]
+    return HttpResponse(json.dumps({"info": "yes", "count": count, "books": bookslist}))
 
 
 def getlastbooks(request):
@@ -306,14 +315,16 @@ def testBIConv(request):
     else:
         return HttpResponse(json.dumps({"info": 3}))
 
+
 def loadTextFormatBooks(request):
     person = Person.objects.get(pk=request.session["person_id"])
 
     ss = SysSetting.objects.latest('id')
     booklist = BookItem.objects.filter(owner=person)
-    blUpdate=[{'libname':str(ss.libname), 'book_title':str(bi.book.title),
-               'biid':str(bi.id), 'owner':bi.owner.natural_key()} for bi in booklist]
+    blUpdate = [{'libname': str(ss.libname), 'book_title': str(bi.book.title),
+                 'biid': str(bi.id), 'owner': bi.owner.natural_key()} for bi in booklist]
     return HttpResponse(json.dumps({"info": 1, "books": blUpdate}))
+
 
 def loadFromOzon(request):
     query = json.loads(str(request.body.decode()))
@@ -341,11 +352,11 @@ def loadFromOzon(request):
         description = '\n'.join([desc.replace('\r', '').replace('\t', '').strip() for desc in
                                  page.xpath('//div[@itemprop="description"]/table/tr/td[1]/text()')[2:]])
         kwords = page.xpath('//div/ul[contains(li/text(),"Метки:")]/li/a/text()')
-        img_link = "http://"+page.xpath('//img[@id="js_article_picture"]/@src')[0][2:]
+        img_link = "http://" + page.xpath('//img[@id="js_article_picture"]/@src')[0][2:]
         img = uplBLLinkPerson(img_link, person)
     except BaseException:
         return HttpResponse(json.dumps({"info": 2}))
-    # print(title)
+        # print(title)
     # sprint(authors)
     # print(language)
     # print(isbn)
@@ -360,5 +371,5 @@ def loadFromOzon(request):
         'authors': authors,
         'kwords': kwords,
         'description': description,
-        'img':img}}))
+        'img': img}}))
 

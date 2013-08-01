@@ -143,6 +143,8 @@ function castMainTable(data) {
         }
         listed += '&nbsp</td>'
 
+        listed += '<td class="ownersColumn" title="' + book.fields.owners + '">' + book.fields.owners + '</td>';
+
         listed += '</tr>';
         $("#rows").append(listed);
     }

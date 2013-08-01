@@ -1,21 +1,21 @@
 .isbnColum {
-    width: 13%;
+    width: 12%;
 }
 
 .titleColum {
-    width: 26%;
+    width: 25%;
 }
 
 .langColum {
-    width: 8%;
+    width: 6%;
 }
 
 .authColum {
-    width: 24%;
+    width: 21%;
 }
 
 .keyColum {
-    width: 13%;
+    width: 12%;
 }
 
 .ratingColum {
@@ -23,10 +23,13 @@
 }
 
 .countColum {
-    width: 8%;
+    width: 7%;
     text-align: center !important;
 }
 
+.ownersColumn{
+    width: 9%;
+}
 #mtable {
     table-layout: fixed;
 }

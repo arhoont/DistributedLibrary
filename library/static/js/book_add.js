@@ -1,11 +1,13 @@
-isbn_status=false;
+isbn_status = false;
 function castPage() {
     $('#printBtn').click(function () {
-        popup_print($('<div/>').append($("#printModal .printable-div").clone()).html());
+        var node = $("#printModal .printable-div").clone();
+        node.find('.close').remove();
+        popup_print($('<div/>').append(node).html());
     });
 
     $("#ba-isbn").focusout(function () {
-        isbn_status=false;
+        isbn_status = false;
         $('#ba-isbn').popover('destroy');
         if ($("#ba-isbn").val().length > 0) {
             in_isbn = $.trim($("#ba-isbn").val());
@@ -27,10 +29,10 @@ function castPage() {
                     dataType: "json",
                     success: function (data) {
                         if (parseInt(data.info) == 1) {
-                             isbnFail(data.book);
+                            isbnFail(data.book);
                         }
                         else {
-                            isbn_status=true;
+                            isbn_status = true;
                             $('#ba-isbn').popover('destroy');
                         }
                     },
@@ -212,7 +214,7 @@ function addButtonBook() {
 
     if (newAuthList.length == 0) {
         displayAlert("У книги должен быть автор", "alert-danger")
-    } else if (isbn_status==false) {
+    } else if (isbn_status == false) {
         isbnFailFormat();
     } else {
         $.ajax({
@@ -268,7 +270,7 @@ function isbnFailFormat() {
 
 function printSticker(bi_id, book_title) {
     $(".slider").click();
-    var sticker=new Sticker(lib_name,book_title,bi_id, person);
+    var sticker = new Sticker(lib_name, book_title, bi_id, person);
     $("#printModal .printable-div").html(sticker.getHTML());
     updateSliders();
     $("#printModal").modal('show');

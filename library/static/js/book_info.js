@@ -1,11 +1,11 @@
-
-
 function castPage() {
     $("#addItemBut").click(function () {
         $("#addItemModal").modal('show');
     });
     $('#printBtn').click(function () {
-        popup_print($('<div/>').append($("#printModal .printable-div").clone()).html());
+        var node = $("#printModal .printable-div").clone();
+        node.find('.close').remove();
+        popup_print($('<div/>').append(node).html());
     });
     $("#addItemB").click(function () {
         $("#addItemModal").modal('hide');

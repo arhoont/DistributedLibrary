@@ -28,7 +28,7 @@ body {
     width: 1000px;
     margin-left: -500px;
 }
-#booksFormText{
+#booksFormText, #printModal{
     width: 700px;
     margin-left: -350px;
 }
