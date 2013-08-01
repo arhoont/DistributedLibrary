@@ -1,3 +1,8 @@
+var text_area_f_s = '\t'
+var text_area_s_s = '\n'
+
+text_area_bis = [];
+
 $(document).ready(function () {
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
@@ -56,7 +61,9 @@ $(document).ready(function () {
     });
 
     $("#printStickers").click(function () {
-        popup_print($('<div/>').append($("#booksFormText .printable-div").clone()).html());
+        var node=$("#booksFormText .printable-div").clone();
+        node.find('.close').remove();
+        popup_print($('<div/>').append(node).html());
 
     });
 
@@ -66,7 +73,55 @@ $(document).ready(function () {
     $(".slider-page").change(function () {
         $(".printable-div").css(this.name, this.value + "px");
     });
+
+    $("#b-group-f-s button").click(function () {
+        text_area_f_s = separatorConverter(this.value);
+        $("#b-group-f-s input").val("");
+        setTextAreaBooks();
+    });
+
+    $("#b-group-f-s input").keyup(function () {
+        text_area_f_s = this.value;
+        $("#b-group-f-s button").removeClass("active");
+        setTextAreaBooks();
+    });
+
+    $("#b-group-s-s button").click(function () {
+        text_area_s_s = separatorConverter(this.value);
+        $("#b-group-s-s input").val("");
+
+        setTextAreaBooks();
+    });
+
+    $("#b-group-s-s input").keyup(function () {
+        text_area_s_s = this.value;
+        $("#b-group-s-s button").removeClass("active");
+        setTextAreaBooks();
+    });
 });
+
+function separatorConverter(val) {
+    var sep = " ";
+    switch (val) {
+        case "1":
+            sep = "\t";
+            break;
+        case "2":
+            sep = "\n";
+            break;
+        case "3":
+            sep = ",";
+            break;
+        case "4":
+            sep = ".";
+            break;
+        case "5":
+            sep = " ";
+            break;
+
+    }
+    return sep;
+}
 
 function messCountTest() {
     $.ajax({
@@ -348,10 +403,10 @@ function getUrlParams() {
 
 
 function Sticker(lib_name, book_title, bi_id, person) {
-    Sticker.width=200;
-    Sticker.height=100;
-    Sticker.margin_right=0;
-    Sticker.margin_bottom=0;
+    Sticker.width = 200;
+    Sticker.height = 100;
+    Sticker.margin_right = 0;
+    Sticker.margin_bottom = 0;
 
     this.lib_name = lib_name;
     this.book_title = book_title;
@@ -361,6 +416,7 @@ function Sticker(lib_name, book_title, bi_id, person) {
     this.getHTML = function () {
         html_sticker = '<div class="sticker" style="font-family:sans-serif;display: inline-block;border:2px ' +
             'solid #aaaaaa;border-radius: 4px;padding: 5px;">';
+        html_sticker +='<button type="button" class="close" data-dismiss="alert">&times;</button>';
         html_sticker += '<div class="libname" style="font-weight: bold;text-align:' +
             ' center; font-style: italic;">' + this.lib_name + '</div>';
         html_sticker += '<div style="font-size: 12px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis;">' + this.book_title + '</div>';
@@ -371,30 +427,74 @@ function Sticker(lib_name, book_title, bi_id, person) {
     }
 }
 
+function Person(id, name, email, phone_ext, mobile) {
+    this.id = id;
+    this.name = name;
+    this.email = email;
+    this.mobile = mobile;
+    this.phone_ext = phone_ext;
+    this.getHTML = function () {
+        html_person = '<a class="Person" data-toggle="popover" data-placement="right"' +
+            'data-trigger="hover" data-content="' +
+            '<table ' +
+            '<tr>' +
+            '<td  style=\'border-top: none;\'>email:</td>' +
+            '<td  style=\'border-top: none;\'><a href=\'mailto:' + this.email + '\'>' + this.email + '</a></td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td  style=\'border-top: none;\'>ext:</td>' +
+            '<td  style=\'border-top: none;\'>' + this.phone_ext + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td  style=\'border-top: none;\'>mobile:</td>' +
+            '<td  style=\'border-top: none;\'>' + this.mobile + '</td>' +
+            '</tr>' +
+            '</table>' +
+            '">' + this.name + '</a>';
+        return html_person;
+    }
+}
+
 function printStickers(books) {
-    text_area = 'library\tid\tbook\towner\n';
+    text_area_bis = books;
+    setTextAreaBooks();
     $(".printable-div").html('');
     for (var i in books) {
         var sticker = new Sticker(books[i].libname, books[i].book_title,
             books[i].biid, books[i].owner);
         $("#booksFormText .printable-div").append(sticker.getHTML());
-        text_area += books[i].libname + '\t' + books[i].book_title + '\t' +
-            books[i].biid + '\t' + books[i].owner + '\n';
     }
     updateSliders();
-    $("#text_format_books").html(text_area);
     $("#booksFormText").modal('show');
 }
 
-function updateSliders() {
-    $('.slider[name="height"]').attr('value',Sticker.height);
-    $('.slider[name="width"]').attr('value',Sticker.width);
-    $('.slider[name="margin-right"]').attr('value',Sticker.margin_right);
-    $('.slider[name="margin-bottom"]').attr('value',Sticker.margin_bottom);
+function setTextAreaBooks() {
 
-    $('.slider-page[name="margin-top"]').attr('value','0');
-    $('.slider-page[name="margin-left"]').attr('value','0');
+    f_s = text_area_f_s;
+    s_s = text_area_s_s;
+    text_area = 'library' + f_s + 'id' + f_s + 'book' + f_s + 'owner' + s_s;
+    for (var i in text_area_bis) {
+        text_area += text_area_bis[i].libname + f_s + text_area_bis[i].book_title + f_s +
+            text_area_bis[i].biid + f_s + text_area_bis[i].owner + s_s;
+    }
+    $("#text_format_books").html(text_area);
+}
+
+function updateSliders() {
+    $('.slider[name="height"]').attr('value', Sticker.height);
+    $('.slider[name="width"]').attr('value', Sticker.width);
+    $('.slider[name="margin-right"]').attr('value', Sticker.margin_right);
+    $('.slider[name="margin-bottom"]').attr('value', Sticker.margin_bottom);
+
+    $('.slider-page[name="margin-top"]').attr('value', '0');
+    $('.slider-page[name="margin-left"]').attr('value', '0');
 
     $(".slider").change();
     $(".slider-page").change();
+
+    text_area_f_s = '\t'
+    text_area_s_s = '\n'
+
+    setTextAreaBooks();
 }
+

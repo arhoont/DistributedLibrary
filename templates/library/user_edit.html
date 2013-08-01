@@ -44,11 +44,29 @@
                             </a>
                         </td>
                     </tr>
+
                     <tr class="lnametr">
                         <td class="lcolumn">Фамилия</td>
                         <td class="valcolumn">{{ person.lname }}</td>
                         <td class="rcolumn">
                             <a onclick="changeRow('lname')">Редактировать
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr class="phone_exttr">
+                        <td class="lcolumn">Добавочный</td>
+                        <td class="valcolumn">{{ person.phone_ext }}</td>
+                        <td class="rcolumn">
+                            <a onclick="changeRow('phone_ext')">Редактировать
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="mobiletr">
+                        <td class="lcolumn">Мобильный</td>
+                        <td class="valcolumn">{{ person.mobile }}</td>
+                        <td class="rcolumn">
+                            <a onclick="changeRow('mobile')">Редактировать
                             </a>
                         </td>
                     </tr>
@@ -61,7 +79,9 @@
             login: "{{ person.login }}",
             email: "{{ person.email }}",
             fname: "{{ person.fname }}",
-            lname: "{{ person.lname }}"
+            lname: "{{ person.lname }}",
+            phone_ext: "{{ person.phone_ext }}",
+            mobile: "{{ person.mobile }}"
         };
     </script>
 

@@ -18,6 +18,8 @@ class Person(models.Model):
     email = models.CharField(max_length=255, unique=True)
     fname = models.CharField(max_length=255)
     lname = models.CharField(max_length=255)
+    phone_ext = models.CharField(max_length=255)
+    mobile = models.CharField(max_length=255)
     pwd = models.CharField(max_length=255)
     salt = models.CharField(max_length=255)
     adm = models.IntegerField(default=0)
@@ -33,7 +35,8 @@ class Person(models.Model):
         return self.fname + " " + self.lname
 
     def getBigNaturalKey(self):
-        return {"id":self.id,"name":self.natural_key()}
+        return {"id":self.id,"name":self.natural_key(),
+                "email":self.email, "phone_ext":self.phone_ext, "mobile":self.mobile}
 
 
 class PersonImage(models.Model):

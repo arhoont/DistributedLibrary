@@ -1,3 +1,5 @@
+
+
 function castPage() {
     $("#addItemBut").click(function () {
         $("#addItemModal").modal('show');
@@ -17,7 +19,7 @@ function castPage() {
             success: function (data) {
                 if (parseInt(data.info) == 1) {
                     loadItems();
-                    printSticker(data.biid,data.owner);
+                    printSticker(data.biid, data.owner);
 
                 } else if (parseInt(data.info) == 4) {
                     notSignIn()
@@ -63,7 +65,20 @@ function castPage() {
         loadItems();
     });
 
+    document.onkeydown = function (evt) {
+        evt = evt || window.event;
+        if (evt.keyCode == 27) {
+            $(".Person").popover("hide");
+        }
+    };
+
 }
+
+$(document).click(function (e) {
+    if (e.target.className != "Person") {
+        $(".Person").popover("hide");
+    }
+});
 
 
 function takeItem(itemId, val) {
@@ -170,9 +185,34 @@ function loadItems() {
 
                     listed = '<tr id="bi' + bi.id + '">';
                     listed += '<td>' + bi.id + '</td>';
-                    listed += '<td>' + bi.owner.name + '</td>';
-                    listed += '<td>' + bi.reader.name + '</td>';
-                    listed += '<td>' + bi.value + '</td>';
+
+                    var owner = new Person(bi.owner.id, bi.owner.name, bi.owner.email, bi.owner.phone_ext, bi.owner.mobile);
+                    var reader = new Person(bi.reader.id, bi.reader.name, bi.reader.email, bi.reader.phone_ext, bi.reader.mobile);
+
+//                    var owner = new Person(bi.owner);
+//                    var reader = new Person(bi.reader);
+
+                    listed += '<td>' + owner.getHTML() + '</td>';
+                    listed += '<td>' + reader.getHTML() + '</td>';
+                    switch (bi.value) {
+                        case 1:
+                            listed += '<td style="color: #99c988">';
+                            break;
+                        case 2:
+                            listed += '<td style="color: #c5b210">';
+                            break;
+                        case 3:
+                            listed += '<td style="color: #c67e77">';
+                            break;
+                        default:
+                            listed += '<td>';
+                    }
+
+                    for (var j = 0; j < bi.value; j++) {
+                        console.log(j);
+                        listed += "$";
+                    }
+                    listed += '</td>';
 
                     if (bi.reader.id == person_id) {
                         if (bi.take.type == 1) {
@@ -210,12 +250,19 @@ function loadItems() {
                     listed += '</tr>';
                     $("#itemsTalbeDiv #rows").append(listed);
                 }
+                $('.Person').popover({
+                    html: true,
+                    trigger: 'manual'
+                }).click(function (e) {
+                        $(this).popover('show');
+                    });
             }
         },
         error: function () {
             serverError();
         }
     });
+
 }
 
 function getTimeLeft(t) {
@@ -234,7 +281,7 @@ function pad(number, length) {
 }
 
 function printSticker(bi_id, owner) {
-    var sticker=new Sticker(lib_name,book_title,bi_id, owner);
+    var sticker = new Sticker(lib_name, book_title, bi_id, owner);
     $(".printable-div").html(sticker.getHTML());
     updateSliders();
     $("#printModal").modal('show');

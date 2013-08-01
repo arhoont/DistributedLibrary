@@ -162,13 +162,42 @@
                 <div class="printable-div" style="max-width: 700px;"></div>
             </div>
             <div class="tab-pane" id="sticker-text">
+                <table class="magic-table-text">
+                    <tr>
+                        <td><label class='' for="">Разделитель полей</label></td>
+                        <td>
+                            <div class="btn-group input-prepend" id="b-group-f-s" data-toggle="buttons-radio">
+                                <button type="button" class="btn btn-small active" value="1">\t</button>
+                                <button type="button" class="btn btn-small" value="2">\n</button>
+                                <button type="button" class="btn btn-small" value="3">,</button>
+                                <button type="button" class="btn btn-small" value="4">.</button>
+                                <button type="button" class="btn btn-small" value="5">&nbsp;</button>
+                                <input type="text">
+                            </div>
+                        </td>
+                        <td><label class='' for="">Разделитель строк</label></td>
+                        <td>
+                            <div class="btn-group input-prepend" id="b-group-s-s" data-toggle="buttons-radio">
+                                <button type="button" class="btn btn-small" value="1">\t</button>
+                                <button type="button" class="btn btn-small active" value="2">\n</button>
+                                <button type="button" class="btn btn-small" value="3">,</button>
+                                <button type="button" class="btn btn-small" value="4">.</button>
+                                <button type="button" class="btn btn-small" value="5">&nbsp;</button>
+                                <input type="text">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
                 <textarea style="width: 100%; height: 400px;" id="text_format_books"></textarea>
             </div>
         </div>
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal">Закрыть</button>
-        <button class="btn btn-primary" id="printStickers" >Печать</button>
+        <button class="btn" onclick="updateSliders()">Сброс</button>
+        <button class="btn btn-primary" id="printStickers">Печать</button>
     </div>
+
+
 </body>
 </html>

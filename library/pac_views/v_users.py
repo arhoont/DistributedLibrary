@@ -15,6 +15,7 @@ def regajax(request):
     fname = query["fname"]
     lname = query["lname"]
     pwd = query["pwd"]
+    phone_ext = query["phone_ext"]
 
     p = Person.objects.filter(email=email, domain=" ")
     if p:
@@ -26,7 +27,7 @@ def regajax(request):
     salt = randstring(10)
     pwd_hash = strHash(strHash(pwd) + salt)
     d = Domain.objects.get(pk=" ")
-    p = Person(domain=d, login=login, email=email, fname=fname, lname=lname, pwd=pwd_hash, salt=salt, adm=0, status=1)
+    p = Person(domain=d, login=login, email=email, fname=fname, lname=lname, phone_ext=phone_ext, mobile="", pwd=pwd_hash, salt=salt, adm=0, status=1)
     p.save()
     return HttpResponse(json.dumps({"info": 1, "domain": " "}))
 

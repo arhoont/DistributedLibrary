@@ -82,7 +82,7 @@ function register() {
             url: "/regajax",
             data: JSON.stringify({'login': $('#reg-login').val(), 'email': $('#reg-email').val(),
                 'fname': $('#reg-fname').val(), 'lname': $('#reg-lname').val(),
-                'pwd': $('#reg-pwd').val()}),
+                'pwd': $('#reg-pwd').val(), 'phone_ext':$('#reg-ext').val()}),
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {

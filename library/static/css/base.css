@@ -55,3 +55,21 @@ body {
     padding-left: 5px;
     padding-right: 10px;
 }
+
+.Person{
+    cursor: pointer;
+}
+.magic-table-text{
+    margin: 5px;
+}
+
+.magic-table-text label{
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-left: 15px;
+}
+.magic-table-text input{
+    width: 20px;
+    height: 16px;
+
+}

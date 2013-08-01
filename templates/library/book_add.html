@@ -126,6 +126,7 @@
     <button type="button" class="btn btn-primary" id="ba-btn">Добавить
     </button>
 
+
     <div id="printModal" class="modal hide" tabindex="-1" role="dialog">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">×</button>
@@ -156,6 +157,7 @@
             <div class="printable-div" style="max-width: 700px;"></div>
         </div>
         <div class="modal-footer">
+                <button class="btn" onclick="updateSliders()">Сброс</button>
             <button class="btn" data-dismiss="modal">Закрыть</button>
             <button class="btn btn-primary" id="printBtn"><i class="icon-print icon-white"></i> Печать</button>
         </div>
@@ -165,5 +167,7 @@
         <input type="text" name="prev_file" id="prev_file"/>
         <input type="file" name="file" id="image-input"/>
     </form>
+
+
 
 {% endblock %}
