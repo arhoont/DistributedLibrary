@@ -47,3 +47,8 @@ table input {
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+#id-type-selector {
+    width: 100px;
+    font-weight: bold;
+}

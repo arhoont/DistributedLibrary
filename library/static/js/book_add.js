@@ -10,36 +10,45 @@ function castPage() {
         isbn_status = false;
         $('#ba-isbn').popover('destroy');
         if ($("#ba-isbn").val().length > 0) {
-            in_isbn = $.trim($("#ba-isbn").val());
-            var isbn = ISBN.parse(in_isbn);
-            if (isbn == null) {
-                isbnFailFormat();
-            } else {
+            switch ($('#id-type-selector').val()) {
+                case ("isbn"):
+                    in_isbn = $.trim($("#ba-isbn").val());
+                    var isbn = ISBN.parse(in_isbn);
+                    if (isbn == null) {
+                        isbnFailFormat();
+                    } else {
 
-                if (isbn.isIsbn10()) {
-                    isbn = isbn.asIsbn10(true);
-                } else if (isbn.isIsbn13()) {
-                    isbn = isbn.asIsbn13(true);
-                }
-                $("#ba-isbn").val(isbn);
-                $.ajax({
-                    type: "POST",
-                    url: "/checkBook",
-                    data: JSON.stringify({'type': 1, "isbn": isbn}),
-                    dataType: "json",
-                    success: function (data) {
-                        if (parseInt(data.info) == 1) {
-                            isbnFail(data.book);
+                        if (isbn.isIsbn10()) {
+                            isbn = isbn.asIsbn10(true);
+                        } else if (isbn.isIsbn13()) {
+                            isbn = isbn.asIsbn13(true);
                         }
-                        else {
-                            isbn_status = true;
-                            $('#ba-isbn').popover('destroy');
-                        }
-                    },
-                    error: function () {
-                        serverError();
+                        $("#ba-isbn").val(isbn);
+                        $.ajax({
+                            type: "POST",
+                            url: "/checkBook",
+                            data: JSON.stringify({'type': 1, "isbn": isbn}),
+                            dataType: "json",
+                            success: function (data) {
+                                if (parseInt(data.info) == 1) {
+                                    isbnFail(data.book);
+                                }
+                                else {
+                                    isbn_status = true;
+                                    $('#ba-isbn').popover('destroy');
+                                }
+                            },
+                            error: function () {
+                                serverError();
+                            }
+                        });
+
                     }
-                });
+                    break;
+                case ("not_isbn"):
+                    isbn_status = true;
+                    break;
+
             }
         }
     });
@@ -146,6 +155,9 @@ function castPage() {
                 serverError();
             }
         });
+    });
+    $("#id-type-selector").change(function () {
+        $("#ba-isbn").focusout();
     });
 }
 
