@@ -266,7 +266,7 @@ function popup_print(data) {
     w.document.write(data);
     w.document.write('</body></html>');
     w.print();
-    w.close();
+    if (navigator.appName != 'Microsoft Internet Explorer') w.close();
     return true;
 }
 

@@ -305,17 +305,6 @@ def loadItems(request):
     return HttpResponse(json.dumps({"info": 1, "bilist": bilist}))
 
 
-def testBIConv(request):
-    query = json.loads(str(request.body.decode()))
-    itemId = query["itemId"]
-    bi = BookItem.objects.get(pk=itemId)
-    (takeb, takep) = bi.checkTake()
-    if takeb == 0:
-        return HttpResponse(json.dumps({"info": 1}))
-    else:
-        return HttpResponse(json.dumps({"info": 3}))
-
-
 def loadTextFormatBooks(request):
     person = Person.objects.get(pk=request.session["person_id"])
 
@@ -373,3 +362,19 @@ def loadFromOzon(request):
         'description': description,
         'img': img}}))
 
+
+def removeOpinion(request):
+    query = json.loads(str(request.body.decode()))
+    opinion_id = query["opinion_id"]
+
+    context = isauth(request)
+    if registrRevers(context):
+        return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
+
+    opinion=Opinion.objects.get(pk=opinion_id)
+    if (opinion.person==person):
+        opinion.delete()
+
+
+    return HttpResponse(json.dumps({"info": 1}))

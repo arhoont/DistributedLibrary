@@ -95,7 +95,7 @@ function loadItems() {
                 for (i = 0; i < k; i++) {
                     bi = data.bilist[i];
 
-                    listed = '<tr id="bi' + bi.id + '">';
+                    listed = '<tr id="bi_item_' + bi.id + '">';
                     listed += '<td>' + bi.id + '</td>';
 
                     var owner = new Person(bi.owner.id, bi.owner.name, bi.owner.email, bi.owner.phone_ext, bi.owner.mobile);
@@ -105,7 +105,7 @@ function loadItems() {
                     listed += '<td>' + reader.getHTML() + '</td>';
                     listed += '<td></td>';
 
-                    listed += '<td>';
+                    listed += '<td class="item_status">';
                     if (reader.id!=person_id){
                         listed +='<button class="btn btn-primary btn-mini" onclick="takeBI(\'' + bi.id + '\')">Взял</button>';
                     } else {
@@ -137,6 +137,7 @@ function loadItems() {
 }
 
 function takeBI(bi_id){
+     $("#bi_item_"+bi_id+" .item_status").html('<i class="icon-spinner icon-white"></i>');
         $.ajax({
             type: "POST",
             url: "/takeBI",
@@ -146,7 +147,7 @@ function takeBI(bi_id){
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
-                    location.reload();
+                    $("#bi_item_"+bi_id+" .item_status").html('<span class="label">У вас</span>');
                 } else if (parseInt(data.info) == 4) {
                     notSignIn();
                 }
@@ -177,4 +178,27 @@ function printSticker(bi_id, owner) {
     $(".printable-div").html(sticker.getHTML());
     updateSliders();
     $("#printModal").modal('show');
+}
+
+function removeOpinion(opinion_id){
+     var conf = confirm("Вы уверены, что хотитет удалить отзыв?");
+
+    if(conf == true){
+        $.ajax({
+            type: "POST",
+            url: "/removeOpinion",
+            data: JSON.stringify({
+                'info': 1,
+                'opinion_id':opinion_id}),
+            dataType: "json",
+            success: function (data) {
+                if (parseInt(data.info) == 1) {
+                    $("#opinion_"+opinion_id).remove();
+                }
+            },
+            error: function () {
+                serverError();
+            }
+        });
+    }
 }

@@ -124,16 +124,20 @@
         {% load apptags %}
         {% for op in opinions %}
             <hr>
-
-            <div>
-                {% for i in op.rating|times %}
-                    <i class="icon-star icon-white"></i>
-                {% endfor %}
+            <div id="opinion_{{ op.id }}">
+                <div>
+                    {% for i in op.rating|times %}
+                        <i class="icon-star icon-white"></i>
+                    {% endfor %}
+                </div>
+                <div class="muted">
+                    <small>{{ op.person.fname }} {{ op.person.lname }}, {{ op.date }}</small>
+                    {% if op.person.id == person.id %}
+                        <a style="font-size: 12px; cursor: pointer" onclick="removeOpinion({{ op.id }})">Удалить</a>
+                    {% endif %}
+                </div>
+                <div class="optext">{{ op.text }}</div>
             </div>
-            <div class="muted">
-                <small>{{ op.person.fname }} {{ op.person.lname }}, {{ op.date }}</small>
-            </div>
-            <div class="optext">{{ op.text }}</div>
         {% endfor %}
     </div>
 
@@ -235,7 +239,7 @@
             <div class="printable-div" style="max-width: 700px;"></div>
         </div>
         <div class="modal-footer">
-                <button class="btn" onclick="updateSliders()">Сброс</button>
+            <button class="btn" onclick="updateSliders()">Сброс</button>
             <button class="btn" data-dismiss="modal">Закрыть</button>
             <button class="btn btn-primary" id="printBtn"><i class="icon-print icon-white"></i> Печать</button>
         </div>

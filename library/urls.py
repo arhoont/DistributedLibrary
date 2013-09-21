@@ -35,7 +35,7 @@ urlpatterns = patterns('',
     (r'^getlastbooks', v_books.getlastbooks), # for index page
     (r'^addItem', v_books.addItem),
     (r'^addOpinion', v_books.addOpinion),
-    (r'^testBIConv', v_books.testBIConv),
+    (r'^removeOpinion', v_books.removeOpinion),
     (r'^loadItems', v_books.loadItems), # for bookinfo page
     (r'^uploadBI', v_books.uploadBI), # upload book image preview
     (r'^loadFromOzon', v_books.loadFromOzon), # upload book image preview

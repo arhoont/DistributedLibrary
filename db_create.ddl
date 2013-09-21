@@ -94,3 +94,15 @@ insert into library_domain values (' ');
 
 insert into library_language values ('Русский');
 insert into library_language values ('English');
+
+drop table library_returnmessage;
+drop sequence library_returnmessage_id_seq;
+
+drop table library_message;
+drop sequence library_message_id_seq;
+
+drop table library_conversation;
+drop sequence library_conversation_id_seq;
+
+drop function f_ch_return_item();
+drop function f_ch_mess_item();
