@@ -26,9 +26,29 @@ function castPage() {
     });
     $('#searchButton').click(function () {
         if ($("#searchInput").val().length > 0) {
-            search.word = $("#searchInput").val();
-            page.num = 1;
-            tableReq();
+            var testId = parseInt($("#searchInput").val());
+            if (!isNaN(testId)) {
+                $.ajax({
+                    url: "/searchById",
+                    type: "post",
+                    dataType: "json",
+                    data: JSON.stringify({"id": testId}),
+                    success: function (data) {
+                        if (data.info == 1) {
+                            window.location = data.location;
+                        } else {
+                            standardSearch();
+                        }
+                    },
+                    error: function () {
+                        serverError();
+                    },
+                    crossDomain: false
+                });
+            } else {
+                standardSearch();
+            }
+
         } else {
             search.word = "";
             page.num = 1;
@@ -69,6 +89,12 @@ function castPage() {
     });
 }
 
+function standardSearch() {
+    search.word = $("#searchInput").val();
+    page.num = 1;
+    tableReq();
+}
+
 function insertParam() {
     parent.location.hash = "?" + $.param({'sew': search.word, 'sep': search.person,
         'sot': sort.type, 'sof': sort.field, 'pan': page.num.toString()});
@@ -80,11 +106,12 @@ function recoverState() {
         $("#readingB").click();
         return;
     }
-    search.word = url_params.sew;
+    search.word = decodeURIComponent(url_params.sew);
     search.person = url_params.sep;
     sort.type = parseInt(url_params.sot);
     sort.field = url_params.sof;
     page.num = url_params.pan;
+    $("#searchInput").val(search.word);
     $("#" + search.person + "B").click();
 }
 

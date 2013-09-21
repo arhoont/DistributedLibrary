@@ -29,6 +29,7 @@ urlpatterns = patterns('',
 
     # book [v_books view file]
     (r'^getbooks', v_books.getbooks), # main page
+    (r'^searchById', v_books.searchById), # main page
     (r'^checkBook', v_books.checkBook), # check book existence (by isbn)
     (r'^addbajax', v_books.addbajax), # ajax add book (save information)
     (r'^editbajax', v_books.editbajax),

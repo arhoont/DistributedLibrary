@@ -378,3 +378,13 @@ def removeOpinion(request):
 
 
     return HttpResponse(json.dumps({"info": 1}))
+
+
+def searchById(request):
+    query = json.loads(str(request.body.decode()))
+    bi_id = query["id"]
+    bookItem=BookItem.objects.filter(id=bi_id)
+    if len(bookItem)!=0:
+        return HttpResponse(json.dumps({"info": 1,"location":"/book/info/?isbn="+bookItem[0].book.isbn}))
+    else:
+        return HttpResponse(json.dumps({"info": 2}))
