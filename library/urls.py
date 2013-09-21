@@ -44,13 +44,13 @@ urlpatterns = patterns('',
     #==================================================
 
     # message [v_messages view file]
-    (r'^takeReq', v_messages.takeReq), # new take-book message
-    (r'^returnReq', v_messages.returnReq), # new return-book message
+    # (r'^takeReq', v_messages.takeReq), # new take-book message
+    # (r'^returnReq', v_messages.returnReq), # new return-book message
+    # (r'^getRetMessages', v_messages.getRetMessages), # get user's book-return notification
+    (r'^readMessage', v_messages.readMessage), # reply on some message (yes/no/read)
     (r'^getMessages', v_messages.getMessages), # get user's messages (in/out)
-    (r'^getRetMessages', v_messages.getRetMessages), # get user's book-return notification
-    (r'^replyMessage', v_messages.replyMessage), # reply on some message (yes/no/read)
-    (r'^replyRetMessage', v_messages.replyRetMessage), #reply on return-book notification (read)
-    (r'^countInMessage', v_messages.countInMessage), #reply on return-book notification (read)
+    (r'^countInMessage', v_messages.countInMessage), #reply on return-book notification (read)s
+    (r'^takeBI', v_messages.takeBI),
     #==================================================
 
 )

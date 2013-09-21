@@ -104,33 +104,12 @@ class BookItem(models.Model):
     takedate = models.DateTimeField(null=True)
     status = models.IntegerField()
 
-    def checkTake(self):
-        ss = SysSetting.objects.latest('id')
-        takeb = 0
-        takep = ''
-        if self.takedate:
-            seconds = (timezone.now() - self.takedate).total_seconds()
-            if seconds < ss.transferCd:
-                takeb = 2
-                takep = ss.transferCd - seconds
-                return (takeb, takep)
-
-        conv_count = self.conversation_set.all().count()
-        if conv_count > 0:
-            conv = self.conversation_set.latest('id')
-            mess = conv.message_set.filter(isRead=0).exclude(Q(mtype=self.value)|Q(resp=2))
-            if mess:
-                takeb = 1
-                takep = conv.personFrom.id
-        return (takeb, takep)
 
     def getValues(self):
-        (takeb, takep) = self.checkTake()
         return {"id":self.id,
                 "value": self.value,
                 "owner":self.owner.getBigNaturalKey(),
                 "reader":self.reader.getBigNaturalKey(),
-                "take":{"type":takeb,"info":takep},
                 "status":self.status}
 
 class ItemStatus(models.Model):
@@ -155,28 +134,13 @@ class Link(models.Model):
     text = models.TextField()
 
 
-class Conversation(models.Model):
+class Message(models.Model):
     item = models.ForeignKey(BookItem)
     personFrom = models.ForeignKey(Person, related_name="requestfrom_set")
     personTo = models.ForeignKey(Person, related_name="requestto_set")
-
-
-class Message(models.Model):
-    conversation = models.ForeignKey(Conversation)
     date = models.DateTimeField()
-    mtype = models.IntegerField()
-    resp = models.IntegerField()
     comment = models.TextField(null=True)
     isRead = models.IntegerField(null=True)
-
-
-class ReturnMessage(models.Model):
-    personFrom = models.ForeignKey(Person, related_name="returnfrom_set")
-    personTo = models.ForeignKey(Person, related_name="returnto_set")
-    item = models.ForeignKey(BookItem)
-    date = models.DateTimeField()
-    isRead = models.IntegerField(null=True)
-
 
 class SysSetting(models.Model):
     authType = models.IntegerField()

@@ -81,94 +81,6 @@ $(document).click(function (e) {
 });
 
 
-function takeItem(itemId, val) {
-    $.ajax({
-        type: "POST",
-        url: "/testBIConv",
-        data: JSON.stringify({
-            'itemId': itemId}),
-        dataType: "json",
-        success: function (data) {
-            if (parseInt(data.info) == 1) {
-                if (val == 1) {
-                    $("#takeModal .modal-body").html("Не ценная книга, сразу станет вашей");
-                } else if (val == 2) {
-                    $("#takeModal .modal-body").html("Ценная книга, нужно послать запрос");
-                } else if (val == 3) {
-                    $("#takeModal .modal-body").html("Очень ценная книга, нужно послать запрос");
-                }
-                $("#takeModal").modal('show');
-                $('#takeButtonModal').unbind('click');
-                $("#takeButtonModal").bind("click", function () {
-                    $("#takeModal").modal('hide');
-                    $.ajax({
-                        type: "POST",
-                        url: "/takeReq",
-                        data: JSON.stringify({
-                            'itemId': itemId}),
-                        dataType: "json",
-                        success: function (data) {
-                            if (parseInt(data.info) == 1) {
-                                loadItems();
-                            } else if (parseInt(data.info) == 2) {
-                                loadItems();
-                            } else if (parseInt(data.info) == 4) {
-                                notSignIn();
-                            }
-                        },
-                        error: function () {
-                            serverError();
-                        }
-                    });
-                });
-            } else if (parseInt(data.info) == 3) {
-                loadItems()
-            }
-        },
-        error: function () {
-            serverError();
-        }
-    });
-
-}
-function returnBook(itemId) {
-    $.ajax({
-        type: "POST",
-        url: "/testBIConv",
-        data: JSON.stringify({
-            'itemId': itemId}),
-        dataType: "json",
-        success: function (data) {
-            if (parseInt(data.info) == 1) {
-                $.ajax({
-                    type: "POST",
-                    url: "/returnReq",
-                    data: JSON.stringify({
-                        'itemId': itemId}),
-                    dataType: "json",
-                    success: function (data) {
-                        if (parseInt(data.info) == 1) {
-                            loadItems();
-                        } else if (parseInt(data.info) == 2) {
-                            loadItems();
-                        } else if (parseInt(data.info) == 4) {
-                            notSignIn();
-                        }
-                    },
-                    error: function () {
-                        serverError();
-                    }
-                });
-            } else if (parseInt(data.info) == 3) {
-                loadItems()
-            }
-        },
-        error: function () {
-            serverError();
-        }
-    });
-
-}
 function loadItems() {
     $.ajax({
         type: "POST",
@@ -189,64 +101,23 @@ function loadItems() {
                     var owner = new Person(bi.owner.id, bi.owner.name, bi.owner.email, bi.owner.phone_ext, bi.owner.mobile);
                     var reader = new Person(bi.reader.id, bi.reader.name, bi.reader.email, bi.reader.phone_ext, bi.reader.mobile);
 
-//                    var owner = new Person(bi.owner);
-//                    var reader = new Person(bi.reader);
-
                     listed += '<td>' + owner.getHTML() + '</td>';
                     listed += '<td>' + reader.getHTML() + '</td>';
-                    switch (bi.value) {
-                        case 1:
-                            listed += '<td style="color: #99c988">';
-                            break;
-                        case 2:
-                            listed += '<td style="color: #c5b210">';
-                            break;
-                        case 3:
-                            listed += '<td style="color: #c67e77">';
-                            break;
-                        default:
-                            listed += '<td>';
-                    }
+                    listed += '<td></td>';
 
-                    for (var j = 0; j < bi.value; j++) {
-                        console.log(j);
-                        listed += "$";
+                    listed += '<td>';
+                    if (reader.id!=person_id){
+                        listed +='<button class="btn btn-primary btn-mini" onclick="takeBI(\'' + bi.id + '\')">Взял</button>';
+                    } else {
+                        listed +='<span class="label">У вас</span>';
                     }
-                    listed += '</td>';
+                     listed +='</td>';
 
-                    if (bi.reader.id == person_id) {
-                        if (bi.take.type == 1) {
-                            listed += '<td>' + 'Сообщение' + '</td>';
-                        } else if (bi.owner.id == person_id) {
-                            listed += '<td>' + 'У вас' + '</td>';
-                        } else {
-                            if (bi.take.type == 2) {
-                                listed += '<td><button class="btn btn-primary btn-mini disabled">Вернуть</button> '
-                                    + getTimeLeft(bi.take.info) + '</td>';
-                            }
-                            else {
-                                listed += '<td><button class="btn btn-primary btn-mini" ' +
-                                    'onclick="returnBook(' + bi.id + ')">Вернуть</button></td>';
-                            }
+                    listed += '<td>';
+                    listed +='<button class="btn btn btn-mini" onclick="printSticker(\'' + bi.id + '\',\'' + bi.owner.name + '\')">' +
+                        '<i class="icon-print icon-white"></i></button>';
+                    listed +='</td>';
 
-                        }
-                    } else if (bi.take.type == 0) {
-                        listed += '<td><button class="btn btn-primary btn-mini" ' +
-                            'onclick="takeItem(' + bi.id + ',' + bi.value + ')">Взять</button></td>';
-                    } else if (bi.take.type == 2) {
-                        listed += '<td>Занята ' + getTimeLeft(bi.take.info) + '</td>';
-                    } else if (bi.take.type == 1) {
-                        if (bi.take.info == person_id) {
-                            listed += '<td>' + 'Запрошено' + '</td>';
-                        } else {
-                            listed += '<td>' + 'Занята' + '</td>';
-                        }
-                    }
-//                    else if (bi[5] == 3) {
-//                        listed += '<td>'+'Есть сообщение'+'</td>';
-//                    }
-                    listed += '<td><button class="btn btn-primary btn-mini" onclick="printSticker(\'' + bi.id + '\',\'' + bi.owner.name + '\')"><i class="icon-print icon-white"></i></button></td>';
-//                    listed += '<td><button class="btn btn-primary btn-mini" onclick="printSticker('+bi.id+')"><i class="icon-print icon-white"></i></button></td>';
                     listed += '</tr>';
                     $("#itemsTalbeDiv #rows").append(listed);
                 }
@@ -263,6 +134,27 @@ function loadItems() {
         }
     });
 
+}
+
+function takeBI(bi_id){
+        $.ajax({
+            type: "POST",
+            url: "/takeBI",
+            data: JSON.stringify({
+                'info': 1,
+                'bi_id':bi_id}),
+            dataType: "json",
+            success: function (data) {
+                if (parseInt(data.info) == 1) {
+                    location.reload();
+                } else if (parseInt(data.info) == 4) {
+                    notSignIn();
+                }
+            },
+            error: function () {
+                serverError();
+            }
+        });
 }
 
 function getTimeLeft(t) {
