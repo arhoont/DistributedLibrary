@@ -88,7 +88,52 @@ $(document).ready(function () {
         $("#b-group-s-s button").removeClass("active");
         setTextAreaBooks();
     });
+        $('#searchButton').click(function () {
+        if ($("#searchInput").val().length > 0) {
+            var testId = parseInt($("#searchInput").val());
+            if (!isNaN(testId)) {
+                $.ajax({
+                    url: "/searchById",
+                    type: "post",
+                    dataType: "json",
+                    data: JSON.stringify({"id": testId}),
+                    success: function (data) {
+                        if (data.info == 1) {
+                            window.location = data.location;
+                        } else {
+                            standardSearch();
+                        }
+                    },
+                    error: function () {
+                        serverError();
+                    },
+                    crossDomain: false
+                });
+            } else {
+                standardSearch();
+            }
+
+        } else {
+            search.word = "";
+            page.num = 1;
+            tableReq();
+        }
+    });
 });
+function standardSearch() {
+    if (typeof local == "undefined"){
+         window.location="/#?" + $.param({'sew': $("#searchInput").val(), 'sep': "all",
+        'sot': 0, 'sof': "isbn", 'pan': 1});
+    }
+    if (local!="home"){
+         window.location="/#?" + $.param({'sew': $("#searchInput").val(), 'sep': "all",
+        'sot': 0, 'sof': "isbn", 'pan': 1});
+    }
+    search.word = $("#searchInput").val();
+    page.num = 1;
+    tableReq();
+}
+
 
 function separatorConverter(val) {
     var sep = " ";
@@ -111,6 +156,8 @@ function separatorConverter(val) {
 
     }
     return sep;
+
+
 }
 
 function messCountTest() {

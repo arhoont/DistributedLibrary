@@ -11,6 +11,8 @@ var sort = {
     type: 0,
     field: "isbn"
 };
+
+var local="home";
 function castPage() {
     $("#prevButP").click(function (e) {
         if ((page.num > 1) && (!$("#prevBut").hasClass('disabled'))) {
@@ -24,37 +26,7 @@ function castPage() {
             tableReq();
         }
     });
-    $('#searchButton').click(function () {
-        if ($("#searchInput").val().length > 0) {
-            var testId = parseInt($("#searchInput").val());
-            if (!isNaN(testId)) {
-                $.ajax({
-                    url: "/searchById",
-                    type: "post",
-                    dataType: "json",
-                    data: JSON.stringify({"id": testId}),
-                    success: function (data) {
-                        if (data.info == 1) {
-                            window.location = data.location;
-                        } else {
-                            standardSearch();
-                        }
-                    },
-                    error: function () {
-                        serverError();
-                    },
-                    crossDomain: false
-                });
-            } else {
-                standardSearch();
-            }
 
-        } else {
-            search.word = "";
-            page.num = 1;
-            tableReq();
-        }
-    });
     $('#searchInput').keydown(function (event) {
         if (event.keyCode == 13) {
             $('#searchInput').blur();
@@ -89,11 +61,7 @@ function castPage() {
     });
 }
 
-function standardSearch() {
-    search.word = $("#searchInput").val();
-    page.num = 1;
-    tableReq();
-}
+
 
 function insertParam() {
     parent.location.hash = "?" + $.param({'sew': search.word, 'sep': search.person,
