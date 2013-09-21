@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     (r'^regajax', v_users.regajax), # ajax registration method
     (r'^editUserAjax', v_users.editUserAjax),
     (r'^passwordRecovery', v_users.passwordRecovery),
+    (r'^askBookItem', v_users.askBookItem),
     #==================================================
 
     # book [v_books view file]

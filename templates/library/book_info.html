@@ -37,7 +37,7 @@
             </a>
         </div>
 
-        <div class="span7" id="MTDiv">
+        <div class="span6" id="MTDiv">
 
             <table style="overflow: hidden;">
                 <tbody>
@@ -77,10 +77,10 @@
             </table>
         </div>
 
-        <div id="itemsTalbeDiv" class="span5">
+        <div id="itemsTalbeDiv" class="span6">
             <caption class="caption"><strong>Экземпляры:</strong>
-                <button type="button" class="btn btn-mini pull-right" onclick="loadItems()"><i
-                        class="icon-refresh icon-white"></i></button>
+{#                <button type="button" class="btn btn-mini pull-right" onclick="loadItems()"><i#}
+{#                        class="icon-refresh icon-white"></i></button>#}
             </caption>
             <table class="table table-condensed">
                 <thead>
@@ -149,17 +149,17 @@
         <div class="modal-body">
             <p>Вы уверены, что у вас есть книга <strong>"{{ book.title }}"</strong>и вы хотите добавить свой экземпляр в
                 библиотеку?</p>
-            <strong>Выберите ценность:</strong>
+{#            <strong>Выберите ценность:</strong>#}
 
-            <div class="btn-group" id="ba-val" data-toggle="buttons-radio">
-                <button type="button" class="btn btn-info">1</button>
-                <button type="button" class="btn btn-info active">2</button>
-                <button type="button" class="btn btn-info">3</button>
-            </div>
-            <a class="infoValuesButton" data-toggle="popover" data-placement="right" data-trigger="hover"
-               data-content="Ценность позволяет установить количество запросов, необходимых для передачи книги"
-               title="Ценность">
-                <i class="icon-question-sign icon-white"></i></a>
+{#            <div class="btn-group" id="ba-val" data-toggle="buttons-radio">#}
+{#                <button type="button" class="btn btn-info">1</button>#}
+{#                <button type="button" class="btn btn-info active">2</button>#}
+{#                <button type="button" class="btn btn-info">3</button>#}
+{#            </div>#}
+{#            <a class="infoValuesButton" data-toggle="popover" data-placement="right" data-trigger="hover"#}
+{#               data-content="Ценность позволяет установить количество запросов, необходимых для передачи книги"#}
+{#               title="Ценность">#}
+{#                <i class="icon-question-sign icon-white"></i></a>#}
         </div>
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal">Закрыть</button>

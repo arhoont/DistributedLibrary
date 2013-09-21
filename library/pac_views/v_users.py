@@ -27,16 +27,19 @@ def regajax(request):
     salt = randstring(10)
     pwd_hash = strHash(strHash(pwd) + salt)
     d = Domain.objects.get(pk=" ")
-    p = Person(domain=d, login=login, email=email, fname=fname, lname=lname, phone_ext=phone_ext, mobile="", pwd=pwd_hash, salt=salt, adm=0, status=1)
+    p = Person(domain=d, login=login, email=email, fname=fname, lname=lname, phone_ext=phone_ext, mobile="",
+               pwd=pwd_hash, salt=salt, adm=0, status=1)
     p.save()
     return HttpResponse(json.dumps({"info": 1, "domain": " "}))
 
-def editPassword(person,newPwd):
+
+def editPassword(person, newPwd):
     salt = randstring(10)
     pwd_hash = strHash(strHash(newPwd) + salt)
     person.pwd = pwd_hash
     person.salt = salt
     person.save()
+
 
 def passwordRecovery(request):
     query = json.loads(str(request.body.decode()))
@@ -44,14 +47,15 @@ def passwordRecovery(request):
     person = Person.objects.filter(email=email)
     if not person:
         return HttpResponse(json.dumps({"info": 2}))
-    person=person[0]
-    newPwd=randstring(7)
-    editPassword(person,newPwd)
+    person = person[0]
+    newPwd = randstring(7)
+    editPassword(person, newPwd)
     sendEmail("Восстановление пароля",
-              'Логин: '+person.login+'\nНовый пароль: '+newPwd,
-              'Логин: <strong>'+person.login+'</strong><br>Новый пароль: <strong>'+newPwd +'</strong>',
+              'Логин: ' + person.login + '\nНовый пароль: ' + newPwd,
+              'Логин: <strong>' + person.login + '</strong><br>Новый пароль: <strong>' + newPwd + '</strong>',
               [email])
     return HttpResponse(json.dumps({"info": 1}))
+
 
 def editUserAjax(request):
     query = json.loads(str(request.body.decode()))
@@ -70,7 +74,7 @@ def editUserAjax(request):
         pwd = query["old-pwd"]
         passHash = strHash(strHash(pwd) + person.salt)
         if passHash == person.pwd:
-            editPassword(person,param)
+            editPassword(person, param)
         else:
             return HttpResponse(json.dumps({"info": 2, "val": param}))
     return HttpResponse(json.dumps({"info": 1, "val": param}))
@@ -91,7 +95,19 @@ def checkUser(request):
     return HttpResponse(json.dumps({"info": 2}))
 
 
+def askBookItem(request):
+    query = json.loads(str(request.body.decode()))
+    info = query["info"]
+    bi_id = query["bi_id"]
+    item = BookItem.objects.get(pk=bi_id)
+    context = isauth(request)
+    if registrRevers(context):
+        return HttpResponse(json.dumps({"info": 4}))
+    person = context["person"]
 
-
-
-
+    return HttpResponse(json.dumps({"info": 1,
+                                    "text": item.reader.email + "?" + "Subject=" + "Взять книгу" + "&" + "body=" +
+                                            "Здравствуйте, " + item.reader.natural_key() + "%0A%0A" +
+                                            "Хочу взять книгу: %D1%84"+item.book.title+" id: "+str(item.id)+"%0A"+
+                                            "Где и когда вас можно найти?"+"%0A%0A"+
+                                            "С уважением, "+person.natural_key()}))

@@ -14,7 +14,7 @@ function castPage() {
             url: "/addItem",
             data: JSON.stringify({
                 'isbn': isbn,
-                'val': $.trim($("#ba-val .active").html())}),
+                'val': 1}),
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
@@ -106,17 +106,21 @@ function loadItems() {
                     listed += '<td></td>';
 
                     listed += '<td class="item_status">';
-                    if (reader.id!=person_id){
-                        listed +='<button class="btn btn-primary btn-mini" onclick="takeBI(\'' + bi.id + '\')">Взял</button>';
+                    if (reader.id != person_id) {
+
+                        listed += '<div class="input-append btn-group">';
+                        listed += '<button class="btn btn-primary btn-mini" onclick="takeBI(\'' + bi.id + '\')">Взял</button>';
+                        listed += '<button class="btn btn-primary btn-mini" onclick="askBookItem(\'' + bi.id + '\')">Спросить</button>';
+                        listed += '/div';
                     } else {
-                        listed +='<span class="label">У вас</span>';
+                        listed += '<span class="label">У вас</span>';
                     }
-                     listed +='</td>';
+                    listed += '</td>';
 
                     listed += '<td>';
-                    listed +='<button class="btn btn btn-mini" onclick="printSticker(\'' + bi.id + '\',\'' + bi.owner.name + '\')">' +
+                    listed += '<button class="btn btn btn-mini" onclick="printSticker(\'' + bi.id + '\',\'' + bi.owner.name + '\')">' +
                         '<i class="icon-print icon-white"></i></button>';
-                    listed +='</td>';
+                    listed += '</td>';
 
                     listed += '</tr>';
                     $("#itemsTalbeDiv #rows").append(listed);
@@ -136,26 +140,30 @@ function loadItems() {
 
 }
 
-function takeBI(bi_id){
-     $("#bi_item_"+bi_id+" .item_status").html('<i class="icon-spinner icon-white"></i>');
-        $.ajax({
-            type: "POST",
-            url: "/takeBI",
-            data: JSON.stringify({
-                'info': 1,
-                'bi_id':bi_id}),
-            dataType: "json",
-            success: function (data) {
-                if (parseInt(data.info) == 1) {
-                    $("#bi_item_"+bi_id+" .item_status").html('<span class="label">У вас</span>');
-                } else if (parseInt(data.info) == 4) {
-                    notSignIn();
-                }
-            },
-            error: function () {
-                serverError();
+function takeBI(bi_id) {
+    var conf = confirm("Уверены?");
+    if (conf != true) {
+        return;
+    }
+    $("#bi_item_" + bi_id + " .item_status").html('<i class="icon-spinner icon-white"></i>');
+    $.ajax({
+        type: "POST",
+        url: "/takeBI",
+        data: JSON.stringify({
+            'info': 1,
+            'bi_id': bi_id}),
+        dataType: "json",
+        success: function (data) {
+            if (parseInt(data.info) == 1) {
+                $("#bi_item_" + bi_id + " .item_status").html('<span class="label">У вас</span>');
+            } else if (parseInt(data.info) == 4) {
+                notSignIn();
             }
-        });
+        },
+        error: function () {
+            serverError();
+        }
+    });
 }
 
 function getTimeLeft(t) {
@@ -180,20 +188,20 @@ function printSticker(bi_id, owner) {
     $("#printModal").modal('show');
 }
 
-function removeOpinion(opinion_id){
-     var conf = confirm("Вы уверены, что хотитет удалить отзыв?");
+function removeOpinion(opinion_id) {
+    var conf = confirm("Вы уверены, что хотитет удалить отзыв?");
 
-    if(conf == true){
+    if (conf == true) {
         $.ajax({
             type: "POST",
             url: "/removeOpinion",
             data: JSON.stringify({
                 'info': 1,
-                'opinion_id':opinion_id}),
+                'opinion_id': opinion_id}),
             dataType: "json",
             success: function (data) {
                 if (parseInt(data.info) == 1) {
-                    $("#opinion_"+opinion_id).remove();
+                    $("#opinion_" + opinion_id).remove();
                 }
             },
             error: function () {
@@ -201,4 +209,24 @@ function removeOpinion(opinion_id){
             }
         });
     }
+}
+
+function askBookItem(bi_id) {
+    $.ajax({
+        type: "POST",
+        url: "/askBookItem",
+        data: JSON.stringify({
+            'info': 1,
+            'bi_id': bi_id}),
+        dataType: "json",
+        success: function (data) {
+            if (parseInt(data.info) == 1) {
+                window.location.href = 'mailto:'+data.text;
+//                window.location.href = 'mailto:address@domain.com?Subject=message %D1%84%D1%8B%D0%B2%D1%84%D1%8B%D0%B2 here&body=%0A%0A%0AMessage body here ';
+            }
+        },
+        error: function () {
+            serverError();
+        }
+    });
 }

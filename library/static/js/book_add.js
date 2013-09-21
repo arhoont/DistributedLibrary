@@ -239,7 +239,7 @@ function addButtonBook() {
                 'lang': $.trim($('#ba-lang').val()),
                 'keywords': newKWList,
                 'desc': $('#ba-desc').val(),
-                'val': $.trim($("#ba-val .active").html()),
+                'val': 1,
                 'image': $("#prev_file").val()}),
             dataType: "json",
             success: function (data) {
