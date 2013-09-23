@@ -145,7 +145,7 @@ function castMainTable(data) {
     }
 
 
-    $("#page").html(page.num.toString()+"/"+Math.ceil(data.count));
+    $("#page").html(page.num.toString()+"/"+Math.ceil(data.count/page.size));
     if (data.count <= page.num * page.size) {
         $("#nextBut").addClass("disabled");
     } else {
